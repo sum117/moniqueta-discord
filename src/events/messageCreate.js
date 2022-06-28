@@ -5,5 +5,6 @@ module.exports = {
   /**@param {Message} msg Qualquer mensagem recebida pelo bot.*/
   async execute (msg) {
     loadCommands(this.name, msg)
+    if (msg.content.startsWith('init')) novel = new TextNovel(msg).novelFactory()
   }
 }
