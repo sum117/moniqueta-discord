@@ -91,40 +91,40 @@ module.exports = class TextNovel {
     const filter = m => m.author.id === this.userId
     const collector = this.message.channel.createMessageCollector({ filter, time: 10 * 60 * 1000 })
     this.collector = collector
-    
+
     return this.collector.on('collect', async m => {
       const stagesCache = this.sessionCache.get(m.author.id)
-      
+
       if (!stagesCache.get('plot')) {
         this.reply = await m.reply(m.content)
         reactionMenu(this.reply, ['📌', '➕'])
       } else {
         this.setChoices(m.content.split(','))
-        this.reply.edit({components: [this.buttons]})
+        this.reply.edit({ components: [this.buttons] })
       }
-        /**{
-        * @param {Discord.Message} reply - A mensagem base do editor de histórias
-        * @param {Array<String>} reactions - As reações a serem adicionadas no menu de reações.
-        */
-        function reactionMenu(reply, reactions = ['']) {
-          reactions.forEach((one, i) => setTimeout(() => reply.react(one), i * 1000))
-          const filter = r => r.users.holds(reply.author.id) && r.message.id === reply.id
-          const reactionCollector = reply.createReactionCollector({ filter, time: 10 * 60 * 1000, max: 1 })
+      /**{
+      * @param {Discord.Message} reply - A mensagem base do editor de histórias
+      * @param {Array<String>} reactions - As reações a serem adicionadas no menu de reações.
+      */
+      function reactionMenu(reply, reactions = ['']) {
+        reactions.forEach((one, i) => setTimeout(() => reply.react(one), i * 1000))
+        const filter = r => r.users.holds(reply.author.id) && r.message.id === reply.id
+        const reactionCollector = reply.createReactionCollector({ filter, time: 10 * 60 * 1000, max: 1 })
 
-          return this.reactionCollector = reactionCollector.on('collect', r => {
-            if (r.emoji === '📌') {
-              r.remove()
-              r.message.edit(output)
+        return this.reactionCollector = reactionCollector.on('collect', r => {
+          if (r.emoji === '📌') {
+            r.remove()
+            r.message.edit(output)
 
-              const currentContent = new Map()
-              currentContent.set('plot', reply.content)
-              this.sessionCache(reply.author.id, currentContent)
-              this.collector.resetTimer()
-              reply.reactions.removeAll()
-              reactionCollector.stop()
-            }
-          })
-        }
-      })
+            const currentContent = new Map()
+            currentContent.set('plot', reply.content)
+            this.sessionCache(reply.author.id, currentContent)
+            this.collector.resetTimer()
+            reply.reactions.removeAll()
+            reactionCollector.stop()
+          }
+        })
+      }
+    })
   }
 }
