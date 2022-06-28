@@ -116,6 +116,7 @@ module.exports = class TextNovel {
         this.reply.edit({ components: [this.buttons] });
         reactionCollector(this.reply, ["✅"]);
       }
+      
       /**
        * @param {Discord.Message} reply - A mensagem base do editor de histórias
        * @param {Array<String>} reactions - As reações a serem adicionadas no menu de reações.
@@ -132,42 +133,40 @@ module.exports = class TextNovel {
           time: 10 * 60 * 1000,
           max: 1,
         });
+        this.reactionCollector = reactionCollector;
 
-        return (this.reactionCollector = reactionCollector.on(
-          "collect",
-          (r) => {
-            if (r.emoji === "📌") {
-              r.remove();
-              r.message.edit(``);
+        return this.reactionCollector.on("collect", (r) => {
+          if (r.emoji === "📌") {
+            r.remove();
+            r.message.edit(``);
 
-              const currentContent = this.contentStream
-                ? new Map("plot", this.contentStream)
-                : new Map().set("plot", reply.content);
-              this.sessionCache(reply.author.id, currentContent);
-              this.collector.resetTimer();
-              reply.reactions.removeAll();
-              reactionCollector.stop();
-            } else if (r.emoji === "➕") {
-              if (!this.contentStream) {
-                this.contentStream = [];
-                this.contentStream.push(reply.content);
-              } else this.contentStream.push(reply.content);
+            const currentContent = this.contentStream
+              ? new Map("plot", this.contentStream)
+              : new Map().set("plot", reply.content);
+            this.sessionCache(reply.author.id, currentContent);
+            this.collector.resetTimer();
+            reply.reactions.removeAll();
+            reactionCollector.stop();
+          } else if (r.emoji === "➕") {
+            if (!this.contentStream) {
+              this.contentStream = [];
+              this.contentStream.push(reply.content);
+            } else this.contentStream.push(reply.content);
 
-              this.reactionCollector.resetTimer();
-            } else if (r.emoji === "✅") {
-              r.remove();
-              r.message.edit(`❤️ Criação de capítulo finalizada!`);
-              this.sessionCache.set("actions", r.message.components);
-              const returnArray = [
-                this.sessionCache.get("plot"),
-                this.sessionCache.get("actions"),
-              ];
-              reply.reactions.removeAll();
-              reactionCollector.stop();
-              return (this.results = returnArray);
-            }
+            this.reactionCollector.resetTimer();
+          } else if (r.emoji === "✅") {
+            r.remove();
+            r.message.edit(`❤️ Criação de capítulo finalizada!`);
+            this.sessionCache.set("actions", r.message.components);
+            const returnArray = [
+              this.sessionCache.get("plot"),
+              this.sessionCache.get("actions"),
+            ];
+            reply.reactions.removeAll();
+            reactionCollector.stop();
+            return (this.results = returnArray);
           }
-        ));
+        });
       }
     });
   }
