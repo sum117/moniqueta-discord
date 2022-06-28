@@ -1,8 +1,8 @@
-const {loadCommands} = require('../util.js')
+const { loadCommands } = require("../util.js");
 module.exports = {
-  name: 'messageCreate',
+  name: "messageCreate",
   /**@param {Message} msg Qualquer mensagem recebida pelo bot.*/
-  async execute (msg) {
-    loadCommands(this.name, msg)
-  }
-}
+  async execute(msg) {
+    loadCommands(this.name, msg);
+  },
+};
