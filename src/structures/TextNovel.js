@@ -107,7 +107,7 @@ module.exports = class TextNovel {
 
     return this.collector.on("collect", async (m) => {
       const stagesCache = this.sessionCache.get(m.author.id);
-
+      console.log(stagesCache)
       if (!stagesCache?.get("plot")) {
         if (!this.reply) this.reply = await m.reply(m.content);
         else this.reply.edit(m.content);
@@ -132,18 +132,18 @@ module.exports = class TextNovel {
     const reactionCollector = reply.createReactionCollector({
       filter,
       time: 10 * 60 * 1000,
+      max: 1
     });
     this.reactionCollector = reactionCollector;
     
-    return this.reactionCollector.on("collect", (r, u) => {
+    return this.reactionCollector.on("collect", (r) => {
       if (r.emoji.name === "📌") {
-        r.remove('📌')
         r.message.edit({content: 'Muito bem, agora digite as alternativas possíveis para o usuário. \n\n ⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.'});
 
         const currentContent = this.contentStream
           ? new Map("plot", this.contentStream)
           : new Map().set("plot", reply.content);
-        this.sessionCache.set(u, currentContent);
+        this.sessionCache.set(this.userId, currentContent);
         this.collector.resetTimer();
         reply.reactions.removeAll();
         reactionCollector.stop();
@@ -157,14 +157,14 @@ module.exports = class TextNovel {
       } else if (r.emoji === "✅") {
         r.remove();
         r.message.edit(`❤️ Criação de capítulo finalizada!`);
-        this.sessionCache.set("actions", r.message.components);
+        this.sessionCache.set(this.userId, [["actions",r.message.components]]);
         const returnArray = [
           this.sessionCache.get("plot"),
           this.sessionCache.get("actions"),
         ];
         reply.reactions.removeAll();
         reactionCollector.stop();
-        this.results = returnArray;
+        return this.results = returnArray;
       }
     });
   }
