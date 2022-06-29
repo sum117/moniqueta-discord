@@ -108,65 +108,63 @@ module.exports = class TextNovel {
     return this.collector.on("collect", async (m) => {
       const stagesCache = this.sessionCache.get(m.author.id);
 
-      if (!stagesCache.get("plot")) {
-        this.reply = await m.reply(m.content);
-        reactionCollector(this.reply, ["📌", "➕"]);
+      if (!stagesCache?.get("plot")) {
+        if (!this.reply) this.reply = await m.reply(m.content);
+        else this.reply.edit(m.content);
+        this.reactions = ["📌", "➕"]
+        this.emojiCollector;
       } else {
         this.setChoices(m.content.split(","));
         this.reply.edit({ components: [this.buttons] });
-        reactionCollector(this.reply, ["✅"]);
+        this.reactions = ["✅"]
+        this.emojiCollector;
       }
-      
-      /**
-       * @param {Discord.Message} reply - A mensagem base do editor de histórias
-       * @param {Array<String>} reactions - As reações a serem adicionadas no menu de reações.
-       * @returns {Discord.ReactionCollector} `Collector` Um coletor de reações
-       */
-      function reactionCollector(reply, reactions = [""]) {
-        reactions.forEach((one, i) =>
-          setTimeout(() => reply.react(one), i * 1000)
-        );
-        const filter = (r) =>
-          r.users.holds(reply.author.id) && r.message.id === reply.id;
-        const reactionCollector = reply.createReactionCollector({
-          filter,
-          time: 10 * 60 * 1000,
-          max: 1,
-        });
-        this.reactionCollector = reactionCollector;
+    });
+  }
+  get emojiCollector() {
+    const reply = this.reply
+    const reactions = this.reactions
+    reactions.forEach((one, i) =>
+      setTimeout(() => reply.react(one), i * 1000)
+    );
+    const filter = (r, u) =>
+       u.id === this.userId && r.message.id === reply.id;
+    const reactionCollector = reply.createReactionCollector({
+      filter,
+      time: 10 * 60 * 1000,
+    });
+    this.reactionCollector = reactionCollector;
+    
+    return this.reactionCollector.on("collect", (r, u) => {
+      if (r.emoji.name === "📌") {
+        r.remove('📌')
+        r.message.edit({content: 'Muito bem, agora digite as alternativas possíveis para o usuário. \n\n ⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.'});
 
-        return this.reactionCollector.on("collect", (r) => {
-          if (r.emoji === "📌") {
-            r.remove();
-            r.message.edit(``);
+        const currentContent = this.contentStream
+          ? new Map("plot", this.contentStream)
+          : new Map().set("plot", reply.content);
+        this.sessionCache.set(u, currentContent);
+        this.collector.resetTimer();
+        reply.reactions.removeAll();
+        reactionCollector.stop();
+      } else if (r.emoji === "➕") {
+        if (!this.contentStream) {
+          this.contentStream = [];
+          this.contentStream.push(reply.content);
+        } else this.contentStream.push(reply.content);
 
-            const currentContent = this.contentStream
-              ? new Map("plot", this.contentStream)
-              : new Map().set("plot", reply.content);
-            this.sessionCache(reply.author.id, currentContent);
-            this.collector.resetTimer();
-            reply.reactions.removeAll();
-            reactionCollector.stop();
-          } else if (r.emoji === "➕") {
-            if (!this.contentStream) {
-              this.contentStream = [];
-              this.contentStream.push(reply.content);
-            } else this.contentStream.push(reply.content);
-
-            this.reactionCollector.resetTimer();
-          } else if (r.emoji === "✅") {
-            r.remove();
-            r.message.edit(`❤️ Criação de capítulo finalizada!`);
-            this.sessionCache.set("actions", r.message.components);
-            const returnArray = [
-              this.sessionCache.get("plot"),
-              this.sessionCache.get("actions"),
-            ];
-            reply.reactions.removeAll();
-            reactionCollector.stop();
-            return (this.results = returnArray);
-          }
-        });
+        this.reactionCollector.resetTimer();
+      } else if (r.emoji === "✅") {
+        r.remove();
+        r.message.edit(`❤️ Criação de capítulo finalizada!`);
+        this.sessionCache.set("actions", r.message.components);
+        const returnArray = [
+          this.sessionCache.get("plot"),
+          this.sessionCache.get("actions"),
+        ];
+        reply.reactions.removeAll();
+        reactionCollector.stop();
+        this.results = returnArray;
       }
     });
   }
