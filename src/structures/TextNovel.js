@@ -97,7 +97,6 @@ module.exports = class TextNovel {
       `❤️ Bem vindo(a) à fabrica de histórias interativas! Vamos começar com o básico. Primeiro, digite um enredo principal para gerar o primeiro capítulo da sua história.`
     );
 
-    console.log("Coletor criado com sucesso.");
     const filter = (m) => m.author.id === this.userId;
     const collector = this.message.channel.createMessageCollector({
       filter,
@@ -107,38 +106,36 @@ module.exports = class TextNovel {
 
     return this.collector.on("collect", async (m) => {
       const stagesCache = this.sessionCache.get(m.author.id);
-      console.log(stagesCache)
       if (!stagesCache?.get("plot")) {
         if (!this.reply) this.reply = await m.reply(m.content);
         else this.reply.edit(m.content);
-        this.reactions = ["📌", "➕"]
+        this.reactions = ["📌", "➕"];
         this.emojiCollector;
       } else {
         this.setChoices(m.content.split(","));
         this.reply.edit({ components: [this.buttons] });
-        this.reactions = ["✅"]
+        this.reactions = ["✅"];
         this.emojiCollector;
       }
     });
   }
   get emojiCollector() {
-    const reply = this.reply
-    const reactions = this.reactions
-    reactions.forEach((one, i) =>
-      setTimeout(() => reply.react(one), i * 1000)
-    );
-    const filter = (r, u) =>
-       u.id === this.userId && r.message.id === reply.id;
+    const reply = this.reply;
+    const reactions = this.reactions;
+    reactions.forEach((one, i) => setTimeout(() => reply.react(one), i * 1000));
+    const filter = (r, u) => u.id === this.userId && r.message.id === reply.id;
     const reactionCollector = reply.createReactionCollector({
       filter,
       time: 10 * 60 * 1000,
-      max: 1
+      max: 1,
     });
     this.reactionCollector = reactionCollector;
-    
+
     return this.reactionCollector.on("collect", (r) => {
       if (r.emoji.name === "📌") {
-        r.message.edit({content: 'Muito bem, agora digite as alternativas possíveis para o usuário. \n\n ⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.'});
+        r.message.edit({
+          content: Discord.Formatters.quote(Discord.Formatters.bold(r.message.content.slice(r.message.content.length > 2000 ? r.message.content.length/2:0))) + "\n\nMuito bem, agora digite as alternativas possíveis para o usuário.\n⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.",
+        });
 
         const currentContent = this.contentStream
           ? new Map("plot", this.contentStream)
@@ -157,14 +154,15 @@ module.exports = class TextNovel {
       } else if (r.emoji === "✅") {
         r.remove();
         r.message.edit(`❤️ Criação de capítulo finalizada!`);
-        this.sessionCache.set(this.userId, [["actions",r.message.components]]);
+        this.sessionCache.set(this.userId, [["actions", r.message.components]]);
         const returnArray = [
           this.sessionCache.get("plot"),
           this.sessionCache.get("actions"),
         ];
         reply.reactions.removeAll();
         reactionCollector.stop();
-        return this.results = returnArray;
+        this.results = returnArray
+        return this.novelFactory()
       }
     });
   }
