@@ -1,5 +1,6 @@
 const { db } = require("../../db");
 const Discord = require("discord.js");
+const {title} = require("../../util")
 module.exports = class PlayCardPlayer {
   /**
    * @param {Discord.ButtonInteraction} interaction - Usuário que teve seu personagem criado
@@ -10,6 +11,7 @@ module.exports = class PlayCardPlayer {
    * @param {String} character.appearance - Aparencia do personagem
    * @param {String} character.avatar - Avatar do personagem
    * @param {('austera'|'perserata'|'insanata'|'equinocio'|'oscuras'|'ehrantos'|'melancus'|'observata'|'invidia')} character.sum - O nome da soma do personagem
+   * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @returns {Promise<Discord.Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
   create(interaction, character = {}) {
@@ -35,31 +37,33 @@ module.exports = class PlayCardPlayer {
       },
     };
     return (async () => {
-      const userId = interaction.message.content.match(/\d{17,19}/);
-      const char = await db.set(userId, {
+      const userId = interaction.message.content.match(/\d{17,19}/)[0];
+      const char = await db.set(`${userId}`, {
         name: character.name,
         gender: character.gender,
         personality: character.personality,
         appearance: character.appearance,
         avatar: character.avatar,
         sum: { name: character.sum, assets: assets.sum[character.sum] },
-        phantom: { name: phantom, assets: assets.phantom[character.phantom] },
+        phantom: { name: character.phantom, assets: {emoji: assets.phantom[character.phantom]} },
       });
-      const membro = (await interaction.guild.members.fetch(userId)).user;
+      const membro = await interaction.guild.members.fetch(userId);
+      console.log(userId)
       const aprovador = interaction.user;
       const canalAprovados = await interaction.guild.channels.fetch(
         "977090263438745620"
       );
       return canalAprovados.send({
-        content: `Ficha de ${membro.username}, aprovada por ${aprovador.username}`,
+        content: `Ficha de ${Discord.Formatters.userMention(membro.user.id)}, aprovada por ${Discord.Formatters.userMention(aprovador.id)}`,
         embeds: [
           new Discord.MessageEmbed()
             .setTitle(char.name)
             .setThumbnail(char.avatar)
-            .setColor(char.assets.color)
+            .setColor(char.sum.assets.color)
+            .setDescription(char.appearance)
             .setAuthor({
-              name: membro.username,
-              iconURL: membro.avatarURL({ dynamic: true, size: 512 }),
+              name: membro.user.username,
+              iconURL: membro.user.avatarURL({ dynamic: true, size: 512 }),
             })
             .addField(
               "Gênero",
@@ -67,11 +71,18 @@ module.exports = class PlayCardPlayer {
                 ? "♂️ Masculino"
                 : char.gender === "Feminino"
                 ? "♀️ Feminino"
-                : "👽 Descubra"
+                : "👽 Descubra",
+                true
             )
             .addField(
               "Purgatório",
-              char.phantom.assets.emoji + " " + char.phantom.name
+              char.phantom.assets.emoji + " " + title(char.phantom.name),
+              true
+            )
+            .addField(
+              "Soma",
+              char.sum.assets.emoji + " " + title(char.sum.name),
+              true
             ),
         ],
       });
