@@ -2,4 +2,5 @@ jsconfig.json
 json.sqlite
 json.replit
 replit.nix
+.replit
 node_modules
