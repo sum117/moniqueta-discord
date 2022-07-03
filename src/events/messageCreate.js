@@ -1,6 +1,4 @@
 const { loadCommands } = require("../util.js");
-const TextNovel = require("../structures/TextNovel.js");
-const { MessageActionRow, MessageButton } = require("discord.js");
 let novel;
 module.exports = {
   name: "messageCreate",
