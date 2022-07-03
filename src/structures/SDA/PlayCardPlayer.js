@@ -14,7 +14,7 @@ module.exports = class PlayCardPlayer {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @returns {Promise<Discord.Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  create(interaction, character = {}) {
+  create(interaction, approvedChannelId, character = {}) {
     const assets = {
       sum: {
         austera: { color: 10517508, emoji: "<:Austeros:982077481702027344>" },
@@ -51,7 +51,7 @@ module.exports = class PlayCardPlayer {
       console.log(userId)
       const aprovador = interaction.user;
       const canalAprovados = await interaction.guild.channels.fetch(
-        "977090263438745620"
+        approvedChannelId
       );
       return canalAprovados.send({
         content: `Ficha de ${Discord.Formatters.userMention(membro.user.id)}, aprovada por ${Discord.Formatters.userMention(aprovador.id)}`,
