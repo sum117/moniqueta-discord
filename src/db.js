@@ -1,3 +1,3 @@
-const Database = require("@replit/database");
-const db = new Database();
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
 exports.db = db;

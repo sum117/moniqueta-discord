@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { db } = require("../db.js");
+const { db } = require("../db");
 module.exports = class TextNovel {
   /**@param {Discord.Message} message - Uma mensagem do Discord.*/
   constructor(message) {
@@ -134,7 +134,17 @@ module.exports = class TextNovel {
     return this.reactionCollector.on("collect", (r) => {
       if (r.emoji.name === "📌") {
         r.message.edit({
-          content: Discord.Formatters.quote(Discord.Formatters.bold(r.message.content.slice(r.message.content.length > 2000 ? r.message.content.length/2:0))) + "\n\nMuito bem, agora digite as alternativas possíveis para o usuário.\n⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.",
+          content:
+            Discord.Formatters.quote(
+              Discord.Formatters.bold(
+                r.message.content.slice(
+                  r.message.content.length > 2000
+                    ? r.message.content.length / 2
+                    : 0
+                )
+              )
+            ) +
+            "\n\nMuito bem, agora digite as alternativas possíveis para o usuário.\n⚠️ Devido às limitações do Discord, é impossível ultrapassar 80 caracteres por opção.",
         });
 
         const currentContent = this.contentStream
@@ -161,8 +171,8 @@ module.exports = class TextNovel {
         ];
         reply.reactions.removeAll();
         reactionCollector.stop();
-        this.results = returnArray
-        return this.novelFactory()
+        this.results = returnArray;
+        return this.novelFactory();
       }
     });
   }
