@@ -1,4 +1,4 @@
-class Economy extends Playcard {
+export class Economy extends Playcard {
   trade(user, target) {}
   inventory(user) {}
   add(user, item = {}) {}

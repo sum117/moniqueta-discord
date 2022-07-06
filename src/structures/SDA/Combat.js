@@ -1,5 +1,4 @@
-//WIP
-class Combat extends PlayCard {
+export class Combat extends PlayCard {
   attack(attacker, target, attackerOptions = {}, targetOptions = {}) {
     function manage(attacker, target, options = attackerOptions) {}
 

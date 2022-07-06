@@ -1,14 +1,16 @@
-const Discord = require("discord.js");
-const PlayCardPlayer = require("../structures/SDA/PlayCardPlayer");
-module.exports = {
+import { ButtonInteraction } from "discord.js";
+import { PlayCardPlayer } from "structures/SDA/PlayCardPlayer";
+
+export default {
   event: "interactionCreate",
   name: "Playcard Testing",
   description: "Um comando produzido para testar a classe do playcard.",
-
-  /**@param {Discord.ButtonInteraction} interaction O botão que executou este comando*/
+  /**@param {ButtonInteraction} interaction - O botão que iniciou esta interação */
   async execute(interaction) {
-    if (interaction.customId !== "testingCommands") return;
-    await interaction.deferReply();
+    const {customId, deferReply, editReply, user} = interaction;
+    
+    if (customId !== "testingCommands") return;
+    await deferReply();
     const char = new PlayCardPlayer();
     await char.create(interaction, "994256052923146250", {
       name: "Anastasia Serperata",
@@ -28,9 +30,9 @@ module.exports = {
       phantom: "branco",
       sum: "perserata",
     });
-    const embed = char.profile(interaction.user);
-    await interaction.editReply({
-      content: `Exibindo perfil do personagem de ${interaction.user.username}`,
+    const embed = char.profile(user);
+    await editReply({
+      content: `Exibindo perfil do personagem de ${user.username}`,
       embeds: [embed],
     });
   },

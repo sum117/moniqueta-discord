@@ -1,7 +1,10 @@
-const Discord = require("discord.js");
-const { db } = require("../db");
-module.exports = class TextNovel {
-  /**@param {Discord.Message} message - Uma mensagem do Discord.*/
+import {Message, MessageButton, MessageActionRow, Formatters} from 'discord.js'
+import { db } from 'db';
+
+const {bold, quote} = Formatters;
+
+export default class TextNovel {
+  /**@param {Message} message - Uma mensagem do Discord.*/
   constructor(message) {
     this.message = message;
     this.userId = message.author.id;
@@ -47,7 +50,7 @@ module.exports = class TextNovel {
   async novelFactory() {
     const novelId = async () => {
       const currentValue = await db.get("novel_counter");
-      const novel = await db.list(`novel_${this.userId}_${novelId}`);
+      const novel = await db.all(`novel_${this.userId}_${novelId}`);
       const entryChecker = Boolean(novel);
       if (!entryChecker) await db.set("novel_counter", currentValue++);
       return await db.get("novel_counter");
@@ -80,12 +83,12 @@ module.exports = class TextNovel {
     const buttons = this.choices.map((possible, index) => {
       if (possible.length > 80)
         throw new Error("Botões podem ter apenas 80 caracteres.");
-      return new Discord.MessageButton()
+      return new MessageButton()
         .setCustomId("choice" + index)
         .setLabel(possible)
         .setStyle("SECONDARY");
     });
-    const row = new Discord.MessageActionRow().addComponents(buttons);
+    const row = new MessageActionRow().addComponents(buttons);
 
     return row;
   }
@@ -135,8 +138,8 @@ module.exports = class TextNovel {
       if (r.emoji.name === "📌") {
         r.message.edit({
           content:
-            Discord.Formatters.quote(
-              Discord.Formatters.bold(
+            quote(
+              bold(
                 r.message.content.slice(
                   r.message.content.length > 2000
                     ? r.message.content.length / 2

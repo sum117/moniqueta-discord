@@ -1,3 +1,3 @@
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
-exports.db = db;
+import {QuickDB} from 'quick.db';
+export const db = new QuickDB();
+

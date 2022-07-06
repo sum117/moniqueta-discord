@@ -1,26 +1,31 @@
-const Discord = require("discord.js");
-const { title } = require("../util.js");
-module.exports = {
+import {MessageActionRow, MessageEmbed, Formatters, MessageButton, Message} from 'discord.js'
+import { title } from 'util.js';
+
+const {userMention} = Formatters;
+
+export default {
   event: "messageCreate",
   name: "Pedra, Papel e Tesoura",
   description: "Um jokenpô simples com botões, em javascript.",
-  /**@param {Discord.Message} msg A mensagem que executou este comando*/
+  /**@param {Message} msg A mensagem que executou este comando*/
+
   async execute(msg) {
+    const {author, mentions, client, reply, channel} = msg;
     let session = new Map();
-    const host = msg.author;
-    const rival = msg.mentions.users.first();
+    const host = author;
+    const rival = mentions.users.first();
     if (!rival)
-      return msg.reply("Você precisa mencionar alguém para jogar rps.");
-    if (rival.id === msg.client.user.id) {
+      return reply("Você precisa mencionar alguém para jogar rps.");
+    if (rival.id === client.user.id) {
       const possibleChoices = ["pedra", "papel", "tesoura"];
       const choice =
         possibleChoices[Math.floor(Math.random() * possibleChoices.length)];
       session.set(rival.id, choice);
     }
     const array = buttons("pedra", "papel", "tesoura");
-    let buttonRow = new Discord.MessageActionRow().addComponents(array);
+    let buttonRow = new MessageActionRow().addComponents(array);
 
-    const embed = new Discord.MessageEmbed()
+    const embed = new MessageEmbed()
       .setAuthor({
         name: host.username,
         iconURL: host.avatarURL({ dynamic: true, size: 512 }),
@@ -30,12 +35,12 @@ module.exports = {
       .addField(host.username, "Aguardando escolha...", true)
       .addField(
         rival.username,
-        rival.id === msg.client.user.id
+        rival.id === client.user.id
           ? "Moniqueta já escolheu!"
           : "Aguardando escolha...",
         true
       );
-    const game = await msg.channel.send({
+    const game = await channel.send({
       content: `Pedra, Papel e Tesoura entre ${host} e ${rival} invocado!`,
       embeds: [embed],
       components: [buttonRow],
@@ -74,7 +79,7 @@ module.exports = {
           )} \n**${rival.username}** escolheu: ${title(session.get(rival.id))}`;
           return button.update({
             content:
-              Discord.Formatters.userMention(
+              userMention(
                 compare === current
                   ? button.user.id
                   : session.keys().next().value
@@ -108,7 +113,7 @@ module.exports = {
       };
       if (options.constructor !== Array) options = Array.from(arguments);
       return options.map((value) => {
-        return new Discord.MessageButton()
+        return new MessageButton()
           .setCustomId(value)
           .setStyle("PRIMARY")
           .setLabel(value.charAt(0).toUpperCase() + value.slice(1))
