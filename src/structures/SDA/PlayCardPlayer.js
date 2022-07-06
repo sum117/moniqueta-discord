@@ -1,6 +1,6 @@
 const { db } = require("../../db");
 const Discord = require("discord.js");
-const {title} = require("../../util")
+const { title } = require("../../util");
 module.exports = class PlayCardPlayer {
   /**
    * @param {Discord.ButtonInteraction} interaction - Usuário que teve seu personagem criado
@@ -45,16 +45,21 @@ module.exports = class PlayCardPlayer {
         appearance: character.appearance,
         avatar: character.avatar,
         sum: { name: character.sum, assets: assets.sum[character.sum] },
-        phantom: { name: character.phantom, assets: {emoji: assets.phantom[character.phantom]} },
+        phantom: {
+          name: character.phantom,
+          assets: { emoji: assets.phantom[character.phantom] },
+        },
       });
       const membro = await interaction.guild.members.fetch(userId);
-      console.log(userId)
+      console.log(userId);
       const aprovador = interaction.user;
       const canalAprovados = await interaction.guild.channels.fetch(
         approvedChannelId
       );
       return canalAprovados.send({
-        content: `Ficha de ${Discord.Formatters.userMention(membro.user.id)}, aprovada por ${Discord.Formatters.userMention(aprovador.id)}`,
+        content: `Ficha de ${Discord.Formatters.userMention(
+          membro.user.id
+        )}, aprovada por ${Discord.Formatters.userMention(aprovador.id)}`,
         embeds: [
           new Discord.MessageEmbed()
             .setTitle(char.name)
@@ -72,7 +77,7 @@ module.exports = class PlayCardPlayer {
                 : char.gender === "Feminino"
                 ? "♀️ Feminino"
                 : "👽 Descubra",
-                true
+              true
             )
             .addField(
               "Purgatório",
