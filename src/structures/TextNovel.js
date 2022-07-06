@@ -59,7 +59,7 @@ module.exports = class TextNovel {
        * @type {Array}
        * @constant routes Uma matriz contendo todas as rotas da novel.
        */
-      const routes = await db.list(`novel_${this.userId}_${id}_`);
+      const routes = await db.all(`novel_${this.userId}_${id}_`);
       if (!routes)
         await db.set(`novel_${this.userId}_${id}_root` /* Add stuff here */);
 

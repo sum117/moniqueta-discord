@@ -37,26 +37,33 @@ function loadCommands(event, ...args) {
     .readdirSync(path)
     .filter((file) => file.endsWith(".js"));
 
-  if (event === "messageCreate") {
-    /**
-     * @type {Discord.Message}
-     * @constant msg A mensagem recebida no evento.
-     */
-    const msg = args[0];
+  switch (event) {
+    case "messageCreate":
+      /**
+       * @type {Discord.Message}
+       * @constant msg A mensagem recebida no evento.
+       */
+      const msg = args[0];
 
-    if (msg.content.startsWith(prefix)) {
-      const arguments = msg.content.slice(1).split(/ +/);
-      const name = arguments[0];
-      const command = commandFiles.find((e) => e === `${name}.js`);
-      if (command) require(`${path}/${command}`).execute(msg, arguments);
-      else msg.reply("❌ Não encontrei o comando que você tentou executar.");
-    }
-    const prefixlessPath = join(__dirname, "commands", "prefixless");
-    fs.readdirSync(prefixlessPath)
-      .filter((file) => file.endsWith(".js"))
-      .forEach((file) => {
-        const command = require(`${prefixlessPath}/${file}`);
-        command.execute(msg);
-      });
+      if (msg.content.startsWith(prefix)) {
+        const arguments = msg.content.slice(1).split(/ +/);
+        const name = arguments[0];
+        const command = commandFiles.find((e) => e === `${name}.js`);
+        if (command) require(`${path}/${command}`).execute(msg, arguments);
+        else msg.reply("❌ Não encontrei o comando que você tentou executar.");
+      }
+      const prefixlessPath = join(__dirname, "commands", "prefixless");
+      fs.readdirSync(prefixlessPath)
+        .filter((file) => file.endsWith(".js"))
+        .forEach((file) => {
+          const command = require(`${prefixlessPath}/${file}`);
+          command.execute(msg);
+        });
+      break;
+
+    case "interactionCreate":
+      const command = commandFiles.find((c) => c.startsWith("button."));
+      if (command) require(`${path}/${command}`).execute(...args);
+      break;
   }
 }

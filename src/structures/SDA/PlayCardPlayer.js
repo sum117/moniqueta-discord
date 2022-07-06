@@ -37,7 +37,11 @@ module.exports = class PlayCardPlayer {
       },
     };
     return (async () => {
-      const userId = interaction.message.content.match(/\d{17,19}/)[0];
+      const userId = (() => {
+        const [userId] = interaction.message.content.match(/\d{17,19}/) ?? [];
+        if (!userId) return interaction.user.id;
+        else return userId;
+      })();
       const char = await db.set(`${userId}`, {
         name: character.name,
         gender: character.gender,
@@ -48,6 +52,11 @@ module.exports = class PlayCardPlayer {
         phantom: {
           name: character.phantom,
           assets: { emoji: assets.phantom[character.phantom] },
+        },
+        status: {
+          health: 100,
+          mana: 50,
+          stamina: 50,
         },
       });
       const membro = await interaction.guild.members.fetch(userId);
@@ -93,7 +102,37 @@ module.exports = class PlayCardPlayer {
       });
     })();
   }
-  /* profile(user) {}
+  profile(user) {
+    return async () => {
+      const { name, avatar, sum, appearance, chosenTrophy, status } =
+        await db.get(`${user.id}`);
+      const { health, mana, stamina } = status;
+      return new Discord.MessageEmbed()
+        .setTitle(name)
+        .setThumbnail(avatar)
+        .setColor(sum.assets.color)
+        .setDescription(appearance)
+        .setAuthor({
+          name: chosenTrophy?.name ? chosenTrophy : user.username,
+          iconURL: chosenTrophy?.avatar
+            ? chosenTrophy?.avatar
+            : user.avatarURL({ dynamic: true, size: 512 }),
+        })
+        .setDescription(
+          `${
+            appearance
+              ? appearance
+              : "O personagem em questão não possui descrição alguma."
+          }\n\n${[
+            "❤️ " + statusBar(health),
+            "🧠 " + statusBar(mana),
+            "🏃‍♂️ " + statusBar(stamina),
+          ].join("\n")}`
+        );
+    };
+  }
+};
+/*
     interact(user, action, message) {
         const package = {
             title:,
@@ -110,4 +149,18 @@ module.exports = class PlayCardPlayer {
     comment(target, message) {}
     show(target) {}
     list(user) {} */
-};
+
+/**
+ * @function
+ * @author Milo123459<https://github.com/Milo123459>
+ * @description This progress bar logic was copied from <https://github.com/Sparker-99/string-progressbar/blob/master/index.js>, a NPM package by Sparker-99.
+ */
+function statusBar(current, total) {
+  let percentage = current / total;
+  let progress = Math.round(10 * percentage);
+  let emptyProgress = 10 - progress;
+  let progressText = "🟩".repeat(progress);
+  let emptyProgressText = "🟥".repeat(emptyProgress);
+  let bar = progressText + emptyProgressText;
+  return `${bar} ${current}`;
+}
