@@ -1,7 +1,6 @@
-import {fs}  from 'fs';
-import {join} from 'path'
+import fs from 'fs';
 import {Client, Message} from 'discord.js'
-
+export const prefix = process.env.PREFIX;
 export const token = process.env.TOKEN;
 
 
@@ -10,7 +9,7 @@ export const token = process.env.TOKEN;
    * @param {Client} client O cliente do bot.
    * @param {Array<{name: String, once: Boolean}>} events os eventos que serão utilizados pelo bot.
    */
-  export function loadEvents(client, events = [{ name: "", once: false }]) {
+  export async function loadEvents(client, events = [{ name: "", once: false }]) {
     events.map(({ name, once }) => {
       if (once) client.once(name, (...args) => loadCommands(name, ...args));
       else client.on(name, (...args) => loadCommands(name, ...args));
@@ -44,10 +43,10 @@ export const token = process.env.TOKEN;
  * @param {String} event O nome do evento que executou este comando.
  * @param {Array} ...args Os argumentos do evento. Variam de um para outro.
  */
-function loadCommands(event, ...args) {
-  const path = join(__dirname, "commands");
+async function loadCommands(event, ...args) {
+
   const commandFiles = fs
-    .readdirSync(path)
+    .readdirSync("src/commands")
     .filter((file) => file.endsWith(".js"));
 
   switch (event) {
@@ -62,21 +61,19 @@ function loadCommands(event, ...args) {
         const args = msg.content.slice(1).split(/ +/);
         const name = args[0];
         const command = commandFiles.find((e) => e === `${name}.js`);
-        if (command) import(`${path}/${command}`).execute(msg, args);
+        if (command) (await import("./commands/" + command)).default.execute(msg, args);
         else msg.reply("❌ Não encontrei o comando que você tentou executar.");
       }
-      const prefixlessPath = join(__dirname, "commands", "prefixless");
-      fs.readdirSync(prefixlessPath)
+      fs.readdirSync("src/commands/prefixless")
         .filter((file) => file.endsWith(".js"))
-        .forEach((file) => {
-          const command = import(`${prefixlessPath}/${file}`);
-          command.execute(msg);
+        .forEach(async (file) => {
+          (await import("./commands/prefixless/" + file)).default.execute(msg);
         });
       break;
 
     case "interactionCreate":
       const command = commandFiles.find((c) => c.startsWith("button."));
-      if (command) import(`${path}/${command}`).execute(...args);
+      if (command) (await import("./commands/" + command)).default.execute(...args);
       break;
   }
 }

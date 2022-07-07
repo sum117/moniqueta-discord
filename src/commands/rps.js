@@ -1,5 +1,5 @@
 import {MessageActionRow, MessageEmbed, Formatters, MessageButton, Message} from 'discord.js'
-import { title } from 'util.js';
+import { title } from '../util.js';
 
 const {userMention} = Formatters;
 
@@ -10,12 +10,12 @@ export default {
   /**@param {Message} msg A mensagem que executou este comando*/
 
   async execute(msg) {
-    const {author, mentions, client, reply, channel} = msg;
+    const {author, mentions, client, channel} = msg;
     let session = new Map();
     const host = author;
     const rival = mentions.users.first();
     if (!rival)
-      return reply("Você precisa mencionar alguém para jogar rps.");
+      return msg.reply("Você precisa mencionar alguém para jogar rps.");
     if (rival.id === client.user.id) {
       const possibleChoices = ["pedra", "papel", "tesoura"];
       const choice =

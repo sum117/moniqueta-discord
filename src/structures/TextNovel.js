@@ -1,5 +1,5 @@
 import {Message, MessageButton, MessageActionRow, Formatters} from 'discord.js'
-import { db } from 'db';
+import { db } from '../db.js';
 
 const {bold, quote} = Formatters;
 

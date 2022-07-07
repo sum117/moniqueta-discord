@@ -1,6 +1,6 @@
 import {ButtonInteraction, Message, Formatters, MessageEmbed} from 'discord.js'
-import { db } from '../../db';
-import {title, statusBar} from '../../util';
+import { db } from '../../db.js';
+import {title, statusBar} from '../../util.js';
 
 const {userMention} = Formatters;
 

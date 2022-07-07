@@ -6,8 +6,8 @@ export default {
   description: "O bot dirá olá. Comando feito por razões de teste.",
 
   /**@param {Message} msg A mensagem que executou este comando*/
-  execute({reply}) {
-    reply({
+  execute(msg) {
+    msg.reply({
       content:
         "Olá! Está testando algum comando? Se sim, aperte no botão abaixo.",
       components: [

@@ -8,15 +8,17 @@ const client = new Client({
 
 
 client.once("ready", async () => {
+  console.log("Moniqueta pronta.")
   loadEvents(client, [
     { once: true, name: "ready" },
     { name: "messageCreate" },
   ]);
   const channel = client.channels.cache.get("994256052923146250");
   const collection = await channel.messages.fetch();
-  while (collection) {
+  while (collection.size > 1) {
     await channel.bulkDelete(collection);
   }
+
 });
 
 process.on("unhandledRejection", (e) => {
@@ -24,3 +26,4 @@ process.on("unhandledRejection", (e) => {
 });
 
 client.login(token);
+
