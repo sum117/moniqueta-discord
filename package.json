@@ -13,8 +13,8 @@
   },
   "scripts": {
     "prettier": "prettier --write \"./**/*.{js,jsx,json}\"",
-    "moniqueta": "node src/index.js",
-    "devMoniqueta": "nodemon src/index.js"
+    "moniqueta": "node .",
+    "devMoniqueta": "nodemon ."
   },
   "devDependencies": {
     "node": "^16.15.1"
