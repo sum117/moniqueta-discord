@@ -1,7 +1,12 @@
-import {Message, MessageButton, MessageActionRow, Formatters} from 'discord.js'
-import { db } from '../db.js';
+import {
+  Message,
+  MessageButton,
+  MessageActionRow,
+  Formatters,
+} from "discord.js";
+import { db } from "../db.js";
 
-const {bold, quote} = Formatters;
+const { bold, quote } = Formatters;
 
 export default class TextNovel {
   /**@param {Message} message - Uma mensagem do Discord.*/
@@ -179,4 +184,4 @@ export default class TextNovel {
       }
     });
   }
-};
+}

@@ -1,7 +1,13 @@
-import {MessageActionRow, MessageEmbed, Formatters, MessageButton, Message} from 'discord.js'
-import { title } from '../util.js';
+import {
+  MessageActionRow,
+  MessageEmbed,
+  Formatters,
+  MessageButton,
+  Message,
+} from "discord.js";
+import { title } from "../util.js";
 
-const {userMention} = Formatters;
+const { userMention } = Formatters;
 
 export default {
   event: "messageCreate",
@@ -10,7 +16,7 @@ export default {
   /**@param {Message} msg A mensagem que executou este comando*/
 
   async execute(msg) {
-    const {author, mentions, client, channel} = msg;
+    const { author, mentions, client, channel } = msg;
     let session = new Map();
     const host = author;
     const rival = mentions.users.first();

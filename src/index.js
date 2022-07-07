@@ -1,14 +1,13 @@
-import {Client} from 'discord.js';
-import { loadEvents } from './util.js';
-import { token } from './util.js';
+import { Client } from "discord.js";
+import { loadEvents } from "./util.js";
+import { token } from "./util.js";
 
 const client = new Client({
   intents: 32767,
 });
 
-
 client.once("ready", async () => {
-  console.log("Moniqueta pronta.")
+  console.log("Moniqueta pronta.");
   loadEvents(client, [
     { once: true, name: "ready" },
     { name: "messageCreate" },
@@ -18,7 +17,6 @@ client.once("ready", async () => {
   while (collection.size > 1) {
     await channel.bulkDelete(collection);
   }
-
 });
 
 process.on("unhandledRejection", (e) => {
@@ -26,4 +24,3 @@ process.on("unhandledRejection", (e) => {
 });
 
 client.login(token);
-

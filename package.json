@@ -1,7 +1,7 @@
 {
   "name": "moniqueta-discordjs",
   "version": "1.0.0",
-  "type":"module",
+  "type": "module",
   "main": "src/index.js",
   "keywords": [],
   "author": "sum117",

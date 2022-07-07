@@ -1,8 +1,13 @@
-import {ButtonInteraction, Message, Formatters, MessageEmbed} from 'discord.js'
-import { db } from '../../db.js';
-import {title, statusBar} from '../../util.js';
+import {
+  ButtonInteraction,
+  Message,
+  Formatters,
+  MessageEmbed,
+} from "discord.js";
+import { db } from "../../db.js";
+import { title, statusBar } from "../../util.js";
 
-const {userMention} = Formatters;
+const { userMention } = Formatters;
 
 const assets = {
   sum: {
@@ -39,9 +44,10 @@ export class PlayCardPlayer {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @returns {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  create({message, user, guild}, approvedChannelId, character = {}) {
-    const {name, gender, personality, appearance, avatar, sum, phantom} = character;
-    const {members, channels} = guild
+  create({ message, user, guild }, approvedChannelId, character = {}) {
+    const { name, gender, personality, appearance, avatar, sum, phantom } =
+      character;
+    const { members, channels } = guild;
 
     return (async () => {
       const userId = (() => {
@@ -69,9 +75,7 @@ export class PlayCardPlayer {
       const membro = await members.fetch(userId);
       console.log(userId);
       const aprovador = user;
-      const canalAprovados = await channels.fetch(
-        approvedChannelId
-      );
+      const canalAprovados = await channels.fetch(approvedChannelId);
       return canalAprovados.send({
         content: `Ficha de ${userMention(
           membro.user.id
@@ -100,11 +104,7 @@ export class PlayCardPlayer {
               phantom.assets.emoji + " " + title(phantom.name),
               true
             )
-            .addField(
-              "Soma",
-              sum.assets.emoji + " " + title(sum.name),
-              true
-            ),
+            .addField("Soma", sum.assets.emoji + " " + title(sum.name), true),
         ],
       });
     })();
@@ -138,7 +138,7 @@ export class PlayCardPlayer {
         );
     };
   }
-};
+}
 /*
     interact(user, action, message) {
         const package = {
@@ -156,5 +156,3 @@ export class PlayCardPlayer {
     comment(target, message) {}
     show(target) {}
     list(user) {} */
-
-
