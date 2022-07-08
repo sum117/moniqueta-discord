@@ -6,6 +6,7 @@ import {
   MessageActionRow,
   MessageButton,
   CommandInteraction,
+  Interaction,
 } from "discord.js";
 import { db } from "../../db.js";
 import { title, statusBar } from "../../util.js";
@@ -32,8 +33,8 @@ const assets = {
 };
 
 export class PlayCardPlayer {
+  /**@param {Interaction} interaction  */
   constructor() {
-    this.cache = new Map();
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar) {
@@ -211,7 +212,7 @@ export class PlayCardPlayer {
   async interact(interaction, action, content = "") {
     const {user, channel} = interaction;
 
-    const db = await this.character(interaction, user);
+    const data = await this.character(interaction, user);
 
     const {
       name,
@@ -225,19 +226,20 @@ export class PlayCardPlayer {
       equipment,
       money,
       inCombat,
-    } = db;
+    } = data;
     const { health, mana, stamina } = status;
 
     switch (action) {
       case "send":
-        return this.cache.set(
-          user.id, 
-          await send()
-        );
+        return await db.set(user.id + '.latestMessage', `${(await send()).id}`)
       case "edit":
-        return edit(this.cache.get(user.id));
+        return edit(
+          await db.get(user.id + '.latestMessage')
+        )
       case "remove":
-        return remove(this.cache.get(user.id));
+        return remove(
+          content ? content:await db.get(user.id + '.latestMessage')
+        )
     }
 
     async function send() {
@@ -257,27 +259,33 @@ export class PlayCardPlayer {
           components: [
             new MessageActionRow().addComponents(
               new MessageButton()
-                .setCustomId(`comentar_${user.id}`)
-                .setEmoji("💬")
-                .setLabel("Comentar")
-                .setStyle("PRIMARY"),
-              new MessageButton()
                 .setCustomId(`interagir_${user.id}_${name}`)
                 .setEmoji("🖐️")
                 .setLabel("Interagir")
-                .setStyle("PRIMARY")
+                .setStyle("SECONDARY")
             ),
           ],
         })
       )
     }
-    function edit(msg) {
-      if (!msg) throw interaction.reply("Não há nenhuma mensagem para editar.");
-      return await msg.edit({content: content})
+    async function edit(msgId) {
+      console.log(msgId)
+      if (!msgId) throw new Error("Não foi possível encontrar a mensagem para ser editada");
+      const embed = await (await channel.messages.fetch(msgId)).embeds[0]
+      embed.setDescription(content)
+      return await channel.messages.edit(msgId, {
+        embeds: [
+          embed
+        ]
+      });
     }
-    function remove(msg) {
-      if (!msg) throw interaction.reply("Não há nenhuma mensagem para remover.");
-      return await msg.delete()
+    async function remove(msgId) {
+      if (!msgId) throw interaction[interaction.deferred ? 'editReply':'reply']({
+        ephemeral: true,
+        content: `Não foi possível encontrar a mensagem para ser removida`
+      });
+      if (msgId === await db.get(user.id + '.latestMessage')) db.delete(user.id + '.latestMessage')
+      return await channel.messages.delete(msgId);
     }
   }
 

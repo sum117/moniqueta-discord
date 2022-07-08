@@ -47,7 +47,8 @@ export async function registerSlashCommands(client, guildId) {
       const slashCommand = (
         await import("./commands/" + file)
       ).default.data.toJSON();
-      client.application.commands.set([slashCommand], guildId);
+      client.application.commands.set([])
+      await (await client.guilds.fetch(guildId)).commands.set([slashCommand])
     });
 }
 /**

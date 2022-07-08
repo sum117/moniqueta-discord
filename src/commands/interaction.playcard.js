@@ -40,7 +40,7 @@ export default {
         )
         .addStringOption((option) =>
           option
-            .setName("id")
+            .setName("link")
             .setDescription("Link ou id da mensagem a ser removida")
             .setRequired(false)
         )
@@ -58,7 +58,9 @@ export default {
         content: "Playcard editado com sucesso!",
       });
     } else if (interaction.options.getSubcommand() === "remover") {
-      await char.interact(interaction, "remove");
+      let MsgToRemove = interaction.options.getString("link");
+      let match = MsgToRemove ? MsgToRemove.match(/(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/): null;
+      await char.interact(interaction, "remove", match?.groups.msg ? match?.groups.msg : undefined);
       interaction.editReply({
         ephemeral: true,
         content: "Mensagem removida com sucesso!",
