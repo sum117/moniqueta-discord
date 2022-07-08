@@ -1,26 +1,25 @@
 import { Client } from "discord.js";
-import { loadEvents } from "./util.js";
+import { loadEvents, registerSlashCommands } from "./util.js";
 import { token } from "./util.js";
 
-const client = new Client({
+const moniqueta = new Client({
   intents: 32767,
 });
 
-client.once("ready", async () => {
+moniqueta.once("ready", async () => {
   console.log("Moniqueta pronta.");
-  loadEvents(client, [
+  
+  const sDAGuild = moniqueta.guilds.cache.get("976870103125733388");
+  registerSlashCommands(moniqueta, sDAGuild.id)
+  loadEvents(moniqueta, [
     { once: true, name: "ready" },
     { name: "messageCreate" },
+    { name: "interactionCreate" },
   ]);
-  const channel = client.channels.cache.get("994256052923146250");
-  const collection = await channel.messages.fetch();
-  while (collection.size > 1) {
-    await channel.bulkDelete(collection);
-  }
 });
 
 process.on("unhandledRejection", (e) => {
   console.log(e);
 });
 
-client.login(token);
+moniqueta.login(token);
