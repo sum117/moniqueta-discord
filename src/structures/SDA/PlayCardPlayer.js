@@ -32,6 +32,21 @@ const assets = {
 };
 
 export class PlayCardPlayer {
+  constructor() {
+    this.character = async (interaction, user) => {
+      const chosenChar = await db.get(`${user.id}.chosenChar`)
+      if (!chosenChar) {
+        throw (
+          await interaction.reply({
+            ephemeral: true,
+            content: `Não há nenhum personagem criado ou selecionado para ${user.id === interaction.user.id ? 'você' : 
+          user}`,
+          }),
+          new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id)
+        )
+      } else return await db.get(`${user.id}.chars.${chosenChar}`);
+    }
+  }
   /**
    * @param {ButtonInteraction} - Usuário que teve seu personagem criado
    * @param {Object} character - Objeto que contém todas as informações do personagem
