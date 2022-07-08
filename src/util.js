@@ -40,12 +40,13 @@ export function statusBar(current, total, fill, empty) {
 /**@param {Client} client - Um cliente do Discord */
 export async function registerSlashCommands(client, guildId) {
   fs.readdirSync("src/commands")
-    .filter((file) => file.startsWith('slash.'))
-    .forEach((async file => {
-      const slashCommand = (await import("./commands/" + file)).default.data.toJSON()
-      client.application.commands.set([slashCommand], guildId)
-    })
-    );
+    .filter((file) => file.startsWith("slash."))
+    .forEach(async (file) => {
+      const slashCommand = (
+        await import("./commands/" + file)
+      ).default.data.toJSON();
+      client.application.commands.set([slashCommand], guildId);
+    });
 }
 /**
  * @description Roda os comandos do bot. Deve ser colocado nos eventos.
@@ -86,12 +87,17 @@ async function loadCommands(event, ...args) {
        */
       const interaction = args[0];
       let file;
-      if (interaction.isCommand()) 
-        file = commandFiles.find((command) => command === `interaction.${interaction.commandName}.js`);
-      else 
-        file = commandFiles.find((action) => action.startsWith(`interaction.${interaction.customId}`));
-        if (!file) throw new Error(`Não encontrei o comando ${interaction.customId}`);
-        (await import("./commands/" + file)).default.execute(...args);
+      if (interaction.isCommand())
+        file = commandFiles.find(
+          (command) => command === `interaction.${interaction.commandName}.js`
+        );
+      else
+        file = commandFiles.find((action) =>
+          action.startsWith(`interaction.${interaction.customId}`)
+        );
+      if (!file)
+        throw new Error(`Não encontrei o comando ${interaction.customId}`);
+      (await import("./commands/" + file)).default.execute(...args);
       break;
   }
 }

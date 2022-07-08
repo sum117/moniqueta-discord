@@ -7,7 +7,7 @@ export default {
   description: "Um comando produzido para testar a classe do playcard.",
   /**@param {ButtonInteraction} interaction - O botão que iniciou esta interação */
   async execute(interaction) {
-    const {  user } = interaction;
+    const { user } = interaction;
     await interaction.deferReply();
     const char = new PlayCardPlayer();
     await char.create(interaction, "994256052923146250", {

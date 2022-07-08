@@ -34,18 +34,22 @@ const assets = {
 export class PlayCardPlayer {
   constructor() {
     this.character = async (interaction, user) => {
-      const chosenChar = await db.get(`${user.id}.chosenChar`)
+      const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar) {
         throw (
-          await interaction.reply({
+          (await interaction.reply({
             ephemeral: true,
-            content: `Não há nenhum personagem criado ou selecionado para ${user.id === interaction.user.id ? 'você' : 
-          user}`,
+            content: `Não há nenhum personagem criado ou selecionado para ${
+              user.id === interaction.user.id ? "você" : user
+            }`,
           }),
-          new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id)
-        )
+          new Error(
+            "Erro de personagem não criado ou selecionado acionado por: " +
+              user.id
+          ))
+        );
       } else return await db.get(`${user.id}.chars.${chosenChar}`);
-    }
+    };
   }
   /**
    * @param {ButtonInteraction} - Usuário que teve seu personagem criado
@@ -69,10 +73,10 @@ export class PlayCardPlayer {
       if (!userId) return user.id;
       else return userId;
     })();
-    const id = await db.get(`${userId}.chars.count`) ?? 0;
+    const id = (await db.get(`${userId}.chars.count`)) ?? 0;
     await db.set(`${userId}`, {
-      chosenChar: id ? id : '1',
-      count: id ? id + 1:1,
+      chosenChar: id ? id : "1",
+      count: id ? id + 1 : 1,
       chars: {
         [id ? toString(id + 1) : "1"]: {
           name: name,
@@ -91,7 +95,7 @@ export class PlayCardPlayer {
             stamina: 50,
           },
         },
-      }
+      },
     });
     const membro = await members.fetch(userId);
     const aprovador = user;
@@ -116,8 +120,8 @@ export class PlayCardPlayer {
             gender === "Masculino"
               ? "♂️ Masculino"
               : gender === "Feminino"
-                ? "♀️ Feminino"
-                : "👽 Descubra",
+              ? "♀️ Feminino"
+              : "👽 Descubra",
             true
           )
           .addField(
@@ -131,7 +135,7 @@ export class PlayCardPlayer {
   }
 
   async profile(interaction, user) {
-    const db = await this.character(interaction, user)
+    const db = await this.character(interaction, user);
     const {
       name,
       avatar,
@@ -157,38 +161,38 @@ export class PlayCardPlayer {
         (appearance
           ? appearance
           : "O personagem em questão não possui descrição alguma.") +
-        "\n\n" +
-        [
-          "❤️ " +
-          statusBar(
-            30,
-            health,
-            "<:barLife:994630714312106125>",
-            "<:BarEmpty:994631056378564750>"
-          ),
-          "🧠 " +
-          statusBar(
-            10,
-            mana,
-            "<:barEnergy:994630956180840529>",
-            "<:BarEmpty:994631056378564750>"
-          ),
-          "🏃‍♂️ " +
-          statusBar(
-            20,
-            stamina,
-            "<:barVigor:994630903181615215>",
-            "<:BarEmpty:994631056378564750>"
-          ),
-        ].join("  ")
+          "\n\n" +
+          [
+            "❤️ " +
+              statusBar(
+                30,
+                health,
+                "<:barLife:994630714312106125>",
+                "<:BarEmpty:994631056378564750>"
+              ),
+            "🧠 " +
+              statusBar(
+                10,
+                mana,
+                "<:barEnergy:994630956180840529>",
+                "<:BarEmpty:994631056378564750>"
+              ),
+            "🏃‍♂️ " +
+              statusBar(
+                20,
+                stamina,
+                "<:barVigor:994630903181615215>",
+                "<:BarEmpty:994631056378564750>"
+              ),
+          ].join("  ")
       )
       .addField(
         "Genero",
         gender === "Masculino"
           ? "♂️ Masculino"
           : gender === "Feminino"
-            ? "♀️ Feminino"
-            : "👽 Descubra",
+          ? "♀️ Feminino"
+          : "👽 Descubra",
         true
       )
       .addField("Soma", sum.assets.emoji + " " + title(sum.name), true)
@@ -203,19 +207,19 @@ export class PlayCardPlayer {
    * @param {Message | CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    */
-  async interact(interaction, action, content = '') {
+  async interact(interaction, action, content = "") {
     // Eu fiz esse parser caso um dia desejasse disponibilizar o uso de mensagens para este comando ao invés de apenas interações. Por enquanto, não estou usando isso. Mas se quiser, pode fazer, e lembre de modificar a descrição do embed retornado da função send.
-    let author, channel
+    let author, channel;
     if (typeof interaction === Message) {
       author = interaction.author;
       channel = interaction.channel;
       content = interaction.content;
     } else {
-      author = interaction.user
-      channel = interaction.channel
+      author = interaction.user;
+      channel = interaction.channel;
     }
 
-    const db = await this.character(interaction, author)
+    const db = await this.character(interaction, author);
 
     const {
       name,
@@ -271,8 +275,8 @@ export class PlayCardPlayer {
       });
     }
 
-    function edit() { }
-    function remove() { }
+    function edit() {}
+    function remove() {}
   }
 
   /*
