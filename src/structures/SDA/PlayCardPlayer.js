@@ -33,6 +33,7 @@ const assets = {
 
 export class PlayCardPlayer {
   constructor() {
+    this.cache = new Map();
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar) {
@@ -204,22 +205,13 @@ export class PlayCardPlayer {
   }
   /**
    *
-   * @param {Message | CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
+   * @param {CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    */
   async interact(interaction, action, content = "") {
-    // Eu fiz esse parser caso um dia desejasse disponibilizar o uso de mensagens para este comando ao invés de apenas interações. Por enquanto, não estou usando isso. Mas se quiser, pode fazer, e lembre de modificar a descrição do embed retornado da função send.
-    let author, channel;
-    if (typeof interaction === Message) {
-      author = interaction.author;
-      channel = interaction.channel;
-      content = interaction.content;
-    } else {
-      author = interaction.user;
-      channel = interaction.channel;
-    }
+    const {user, channel} = interaction;
 
-    const db = await this.character(interaction, author);
+    const db = await this.character(interaction, user);
 
     const {
       name,
@@ -238,45 +230,55 @@ export class PlayCardPlayer {
 
     switch (action) {
       case "send":
-        return send();
+        return this.cache.set(
+          user.id, 
+          await send()
+        );
       case "edit":
-        return edit();
+        return edit(this.cache.get(user.id));
       case "remove":
-        return remove();
+        return remove(this.cache.get(user.id));
     }
 
-    function send() {
-      return channel.send({
-        embeds: [
-          new MessageEmbed()
-            .setTitle(name)
-            .setThumbnail(avatar)
-            .setColor(sum.assets.color)
-            .setDescription(content)
-            .setFooter({
-              text: author.username,
-              iconURL: author.avatarURL({ dynamic: true, size: 512 }),
-            }),
-        ],
-        components: [
-          new MessageActionRow().addComponents(
-            new MessageButton()
-              .setCustomId(`comentar_${author.id}`)
-              .setEmoji("💬")
-              .setLabel("Comentar")
-              .setStyle("PRIMARY"),
-            new MessageButton()
-              .setCustomId(`interagir_${author.id}_${name}`)
-              .setEmoji("🖐️")
-              .setLabel("Interagir")
-              .setStyle("PRIMARY")
-          ),
-        ],
-      });
+    async function send() {
+      return (
+          await channel.send({
+          embeds: [
+            new MessageEmbed()
+              .setTitle(name)
+              .setThumbnail(avatar)
+              .setColor(sum.assets.color)
+              .setDescription(content)
+              .setFooter({
+                text: user.username,
+                iconURL: user.avatarURL({ dynamic: true, size: 512 }),
+              }),
+          ],
+          components: [
+            new MessageActionRow().addComponents(
+              new MessageButton()
+                .setCustomId(`comentar_${user.id}`)
+                .setEmoji("💬")
+                .setLabel("Comentar")
+                .setStyle("PRIMARY"),
+              new MessageButton()
+                .setCustomId(`interagir_${user.id}_${name}`)
+                .setEmoji("🖐️")
+                .setLabel("Interagir")
+                .setStyle("PRIMARY")
+            ),
+          ],
+        })
+      )
     }
-
-    function edit() {}
-    function remove() {}
+    function edit(msg) {
+      if (!msg) throw interaction.reply("Não há nenhuma mensagem para editar.");
+      return await msg.edit({content: content})
+    }
+    function remove(msg) {
+      if (!msg) throw interaction.reply("Não há nenhuma mensagem para remover.");
+      return await msg.delete()
+    }
   }
 
   /*

@@ -5,6 +5,12 @@
   "main": "src/index.js",
   "keywords": [],
   "author": "sum117",
+  "contributors": [
+    {
+      "name": "K4L1B3",
+      "url": "https://github.com/K4L1B3"
+    }
+  ],
   "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^7.5.3",

@@ -4,6 +4,7 @@ import { PlayCardPlayer } from "../structures/SDA/PlayCardPlayer.js";
 export default {
   event: "interactionCreate",
   name: "Playcard Testing",
+  type: "button",
   description: "Um comando produzido para testar a classe do playcard.",
   /**@param {ButtonInteraction} interaction - O botão que iniciou esta interação */
   async execute(interaction) {

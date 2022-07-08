@@ -4,6 +4,7 @@ import { SlashCommandBuilder as SCB } from "@discordjs/builders";
 
 export default {
   event: "interactionCreate",
+  type: "slashCommand",
   data: new SCB()
     .setName("playcard")
     .setDescription("Interage com todas as funções do playcard.")

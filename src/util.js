@@ -24,6 +24,7 @@ export function title(string = "") {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+
 /**
  * @author Milo123459<https://github.com/Milo123459>
  * @description This progress bar logic was copied from <https://github.com/Sparker-99/string-progressbar/blob/master/index.js>, a NPM package by Sparker-99.
@@ -95,8 +96,7 @@ async function loadCommands(event, ...args) {
         file = commandFiles.find((action) =>
           action.startsWith(`interaction.${interaction.customId}`)
         );
-      if (!file)
-        throw new Error(`Não encontrei o comando ${interaction.customId}`);
+      if (!file) return
       (await import("./commands/" + file)).default.execute(...args);
       break;
   }
