@@ -12,7 +12,7 @@
     "quick.db": "^9.0.5"
   },
   "scripts": {
-    "prettier": "prettier --write \"./**/*.{js,jsx,json}\"",
+    "prettier": "prettier --write \"./**/*.{ts,js,jsx,json}\"",
     "moniqueta": "node .",
     "devMoniqueta": "nodemon ."
   },
