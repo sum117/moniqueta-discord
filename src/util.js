@@ -1,8 +1,8 @@
 import fs from "fs";
 import { Client, Message, Interaction } from "discord.js";
-export const prefix = process.env.PREFIX
+export const prefix = process.env.PREFIX;
 
-export const token = process.env.TOKEN
+export const token = process.env.TOKEN;
 
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.
@@ -25,7 +25,6 @@ export function title(string = "") {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-
 /**
  * @author Milo123459<https://github.com/Milo123459>
  * @description This progress bar logic was copied from <https://github.com/Sparker-99/string-progressbar/blob/master/index.js>, a NPM package by Sparker-99.
@@ -41,15 +40,14 @@ export function statusBar(current, total, fill, empty) {
 }
 /**@param {Client} client - Um cliente do Discord */
 export async function registerSlashCommands(client, guildId) {
-  fs.readdirSync("src/commands")
+  const slashArray = fs
+    .readdirSync("src/commands")
     .filter((file) => file.startsWith("slash."))
-    .forEach(async (file) => {
-      const slashCommand = (
-        await import("./commands/" + file)
-      ).default.data.toJSON();
-      client.application.commands.set([])
-      await (await client.guilds.fetch(guildId)).commands.set([slashCommand])
+    .map(async (file) => {
+      return (await import("./commands/" + file)).default.data.toJSON();
     });
+  const slashCommands = await Promise.all(slashArray);
+  await client.application.commands.set(slashCommands, guildId);
 }
 /**
  * @description Roda os comandos do bot. Deve ser colocado nos eventos.
@@ -92,13 +90,13 @@ async function loadCommands(event, ...args) {
       let file;
       if (interaction.isCommand())
         file = commandFiles.find(
-          (command) => command === `interaction.${interaction.commandName}.js`
+          (command) => command === `slash.${interaction.commandName}.js`
         );
       else
         file = commandFiles.find((action) =>
           action.startsWith(`interaction.${interaction.customId}`)
         );
-      if (!file) return
+      if (!file) return;
       (await import("./commands/" + file)).default.execute(...args);
       break;
   }

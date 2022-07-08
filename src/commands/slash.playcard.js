@@ -48,24 +48,32 @@ export default {
 
   /**@param {CommandInteraction} interaction A opção que executou este comando*/
   async execute(interaction) {
-    await interaction.deferReply();
     const char = new PlayCardPlayer();
     if (interaction.options.getSubcommand() === "editar") {
+      await interaction.deferReply({ ephemeral: true });
       const content = interaction.options.getString("conteudo");
       await char.interact(interaction, "edit", content);
       interaction.editReply({
-        ephemeral: true,
         content: "Playcard editado com sucesso!",
       });
     } else if (interaction.options.getSubcommand() === "remover") {
+      await interaction.deferReply({ ephemeral: true });
       let MsgToRemove = interaction.options.getString("link");
-      let match = MsgToRemove ? MsgToRemove.match(/(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/): null;
-      await char.interact(interaction, "remove", match?.groups.msg ? match?.groups.msg : undefined);
+      let match = MsgToRemove
+        ? MsgToRemove.match(
+            /(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
+          )
+        : null;
+      await char.interact(
+        interaction,
+        "remove",
+        match?.groups.msg ? match?.groups.msg : undefined
+      );
       interaction.editReply({
-        ephemeral: true,
         content: "Mensagem removida com sucesso!",
       });
     } else {
+      await interaction.deferReply();
       const content = interaction.options.getString("conteudo");
       await char.interact(interaction, "send", content);
       interaction.deleteReply();

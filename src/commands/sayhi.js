@@ -12,7 +12,7 @@ export default {
         "Olá! Está testando algum comando? Se sim, aperte no botão abaixo.",
       components: [
         new MessageActionRow().addComponents([
-            new MessageButton()
+          new MessageButton()
             .setCustomId("playcardTesting")
             .setLabel("Bem aqui!")
             .setStyle("SUCCESS"),

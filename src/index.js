@@ -9,8 +9,8 @@ const moniqueta = new Client({
 moniqueta.once("ready", async () => {
   console.log("Moniqueta pronta.");
 
-  const sDAGuild = moniqueta.guilds.cache.get("976870103125733388");
-  registerSlashCommands(moniqueta, sDAGuild.id);
+  const myGuild = "976870103125733388";
+  registerSlashCommands(moniqueta, myGuild);
   loadEvents(moniqueta, [
     { once: true, name: "ready" },
     { name: "messageCreate" },

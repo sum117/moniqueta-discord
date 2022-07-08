@@ -39,8 +39,7 @@ export class PlayCardPlayer {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar) {
         throw (
-          await interaction[interaction.deferred ? "editReply":"reply"]({
-            ephemeral: true,
+          (await interaction[interaction.deferred ? "editReply" : "reply"]({
             content: `Não há nenhum personagem criado ou selecionado para ${
               user.id === interaction.user.id ? "você" : user
             }`,
@@ -48,7 +47,7 @@ export class PlayCardPlayer {
           new Error(
             "Erro de personagem não criado ou selecionado acionado por: " +
               user.id
-          )
+          ))
         );
       } else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
@@ -210,7 +209,7 @@ export class PlayCardPlayer {
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    */
   async interact(interaction, action, content = "") {
-    const {user, channel} = interaction;
+    const { user, channel } = interaction;
 
     const data = await this.character(interaction, user);
 
@@ -231,60 +230,64 @@ export class PlayCardPlayer {
 
     switch (action) {
       case "send":
-        return await db.set(user.id + '.latestMessage', `${(await send()).id}`)
+        return await db.set(user.id + ".latestMessage", `${(await send()).id}`);
       case "edit":
-        return edit(
-          await db.get(user.id + '.latestMessage')
-        )
+        return edit(await db.get(user.id + ".latestMessage"));
       case "remove":
         return remove(
-          content ? content:await db.get(user.id + '.latestMessage')
-        )
+          content ? content : await db.get(user.id + ".latestMessage")
+        );
     }
 
     async function send() {
-      return (
-          await channel.send({
-          embeds: [
-            new MessageEmbed()
-              .setTitle(name)
-              .setThumbnail(avatar)
-              .setColor(sum.assets.color)
-              .setDescription(content)
-              .setFooter({
-                text: user.username,
-                iconURL: user.avatarURL({ dynamic: true, size: 512 }),
-              }),
-          ],
-          components: [
-            new MessageActionRow().addComponents(
-              new MessageButton()
-                .setCustomId(`interagir_${user.id}_${name}`)
-                .setEmoji("🖐️")
-                .setLabel("Interagir")
-                .setStyle("SECONDARY")
-            ),
-          ],
-        })
-      )
+      return await channel.send({
+        nonce: user.id,
+        embeds: [
+          new MessageEmbed()
+            .setTitle(name)
+            .setThumbnail(avatar)
+            .setColor(sum.assets.color)
+            .setDescription(content)
+            .setFooter({
+              text: user.username,
+              iconURL: user.avatarURL({ dynamic: true, size: 512 }),
+            }),
+        ],
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton()
+              .setCustomId(`interagir_${user.id}_${name}`)
+              .setEmoji("🖐️")
+              .setLabel("Interagir")
+              .setStyle("SECONDARY")
+          ),
+        ],
+      });
     }
     async function edit(msgId) {
-      console.log(msgId)
-      if (!msgId) throw new Error("Não foi possível encontrar a mensagem para ser editada");
-      const embed = await (await channel.messages.fetch(msgId)).embeds[0]
-      embed.setDescription(content)
+      if (!msgId)
+        throw new Error(
+          "Não foi possível encontrar a mensagem para ser editada"
+        );
+      const embed = await (await channel.messages.fetch(msgId)).embeds[0];
+      embed.setDescription(content);
       return await channel.messages.edit(msgId, {
-        embeds: [
-          embed
-        ]
+        embeds: [embed],
       });
     }
     async function remove(msgId) {
-      if (!msgId) throw interaction[interaction.deferred ? 'editReply':'reply']({
-        ephemeral: true,
-        content: `Não foi possível encontrar a mensagem para ser removida`
-      });
-      if (msgId === await db.get(user.id + '.latestMessage')) db.delete(user.id + '.latestMessage')
+      if (!msgId)
+        throw interaction[interaction.deferred ? "editReply" : "reply"]({
+          content: "Não foi possível encontrar a mensagem para ser removida",
+        });
+      else if ((await channel.messages.fetch(msgId)).nonce !== user.id)
+        throw interaction[interaction.deferred ? "editReply" : "reply"]({
+          content:
+            "Você não pode deletar uma mensagem que não pertence a você.",
+        });
+
+      if (msgId === (await db.get(user.id + ".latestMessage")))
+        db.delete(user.id + ".latestMessage");
       return await channel.messages.delete(msgId);
     }
   }
