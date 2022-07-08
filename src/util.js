@@ -1,7 +1,8 @@
 import fs from "fs";
 import { Client, Message, Interaction } from "discord.js";
-export const prefix = process.env.PREFIX;
-export const token = process.env.TOKEN;
+export const prefix = process.env.PREFIX
+
+export const token = process.env.TOKEN
 
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.

@@ -13,6 +13,7 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "@discordjs/builders": "^0.15.0",
     "better-sqlite3": "^7.5.3",
     "discord.js": "^13.8.0",
     "quick.db": "^9.0.5"
