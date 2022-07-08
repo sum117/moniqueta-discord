@@ -47,24 +47,24 @@ export default {
 
   /**@param {CommandInteraction} interaction A opção que executou este comando*/
   async execute(interaction) {
+    await interaction.deferReply();
     const char = new PlayCardPlayer();
-    interaction.deferReply();
     if (interaction.options.getSubcommand() === "editar") {
       const content = interaction.options.getString("conteudo");
-      char.interact(interaction, "edit", content);
+      await char.interact(interaction, "edit", content);
       interaction.editReply({
         ephemeral: true,
         content: "Playcard editado com sucesso!",
       });
     } else if (interaction.options.getSubcommand() === "remover") {
-      char.interact(interaction, "remove");
+      await char.interact(interaction, "remove");
       interaction.editReply({
         ephemeral: true,
         content: "Mensagem removida com sucesso!",
       });
     } else {
       const content = interaction.options.getString("conteudo");
-      char.interact(interaction, "send", content);
+      await char.interact(interaction, "send", content);
       interaction.deleteReply();
     }
   },
