@@ -1,5 +1,5 @@
 import { ButtonInteraction } from "discord.js";
-import { PlayCardPlayer } from "../structures/PlayCardPlayer";
+import { PlayCardPlayer } from "../structures/SDA/PlayCardPlayer.js";
 
 export default {
   event: "interactionCreate",
@@ -7,9 +7,7 @@ export default {
   description: "Um comando produzido para testar a classe do playcard.",
   /**@param {ButtonInteraction} interaction - O botão que iniciou esta interação */
   async execute(interaction) {
-    const { customId, user } = interaction;
-
-    if (customId !== "testingCommands") return;
+    const {  user } = interaction;
     await interaction.deferReply();
     const char = new PlayCardPlayer();
     await char.create(interaction, "994256052923146250", {
@@ -24,13 +22,13 @@ export default {
         
         Eis a aspirante à medusa.`,
       avatar:
-        "https://cdn.discordapp.com/attachments/994256052923146250/994256454032830504/Anastasia_Serperata.jpg",
+        "https://cdn.discordapp.com/attachments/976880373118148679/994614802259378217/Anastasia_Serperata.jpg",
       gender: "Feminino",
       personality: "Intrigante",
       phantom: "branco",
       sum: "perserata",
     });
-    const embed = char.profile(user);
+    const embed = await char.profile(interaction, user);
     await interaction.editReply({
       content: `Exibindo perfil do personagem de ${user.username}`,
       embeds: [embed],

@@ -3,6 +3,9 @@ import {
   Message,
   Formatters,
   MessageEmbed,
+  MessageActionRow,
+  MessageButton,
+  CommandInteraction,
 } from "discord.js";
 import { db } from "../../db.js";
 import { title, statusBar } from "../../util.js";
@@ -18,10 +21,7 @@ const assets = {
     oscuras: { color: 3146828, emoji: "<:Oscuras:982082685835051078>" },
     ehrantos: { color: 15236108, emoji: "<:Ehrantos:982082685793087578>" },
     melancus: { color: 0, emoji: "<:Melancus:982082685801472060>" },
-    observata: {
-      color: 16777215,
-      emoji: "<:Observata:982082685864378418>",
-    },
+    observata: { color: 16777215, emoji: "<:Observata:982082685864378418>" },
     invidia: { color: 547996, emoji: "<:Invidia:982082685503696967>" },
   },
   phantom: {
@@ -59,115 +59,225 @@ export class PlayCardPlayer {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @returns {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  create({ message, user, guild }, approvedChannelId, character = {}) {
+  async create({ message, user, guild }, approvedChannelId, character = {}) {
     const { name, gender, personality, appearance, avatar, sum, phantom } =
       character;
     const { members, channels } = guild;
 
-    return (async () => {
-      const userId = (() => {
-        const [userId] = message.content.match(/\d{17,19}/) ?? [];
-        if (!userId) return user.id;
-        else return userId;
-      })();
-      await db.set(`${userId}`, {
-        name: name,
-        gender: gender,
-        personality: personality,
-        appearance: appearance,
-        avatar: avatar,
-        sum: { name: sum, assets: assets.sum[sum] },
-        phantom: {
-          name: phantom,
-          assets: { emoji: assets.phantom[phantom] },
+    const userId = (() => {
+      const [userId] = message.content.match(/\d{17,19}/) ?? [];
+      if (!userId) return user.id;
+      else return userId;
+    })();
+    const id = await db.get(`${userId}.chars.count`) ?? 0;
+    await db.set(`${userId}`, {
+      chosenChar: id ? id : '1',
+      count: id ? id + 1:1,
+      chars: {
+        [id ? toString(id + 1) : "1"]: {
+          name: name,
+          gender: gender,
+          personality: personality,
+          appearance: appearance,
+          avatar: avatar,
+          sum: { name: sum, assets: assets.sum[sum] },
+          phantom: {
+            name: phantom,
+            assets: { emoji: assets.phantom[phantom] },
+          },
+          status: {
+            health: 100,
+            mana: 50,
+            stamina: 50,
+          },
         },
-        status: {
-          health: 100,
-          mana: 50,
-          stamina: 50,
-        },
-      });
-      const membro = await members.fetch(userId);
-      console.log(userId);
-      const aprovador = user;
-      const canalAprovados = await channels.fetch(approvedChannelId);
-      return canalAprovados.send({
-        content: `Ficha de ${userMention(
-          membro.user.id
-        )}, aprovada por ${userMention(aprovador.id)}`,
+      }
+    });
+    const membro = await members.fetch(userId);
+    const aprovador = user;
+    const canalAprovados = await channels.fetch(approvedChannelId);
+    return canalAprovados.send({
+      content: `Ficha de ${userMention(
+        membro.user.id
+      )}, aprovada por ${userMention(aprovador.id)}`,
+      embeds: [
+        // Essa embed usa a entrada do usuário para ser feita, portanto, não estamos obtendo os valores do banco de dados, o que altera a maneira como pegamos os valores para essa parte específica da classe.
+        new MessageEmbed()
+          .setTitle(name)
+          .setThumbnail(avatar)
+          .setColor(assets.sum[sum].color)
+          .setDescription(appearance)
+          .setAuthor({
+            name: membro.user.username,
+            iconURL: membro.user.avatarURL({ dynamic: true, size: 512 }),
+          })
+          .addField(
+            "Gênero",
+            gender === "Masculino"
+              ? "♂️ Masculino"
+              : gender === "Feminino"
+                ? "♀️ Feminino"
+                : "👽 Descubra",
+            true
+          )
+          .addField(
+            "Purgatório",
+            assets.phantom[phantom] + " " + title(phantom),
+            true
+          )
+          .addField("Soma", assets.sum[sum].emoji + " " + title(sum), true),
+      ],
+    });
+  }
+
+  async profile(interaction, user) {
+    const db = await this.character(interaction, user)
+    const {
+      name,
+      avatar,
+      sum,
+      appearance,
+      chosenTrophy,
+      status,
+      gender,
+      phantom,
+    } = db;
+    const { health, mana, stamina } = status;
+    return new MessageEmbed()
+      .setTitle(name)
+      .setThumbnail(avatar)
+      .setColor(sum.assets.color)
+      .setAuthor({
+        name: chosenTrophy?.name ? chosenTrophy : user.username,
+        iconURL: chosenTrophy?.avatar
+          ? chosenTrophy?.avatar
+          : user.avatarURL({ dynamic: true, size: 512 }),
+      })
+      .setDescription(
+        (appearance
+          ? appearance
+          : "O personagem em questão não possui descrição alguma.") +
+        "\n\n" +
+        [
+          "❤️ " +
+          statusBar(
+            30,
+            health,
+            "<:barLife:994630714312106125>",
+            "<:BarEmpty:994631056378564750>"
+          ),
+          "🧠 " +
+          statusBar(
+            10,
+            mana,
+            "<:barEnergy:994630956180840529>",
+            "<:BarEmpty:994631056378564750>"
+          ),
+          "🏃‍♂️ " +
+          statusBar(
+            20,
+            stamina,
+            "<:barVigor:994630903181615215>",
+            "<:BarEmpty:994631056378564750>"
+          ),
+        ].join("  ")
+      )
+      .addField(
+        "Genero",
+        gender === "Masculino"
+          ? "♂️ Masculino"
+          : gender === "Feminino"
+            ? "♀️ Feminino"
+            : "👽 Descubra",
+        true
+      )
+      .addField("Soma", sum.assets.emoji + " " + title(sum.name), true)
+      .addField(
+        "Purgatório",
+        phantom.assets.emoji + " " + title(phantom.name),
+        true
+      );
+  }
+  /**
+   *
+   * @param {Message | CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
+   * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
+   */
+  async interact(interaction, action, content = '') {
+    // Eu fiz esse parser caso um dia desejasse disponibilizar o uso de mensagens para este comando ao invés de apenas interações. Por enquanto, não estou usando isso. Mas se quiser, pode fazer, e lembre de modificar a descrição do embed retornado da função send.
+    let author, channel
+    if (typeof interaction === Message) {
+      author = interaction.author;
+      channel = interaction.channel;
+      content = interaction.content;
+    } else {
+      author = interaction.user
+      channel = interaction.channel
+    }
+
+    const db = await this.character(interaction, author)
+
+    const {
+      name,
+      avatar,
+      sum,
+      appearance,
+      chosenTrophy,
+      status,
+      gender,
+      phantom,
+      equipment,
+      money,
+      inCombat,
+    } = db;
+    const { health, mana, stamina } = status;
+
+    switch (action) {
+      case "send":
+        return send();
+      case "edit":
+        return edit();
+      case "remove":
+        return remove();
+    }
+
+    function send() {
+      return channel.send({
         embeds: [
           new MessageEmbed()
             .setTitle(name)
             .setThumbnail(avatar)
             .setColor(sum.assets.color)
-            .setDescription(appearance)
-            .setAuthor({
-              name: membro.user.username,
-              iconURL: membro.user.avatarURL({ dynamic: true, size: 512 }),
-            })
-            .addField(
-              "Gênero",
-              gender === "Masculino"
-                ? "♂️ Masculino"
-                : gender === "Feminino"
-                ? "♀️ Feminino"
-                : "👽 Descubra",
-              true
-            )
-            .addField(
-              "Purgatório",
-              phantom.assets.emoji + " " + title(phantom.name),
-              true
-            )
-            .addField("Soma", sum.assets.emoji + " " + title(sum.name), true),
+            .setDescription(content)
+            .setFooter({
+              text: author.username,
+              iconURL: author.avatarURL({ dynamic: true, size: 512 }),
+            }),
+        ],
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton()
+              .setCustomId(`comentar_${author.id}`)
+              .setEmoji("💬")
+              .setLabel("Comentar")
+              .setStyle("PRIMARY"),
+            new MessageButton()
+              .setCustomId(`interagir_${author.id}_${name}`)
+              .setEmoji("🖐️")
+              .setLabel("Interagir")
+              .setStyle("PRIMARY")
+          ),
         ],
       });
-    })();
-  }
-  profile(user) {
-    return async () => {
-      const { name, avatar, sum, appearance, chosenTrophy, status } =
-        await db.get(`${user.id}`);
-      const { health, mana, stamina } = status;
-      return new MessageEmbed()
-        .setTitle(name)
-        .setThumbnail(avatar)
-        .setColor(sum.assets.color)
-        .setDescription(appearance)
-        .setAuthor({
-          name: chosenTrophy?.name ? chosenTrophy : user.username,
-          iconURL: chosenTrophy?.avatar
-            ? chosenTrophy?.avatar
-            : user.avatarURL({ dynamic: true, size: 512 }),
-        })
-        .setDescription(
-          `${
-            appearance
-              ? appearance
-              : "O personagem em questão não possui descrição alguma."
-          }\n\n${[
-            "❤️ " + statusBar(health),
-            "🧠 " + statusBar(mana),
-            "🏃‍♂️ " + statusBar(stamina),
-          ].join("\n")}`
-        );
-    };
-  }
-}
-/*
-    interact(user, action, message) {
-        const package = {
-            title:,
-            name:,
-            sum:,
-            avatar:,
-            faction:,
-        }
-        function send()
-        function edit()
-        function remove()
     }
 
+    function edit() { }
+    function remove() { }
+  }
+
+  /*
     comment(target, message) {}
     show(target) {}
-    list(user) {} */
+    list(user) {} 
+  */
+}

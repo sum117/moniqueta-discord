@@ -6,14 +6,14 @@ export default {
   description: "O bot dirá olá. Comando feito por razões de teste.",
 
   /**@param {Message} msg A mensagem que executou este comando*/
-  execute(msg) {
+  async execute(msg) {
     msg.reply({
       content:
         "Olá! Está testando algum comando? Se sim, aperte no botão abaixo.",
       components: [
         new MessageActionRow().addComponents([
           new MessageButton()
-            .setCustomId("testingCommands")
+            .setCustomId("playcardTesting")
             .setLabel("Bem aqui!")
             .setStyle("SUCCESS"),
         ]),
