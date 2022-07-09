@@ -1,9 +1,9 @@
 import {
   ButtonInteraction,
-  User,
   MessageEmbed,
   MessageActionRow,
   MessageButton,
+  GuildMember,
 } from "discord.js";
 import { userMention, quote } from "@discordjs/builders";
 import { title } from "../../util.js";
@@ -12,7 +12,7 @@ import { PlayCardBase } from "./PlayCardBase.js";
 export class Interaction extends PlayCardBase {
   /**
    * @param {ButtonInteraction} interaction - O botão que iniciou o painel.
-   * @param {User} target - O usuário alvo da interação.
+   * @param {GuildMember} target - O usuário alvo da interação.
    */
   constructor(interaction) {
     super();
