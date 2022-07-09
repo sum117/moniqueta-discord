@@ -7,13 +7,14 @@ import {
   MessageButton,
   CommandInteraction,
   Interaction,
+  User,
 } from "discord.js";
 import { db } from "../../db.js";
-import { title, statusBar } from "../../util.js";
+import { title } from "../../util.js";
 
 const { userMention } = Formatters;
 
-const assets = {
+export const assets = {
   sum: {
     austera: { color: 10517508, emoji: "<:Austeros:982077481702027344>" },
     perserata: { color: 550020, emoji: "<:Perserata:982078451513184306>" },
@@ -32,7 +33,7 @@ const assets = {
   },
 };
 
-export class PlayCardPlayer {
+export class PlayCardBase {
   /**@param {Interaction} interaction  */
   constructor() {
     this.character = async (interaction, user) => {
@@ -135,74 +136,6 @@ export class PlayCardPlayer {
     });
   }
 
-  async profile(interaction, user) {
-    const db = await this.character(interaction, user);
-    const {
-      name,
-      avatar,
-      sum,
-      appearance,
-      chosenTrophy,
-      status,
-      gender,
-      phantom,
-    } = db;
-    const { health, mana, stamina } = status;
-    return new MessageEmbed()
-      .setTitle(name)
-      .setThumbnail(avatar)
-      .setColor(sum.assets.color)
-      .setAuthor({
-        name: chosenTrophy?.name ? chosenTrophy : user.username,
-        iconURL: chosenTrophy?.avatar
-          ? chosenTrophy?.avatar
-          : user.avatarURL({ dynamic: true, size: 512 }),
-      })
-      .setDescription(
-        (appearance
-          ? appearance
-          : "O personagem em questão não possui descrição alguma.") +
-          "\n\n" +
-          [
-            "❤️ " +
-              statusBar(
-                30,
-                health,
-                "<:barLife:994630714312106125>",
-                "<:BarEmpty:994631056378564750>"
-              ),
-            "🧠 " +
-              statusBar(
-                10,
-                mana,
-                "<:barEnergy:994630956180840529>",
-                "<:BarEmpty:994631056378564750>"
-              ),
-            "🏃‍♂️ " +
-              statusBar(
-                20,
-                stamina,
-                "<:barVigor:994630903181615215>",
-                "<:BarEmpty:994631056378564750>"
-              ),
-          ].join("  ")
-      )
-      .addField(
-        "Genero",
-        gender === "Masculino"
-          ? "♂️ Masculino"
-          : gender === "Feminino"
-          ? "♀️ Feminino"
-          : "👽 Descubra",
-        true
-      )
-      .addField("Soma", sum.assets.emoji + " " + title(sum.name), true)
-      .addField(
-        "Purgatório",
-        phantom.assets.emoji + " " + title(phantom.name),
-        true
-      );
-  }
   /**
    *
    * @param {CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
@@ -213,20 +146,7 @@ export class PlayCardPlayer {
 
     const data = await this.character(interaction, user);
 
-    const {
-      name,
-      avatar,
-      sum,
-      appearance,
-      chosenTrophy,
-      status,
-      gender,
-      phantom,
-      equipment,
-      money,
-      inCombat,
-    } = data;
-    const { health, mana, stamina } = status;
+    const { name, avatar, sum } = data;
 
     switch (action) {
       case "send":
@@ -256,7 +176,7 @@ export class PlayCardPlayer {
         components: [
           new MessageActionRow().addComponents(
             new MessageButton()
-              .setCustomId(`interagir_${user.id}_${name}`)
+              .setCustomId("interact")
               .setEmoji("🖐️")
               .setLabel("Interagir")
               .setStyle("SECONDARY")
@@ -291,10 +211,4 @@ export class PlayCardPlayer {
       return await channel.messages.delete(msgId);
     }
   }
-
-  /*
-    comment(target, message) {}
-    show(target) {}
-    list(user) {} 
-  */
 }

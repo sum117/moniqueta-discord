@@ -1,5 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { PlayCardPlayer } from "../structures/SDA/PlayCardPlayer.js";
+import { PlayCardBase } from "../structures/SDA/PlayCardBase.js";
 import { SlashCommandBuilder as SCB } from "@discordjs/builders";
 
 export default {
@@ -48,7 +48,7 @@ export default {
 
   /**@param {CommandInteraction} interaction A opção que executou este comando*/
   async execute(interaction) {
-    const char = new PlayCardPlayer();
+    const char = new PlayCardBase();
     if (interaction.options.getSubcommand() === "editar") {
       await interaction.deferReply({ ephemeral: true });
       const content = interaction.options.getString("conteudo");
