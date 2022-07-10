@@ -1,11 +1,10 @@
-import { Client } from 'discord.js';
+import { Client, Collection } from 'discord.js';
 import { loadEvents, registerSlashCommands } from './util.js';
 import { token } from './util.js';
-
-const moniqueta = new Client({
+export const moniqueta = new Client({
     intents: 32767
 });
-
+moniqueta.commands = new Collection();
 moniqueta.once('ready', async () => {
     console.log('Moniqueta pronta.');
 

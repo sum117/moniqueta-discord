@@ -17,7 +17,7 @@ const sheet = new Map();
 export default {
     name: 'Comando de Ficha de Personagem',
     description:
-        'Gera uma ficha de personagem para a avaliação pelos administradores.',
+        'Gera uma ficha de personagem para a avaliação pelos administradores ao preencher o formulário no canal de fichas.',
     /**
      * @param {ModalSubmitInteraction | SelectMenuInteraction} interaction A interação que iniciou o comando.
      */

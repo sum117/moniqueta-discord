@@ -6,7 +6,8 @@ import {
     MessageActionRow,
     MessageButton,
     CommandInteraction,
-    Interaction
+    Interaction,
+    MessageAttachment
 } from 'discord.js';
 import { db } from '../../db.js';
 import { title } from '../../util.js';
@@ -153,8 +154,11 @@ export class PlayCardBase {
      *
      * @param {CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
      * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
+     * @param {MessageAttachment} attachment A imagem que será usada para a ação.
      */
-    async interact(interaction, action, content = '') {
+    async interact(interaction, action, content = '', attachment = null) {
+        let file;
+        if (attachment) file = attachment.name;
         const { user, channel, guildId } = interaction;
 
         const data = await this.character(interaction, user);
@@ -178,19 +182,33 @@ export class PlayCardBase {
         async function send() {
             const message = await channel.send({
                 embeds: [
-                    new MessageEmbed()
-                        .setTitle(name)
-                        .setThumbnail(avatar)
-                        .setColor(assets.sum[sum].color)
-                        .setDescription(content)
-                        .setFooter({
+                    {
+                        title: name,
+                        thumbnail: {
+                            url: avatar
+                        },
+                        image: attachment
+                            ? { url: `attachment://${attachment.name}` }
+                            : undefined,
+                        color: assets.sum[sum].color,
+                        description: content,
+                        footer: {
                             text: user.username,
-                            iconURL: user.avatarURL({
+                            icon_url: user.avatarURL({
                                 dynamic: true,
                                 size: 512
                             })
-                        })
+                        }
+                    }
                 ],
+                files: attachment
+                    ? [
+                          {
+                              attachment: attachment.attachment,
+                              name: attachment.name
+                          }
+                      ]
+                    : [],
                 components: [
                     new MessageActionRow().addComponents(
                         new MessageButton()

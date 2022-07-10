@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { Client, Message, Interaction } from 'discord.js';
-
+import { Client, Message, Interaction, Collection } from 'discord.js';
+import { moniqueta } from './index.js';
 // BOT STARTUP CREDENTIALS
 export const prefix = process.env.PREFIX;
 export const token = process.env.TOKEN;
@@ -14,12 +14,24 @@ export const channels = {
     adminFichaRegistro: '986952888930697266',
     rpFichas: '986952888930697266'
 };
+const commandFiles = fs
+    .readdirSync('src/commands')
+    .filter((file) => file.endsWith('.js'));
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.
  * @param {Client} client O cliente do bot.
  * @param {Array<{name: String, once: Boolean}>} events os eventos que serão utilizados pelo bot.
  */
 export async function loadEvents(client, events = [{ name: '', once: false }]) {
+    commandFiles.map(async (file) => {
+        if (file.startsWith('slash.') || file.startsWith('interaction.'))
+            return;
+        const command = (await import('./commands/' + file)).default;
+        return moniqueta.commands.set(file.split('.')[0], {
+            name: command.name,
+            description: command.description
+        });
+    });
     events.map(({ name, once }) => {
         if (once) client.once(name, (...args) => loadCommands(name, ...args));
         else client.on(name, (...args) => loadCommands(name, ...args));
@@ -62,13 +74,10 @@ export async function registerSlashCommands(client, guildId) {
 /**
  * @description Roda os comandos do bot. Deve ser colocado nos eventos.
  * @param {String} event O nome do evento que executou este comando.
- * @param {Array} ...args Os argumentos do evento. Variam de um para outro.
+ * @param {Array} args Os argumentos do evento. Variam de um para outro.
  */
 async function loadCommands(event, ...args) {
-    const commandFiles = fs
-        .readdirSync('src/commands')
-        .filter((file) => file.endsWith('.js'));
-
+    // Operação para o comando de ajuda.
     switch (event) {
         case 'messageCreate':
             /**

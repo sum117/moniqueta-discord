@@ -5,6 +5,9 @@ import { SlashCommandBuilder as SCB } from '@discordjs/builders';
 export default {
     event: 'interactionCreate',
     type: 'slashCommand',
+    name: 'Play Card Base',
+    description:
+        'Interage com quase todas as funções do playcard a partir do Slash Command.',
     data: new SCB()
         .setName('playcard')
         .setDescription('Interage com todas as funções do playcard.')
@@ -19,6 +22,14 @@ export default {
                             'O conteúdo que será atribuído ao playcard'
                         )
                         .setRequired(true)
+                )
+                .addAttachmentOption((option) =>
+                    option
+                        .setName('anexo')
+                        .setRequired(false)
+                        .setDescription(
+                            'Um anexo para servir de imagem para seu embed.'
+                        )
                 )
         )
         .addSubcommand((edit) =>
@@ -78,7 +89,13 @@ export default {
         } else {
             await interaction.deferReply();
             const content = interaction.options.getString('conteudo');
-            await char.interact(interaction, 'send', content);
+            const attachment = interaction.options.getAttachment('anexo');
+            await char.interact(
+                interaction,
+                'send',
+                content,
+                attachment ? attachment : undefined
+            );
             interaction.deleteReply();
         }
     }
