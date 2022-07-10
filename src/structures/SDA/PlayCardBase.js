@@ -155,7 +155,7 @@ export class PlayCardBase {
      * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
      */
     async interact(interaction, action, content = '') {
-        const { user, channel } = interaction;
+        const { user, channel, guildId } = interaction;
 
         const data = await this.character(interaction, user);
 
@@ -176,8 +176,7 @@ export class PlayCardBase {
         }
 
         async function send() {
-            return await channel.send({
-                nonce: user.id,
+            const message = await channel.send({
                 embeds: [
                     new MessageEmbed()
                         .setTitle(name)
@@ -202,6 +201,8 @@ export class PlayCardBase {
                     )
                 ]
             });
+            await db.set(`${guildId}.charMessages.${message.id}`, user.id);
+            return message;
         }
         async function edit(msgId) {
             if (!msgId)
@@ -215,6 +216,9 @@ export class PlayCardBase {
             });
         }
         async function remove(msgId) {
+            const messageToCheck = await db.get(
+                `${guildId}.charMessages.${msgId}`
+            );
             if (!msgId)
                 throw interaction[interaction.deferred ? 'editReply' : 'reply'](
                     {
@@ -222,7 +226,7 @@ export class PlayCardBase {
                             'Não foi possível encontrar a mensagem para ser removida'
                     }
                 );
-            else if ((await channel.messages.fetch(msgId)).nonce !== user.id)
+            else if (messageToCheck !== user.id)
                 throw interaction[interaction.deferred ? 'editReply' : 'reply'](
                     {
                         content:

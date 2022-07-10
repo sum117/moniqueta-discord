@@ -8,6 +8,7 @@ import {
 import { userMention, quote } from '@discordjs/builders';
 import { title } from '../../util.js';
 import { PlayCardBase } from './PlayCardBase.js';
+import { db } from '../../db.js';
 
 export class Interaction extends PlayCardBase {
     /**
@@ -21,8 +22,11 @@ export class Interaction extends PlayCardBase {
     }
     async handle() {
         const { interaction } = this;
+        const messageToQuery = await db.get(
+            `${interaction.guildId}.charMessages.${interaction.message.id}`
+        );
         const fetchedTarget = await interaction.guild.members.fetch(
-            interaction.message.nonce
+            messageToQuery
         );
         this.target = fetchedTarget;
         this.panel();
@@ -35,7 +39,6 @@ export class Interaction extends PlayCardBase {
             fetchReply: true,
             ephemeral: true,
             content: 'Interagindo com o personagem de ' + target.user.username,
-            nonce: target.id,
             components: [
                 new MessageActionRow().addComponents(
                     new MessageButton()
