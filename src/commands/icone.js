@@ -2,22 +2,27 @@ import sharp from 'sharp';
 import axios from 'axios';
 export default {
     name: 'Imagem para Icone',
-    description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.',
-    /** 
-    * @param {Message} msg A mensagem que iniciou o comando. 
-    * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
-    */
+    description:
+        'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.',
+    /**
+     * @param {Message} msg A mensagem que iniciou o comando.
+     * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
+     */
     async execute(msg, args) {
         /**
          * @type {String}
          * @constant imageUrl Um link de imagem com extensão no final.
          * @constant color A cor da borda.
-        */
+         */
 
         const [color, imageUrl] = args;
-        if (!color) return msg.reply('❌ Você precisa informar uma cor para o icone.');
-        const userInput = await (await axios({ url: imageUrl, responseType: "arraybuffer" })).data;
-        if (!imageUrl) return msg.reply('❌ Você precisa informar um link de imagem.');
+        if (!color)
+            return msg.reply('❌ Você precisa informar uma cor para o icone.');
+        const userInput = await (
+            await axios({ url: imageUrl, responseType: 'arraybuffer' })
+        ).data;
+        if (!imageUrl)
+            return msg.reply('❌ Você precisa informar um link de imagem.');
 
         const radius = Buffer.from(
             `<svg 
@@ -33,7 +38,8 @@ export default {
                     r="256" 
                     fill="white"
                 />
-            </svg>`)
+            </svg>`
+        );
         const border = Buffer.from(
             `<svg
                 width="512" 
@@ -51,13 +57,13 @@ export default {
                 />
             </svg>
             `
-        )
+        );
         const output = await sharp(userInput)
             .resize(512, 512)
             .composite([
                 {
                     input: radius,
-                    blend: 'dest-in',
+                    blend: 'dest-in'
                 },
                 {
                     input: border,
@@ -65,10 +71,11 @@ export default {
                 }
             ])
             .png()
-            .toBuffer()
+            .toBuffer();
 
-
-        msg.reply({ content: 'Icone gerado com sucesso!', files: [{ name: 'icon.png', attachment: output }] });
+        msg.reply({
+            content: 'Icone gerado com sucesso!',
+            files: [{ name: 'icon.png', attachment: output }]
+        });
     }
-
-}
+};
