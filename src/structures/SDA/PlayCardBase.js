@@ -7,7 +7,6 @@ import {
   MessageButton,
   CommandInteraction,
   Interaction,
-  User,
 } from "discord.js";
 import { db } from "../../db.js";
 import { title } from "../../util.js";

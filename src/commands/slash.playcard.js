@@ -48,6 +48,7 @@ export default {
 
   /**@param {CommandInteraction} interaction A opção que executou este comando*/
   async execute(interaction) {
+    if (!interaction.isCommand()) return
     const char = new PlayCardBase();
     if (interaction.options.getSubcommand() === "editar") {
       await interaction.deferReply({ ephemeral: true });

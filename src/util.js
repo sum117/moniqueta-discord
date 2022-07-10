@@ -1,9 +1,15 @@
 import fs from "fs";
 import { Client, Message, Interaction } from "discord.js";
-export const prefix = process.env.PREFIX;
 
+// BOT STARTUP CREDENTIALS
+export const prefix = process.env.PREFIX;
 export const token = process.env.TOKEN;
 
+// SPECIFIC CHANNEL IDS FOR GUILD COMMANDS
+export const channels = {
+  rpRegistro: '977090435845603379',
+  adminFichaRegistro: '986952888930697266'
+}
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.
  * @param {Client} client O cliente do bot.
@@ -71,6 +77,7 @@ async function loadCommands(event, ...args) {
         const args = msg.content.slice(1).split(/ +/);
         const name = args[0];
         const command = commandFiles.find((e) => e === `${name}.js`);
+        args.shift()
         if (command)
           (await import("./commands/" + command)).default.execute(msg, args);
         else msg.reply("❌ Não encontrei o comando que você tentou executar.");
@@ -87,17 +94,15 @@ async function loadCommands(event, ...args) {
        * @constant interaction Interação recebida no evento.
        */
       const interaction = args[0];
-      let file;
+      let files;
       if (interaction.isCommand())
-        file = commandFiles.find(
+        files = commandFiles.find(
           (command) => command === `slash.${interaction.commandName}.js`
         );
       else
-        file = commandFiles.find((action) =>
-          action.startsWith(`interaction.${interaction.customId}`)
-        );
-      if (!file) return;
-      (await import("./commands/" + file)).default.execute(...args);
+        files = commandFiles.filter(action => action.startsWith('interaction.'))
+      if (!files) return;
+      files.forEach(async file => (await import("./commands/" + file)).default.execute(...args));
       break;
   }
 }
