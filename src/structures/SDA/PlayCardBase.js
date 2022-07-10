@@ -79,30 +79,33 @@ export class PlayCardBase {
             if (!userId) return user.id;
             else return userId;
         })();
-        const id = (await db.get(`${userId}.chars.count`)) ?? 0;
-        await db.set(`${userId}`, {
-            chosenChar: id ? id : '1',
-            count: id ? id + 1 : 1,
-            chars: {
-                [id ? toString(id + 1) : '1']: {
-                    name: name,
-                    gender: gender,
-                    personality: personality,
-                    appearance: appearance,
-                    avatar: avatar,
-                    sum: { name: sum, assets: assets.sum[sum] },
-                    phantom: {
-                        name: phantom,
-                        assets: { emoji: assets.phantom[phantom] }
-                    },
-                    status: {
-                        health: 100,
-                        mana: 50,
-                        stamina: 50
-                    }
-                }
+        const id = await db.get(`${userId}.count`);
+        const charObject = {
+            name: name,
+            gender: gender,
+            personality: personality,
+            appearance: appearance,
+            avatar: avatar,
+            sum: sum,
+            phantom: phantom,
+            status: {
+                health: 100,
+                mana: 50,
+                stamina: 50
             }
-        });
+        };
+        if (!id)
+            await db.set(`${userId}`, {
+                chosenChar: 1,
+                count: 1,
+                chars: {
+                    ['1']: charObject
+                }
+            });
+        else {
+            await db.add(`${userId}.count`, 1);
+            await db.set(`${userId}.chars.${id + 1}`, charObject);
+        }
         const membro = await members.fetch(userId);
         const aprovador = user;
         const canalAprovados = await channels.fetch(approvedChannelId);
@@ -111,7 +114,6 @@ export class PlayCardBase {
                 membro.user.id
             )}, aprovada por ${userMention(aprovador.id)}`,
             embeds: [
-                // Essa embed usa a entrada do usuário para ser feita, portanto, não estamos obtendo os valores do banco de dados, o que altera a maneira como pegamos os valores para essa parte específica da classe.
                 new MessageEmbed()
                     .setTitle(name)
                     .setThumbnail(avatar)
@@ -180,7 +182,7 @@ export class PlayCardBase {
                     new MessageEmbed()
                         .setTitle(name)
                         .setThumbnail(avatar)
-                        .setColor(sum.assets.color)
+                        .setColor(assets.sum[sum].color)
                         .setDescription(content)
                         .setFooter({
                             text: user.username,
@@ -206,7 +208,7 @@ export class PlayCardBase {
                 throw new Error(
                     'Não foi possível encontrar a mensagem para ser editada'
                 );
-            const embed = await (await channel.messages.fetch(msgId)).embeds[0];
+            const embed = (await channel.messages.fetch(msgId)).embeds[0];
             embed.setDescription(content);
             return await channel.messages.edit(msgId, {
                 embeds: [embed]

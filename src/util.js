@@ -6,9 +6,13 @@ export const prefix = process.env.PREFIX;
 export const token = process.env.TOKEN;
 
 // SPECIFIC CHANNEL IDS FOR GUILD COMMANDS
+export const categories = {
+    arquivo: '977086756459511808'
+};
 export const channels = {
     rpRegistro: '977090435845603379',
-    adminFichaRegistro: '986952888930697266'
+    adminFichaRegistro: '986952888930697266',
+    rpFichas: '986952888930697266'
 };
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.
