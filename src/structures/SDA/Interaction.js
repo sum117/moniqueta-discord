@@ -140,12 +140,12 @@ export class Interaction extends PlayCardBase {
 
             async function sendMessage() {
                 return (
+                    await threadChannel.members.add(target.id),
                     await webhook.send({
                         threadId: threadChannel.id,
                         content:
                             userMention(target.id) + '\n' + quote(msg.content)
                     }),
-                    await threadChannel.members.add(target.id),
                     await threadChannel.setLocked(true),
                     await threadChannel.setArchived(true)
                 );
