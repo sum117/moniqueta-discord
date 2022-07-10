@@ -78,7 +78,7 @@ async function loadCommands(event, ...args) {
             const msg = args[0];
 
             if (msg.content.startsWith(prefix)) {
-                const args = msg.content.slice(1).split(/ +/);
+                const args = msg.content.slice(1).trim().split(/ +/);
                 const name = args[0];
                 const command = commandFiles.find((e) => e === `${name}.js`);
                 args.shift();
