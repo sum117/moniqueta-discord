@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { userMention, quote } from '@discordjs/builders';
 import { title } from '../../util.js';
-import { PlayCardBase } from './PlayCardBase.js';
+import { assets, PlayCardBase } from './PlayCardBase.js';
 import { db } from '../../db.js';
 
 export class Interaction extends PlayCardBase {
@@ -81,7 +81,7 @@ export class Interaction extends PlayCardBase {
         return new MessageEmbed()
             .setTitle(name)
             .setThumbnail(avatar)
-            .setColor(sum.assets.color)
+            .setColor(assets.sum[sum].color)
             .setAuthor({
                 name: target.user.username,
                 iconURL: target.avatarURL({ dynamic: true, size: 512 })
@@ -93,17 +93,17 @@ export class Interaction extends PlayCardBase {
             )
             .addField(
                 'Genero',
-                gender === 'Masculino'
+                gender === 'masculino'
                     ? '♂️ Masculino'
-                    : gender === 'Feminino'
+                    : gender === 'feminino'
                     ? '♀️ Feminino'
                     : '👽 Descubra',
                 true
             )
-            .addField('Soma', sum.assets.emoji + ' ' + title(sum.name), true)
+            .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true)
             .addField(
                 'Purgatório',
-                phantom.assets.emoji + ' ' + title(phantom.name),
+                assets.phantom[phantom] + ' ' + title(phantom),
                 true
             );
     }

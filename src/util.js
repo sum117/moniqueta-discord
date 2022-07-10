@@ -108,10 +108,12 @@ async function loadCommands(event, ...args) {
             const interaction = args[0];
             let files;
             if (interaction.isCommand())
-                files = commandFiles.find(
-                    (command) =>
-                        command === `slash.${interaction.commandName}.js`
-                );
+                files = [
+                    commandFiles.find(
+                        (command) =>
+                            command === `slash.${interaction.commandName}.js`
+                    )
+                ];
             else
                 files = commandFiles.filter((action) =>
                     action.startsWith('interaction.')

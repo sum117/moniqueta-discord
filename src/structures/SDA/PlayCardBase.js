@@ -128,9 +128,9 @@ export class PlayCardBase {
                     })
                     .addField(
                         'Gênero',
-                        gender === 'Masculino'
+                        gender === 'masculino'
                             ? '♂️ Masculino'
-                            : gender === 'Feminino'
+                            : gender === 'feminino'
                             ? '♀️ Feminino'
                             : '👽 Descubra',
                         true

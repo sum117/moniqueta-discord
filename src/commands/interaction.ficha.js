@@ -242,10 +242,10 @@ export default {
                             )
                             .addField(
                                 'Genero',
-                                title(choices.get('genero')) === 'Masculino'
+                                title(choices.get('genero')) === 'masculino'
                                     ? '♂️ Masculino'
                                     : title(choices.get('genero')) ===
-                                      'Feminino'
+                                      'feminino'
                                     ? '♀️ Feminino'
                                     : '👽 Descubra',
                                 true
