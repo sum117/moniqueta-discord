@@ -1,41 +1,24 @@
 {
-    "name": "moniqueta-discordjs",
-    "version": "1.0.0",
-    "type": "module",
-    "main": "src/index.js",
-    "keywords": [],
-    "author": "sum117",
-    "contributors": [
-        {
-            "name": "K4L1B3",
-            "url": "https://github.com/K4L1B3"
-        }
-    ],
-    "license": "ISC",
-    "dependencies": {
-        "@discordjs/builders": "^0.15.0",
-        "axios": "^0.27.2",
-        "better-sqlite3": "^7.5.3",
-        "discord.js": "^13.8.0",
-        "quick.db": "^9.0.5",
-        "sharp": "^0.30.7"
-    },
-    "scripts": {
-        "prettier": "prettier --write \"./**/*.{ts,js,jsx,json}\"",
-        "moniqueta": "node .",
-        "devMoniqueta": "nodemon ."
-    },
-    "devDependencies": {
-        "node": "^16.15.1",
-        "prettier": "^2.7.1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/sum117/Moniqueta-Discord.js.git"
-    },
-    "bugs": {
-        "url": "https://github.com/sum117/Moniqueta-Discord.js/issues"
-    },
-    "homepage": "https://github.com/sum117/Moniqueta-Discord.js#readme",
-    "description": ""
+  "name": "moniqueta-front",
+  "private": true,
+  "homepage": "https://sum117.github.io/moniqueta-discordjs",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.3.0",
+    "gh-pages": "^4.0.0",
+    "vite": "^2.9.9"
+  }
 }
