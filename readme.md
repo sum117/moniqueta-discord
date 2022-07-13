@@ -135,7 +135,7 @@ No momento a Moniqueta está em desenvolvimento, e possui os seguintes comandos:
     `$icone <cor em hex> <url da imagem com extensão no final>`
 
     *Exemplo*: `$icone #0001 https://i.imgur.com/8WX8dkZ.jpeg`
-- ☢️ Trocide as últimas 100 mensagens do canal com uma bomba nuclear com música e tudo!
+- ☢️ Apague as últimas 100 mensagens do canal com uma bomba nuclear com música e tudo!
 
     `$nuclear`
     
