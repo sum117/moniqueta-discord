@@ -102,8 +102,8 @@ Crie um arquivo `config.json` e preencha os valores respectivos:
 ##### Linux (Feito em Ubuntu)
 1. No seu terminal linux, use o comando:
     ```sh
-    echo 'TOKEN="seu bot token"' >> /etc/environment
-    echo 'PREFIX="um prefixo qualquer"' >> /etc/environment
+    echo 'export TOKEN="seu bot token"' >> ~/.profile
+    echo 'export PREFIX="um prefixo qualquer"' >> ~/.profile
     cd $HOME/Moniqueta-Discord.js
     npm run moniqueta
     ```
