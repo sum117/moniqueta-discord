@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Client, Message, Interaction, Collection } from 'discord.js';
+import { Client, Message, Interaction } from 'discord.js';
 import { moniqueta } from './index.js';
 // BOT STARTUP CREDENTIALS
 export const prefix = process.env.PREFIX;

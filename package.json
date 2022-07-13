@@ -9,9 +9,21 @@
         {
             "name": "K4L1B3",
             "url": "https://github.com/K4L1B3"
+        },
+        {
+            "name": "WillianBill1",
+            "url": "https://github.com/WillianBill1"
+        },
+        {
+            "name": "CeCeloz",
+            "url": "https://github.com/CeCeloz"
+        },
+        {
+            "name":"KaioHenrique21",
+            "url":"https://github.com/KaioHenrique21"
         }
     ],
-    "license": "ISC",
+    "license": "MIT",
     "dependencies": {
         "@discordjs/builders": "^0.15.0",
         "axios": "^0.27.2",
