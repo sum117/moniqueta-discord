@@ -1,2 +1,2 @@
 language = "nodejs"
-run = "npm run deploy -- sum117"
+run = "npm run deploy"
