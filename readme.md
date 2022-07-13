@@ -138,13 +138,16 @@ No momento a Moniqueta está em desenvolvimento, e possui os seguintes comandos:
 - ☢️ Trocide as últimas 100 mensagens do canal com uma bomba nuclear com música e tudo!
 
     `$nuclear`
-
-    <video controls
+    
+     <video
         width="320"
         height="180"
-        src="https://drive.google.com/uc?id=1AnhFZTjHH_L-8e46zuN3_pRAKSMU3xLW"
+        src="https://user-images.githubusercontent.com/75037449/178625069-a661d585-d22a-42cb-b680-7c35cce49345.mp4"
         type="video/mp4"
     />
+
+
+
 - 🪨✂️🧻 Jogue Pedra, Papel e Tesoura com a Moniqueta ou com seus amigos!
 
     `$rps <menção do usuário>`
