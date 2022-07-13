@@ -6,8 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-json.sqlite
+
 node_modules
+json.sqlite
 dist
 dist-ssr
 *.local
