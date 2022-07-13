@@ -15,7 +15,7 @@
 ## 📖 Sumário
 <hr/>
 
-  - [Contribuidores e Licença](#contribuidores-e-licença)
+  - [🫶 Contribuidores](#contribuidores)
   - [⚠️ Requerimentos](#️-requerimentos)
     - [🤖 Bot](#-bot)
     - [🌐 Web App](#-web-app)
