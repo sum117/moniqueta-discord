@@ -4,8 +4,8 @@ import {
   registerSlashCommands,
   updateMemberCounter,
   myGuild,
+  token
 } from './util.js';
-import { token } from './util.js';
 
 export const moniqueta = new Client({
   intents: 32767,
@@ -31,7 +31,6 @@ moniqueta.once('ready', async () => {
 });
 
 process.on('unhandledRejection', (e) => {
-  if (e.code == 'ERR_UNSUPPORTED_DIR_IMPORT') return
   console.log(e);
 });
 

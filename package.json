@@ -34,7 +34,7 @@
   },
   "scripts": {
     "prettier": "prettier --write \"./**/*.{ts,js,jsx,json}\"",
-    "moniqueta": "node .",
+    "moniqueta": "node --experimental-specifier-resolution=node src/index.js",
     "devMoniqueta": "nodemon ."
   },
   "devDependencies": {
