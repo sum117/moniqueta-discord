@@ -4,16 +4,17 @@ import {
   registerSlashCommands,
   updateMemberCounter,
   myGuild,
-  token
+  token,
+  channels
 } from './util.js';
 
 export const moniqueta = new Client({
   intents: 32767,
 });
 moniqueta.commands = new Collection();
-moniqueta.memberCounter = new Map();
-moniqueta.inviteCodeUses = new Map();
-moniqueta.guildInvites = new Map();
+moniqueta.memberCounter = new Collection();
+moniqueta.inviteCodeUses = new Collection();
+moniqueta.guildInvites = new Collection();
 
 moniqueta.once('ready', async () => {
   console.log('Moniqueta pronta.');
@@ -32,6 +33,9 @@ moniqueta.once('ready', async () => {
 
 process.on('unhandledRejection', (e) => {
   console.log(e);
+  moniqueta.channels.cache.get(channels.errorChannel).send({
+    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\nStack:${e.stack}`
+  })
 });
 
 moniqueta.login(token);

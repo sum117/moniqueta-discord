@@ -30,6 +30,7 @@ export const channels = {
   mediaChannel: '977083633435279390',
   memberCounter: '977082930402844692',
   loginoutChannel: '977087066129174538',
+  errorChannel: '997289513850261554'
 };
 export const roles = {
   entranceRole: '983190321334726666',
@@ -188,5 +189,10 @@ async function loadCommands(event, ...args) {
         (await import('./commands/' + file)).default.execute(...args),
       );
       break;
+    default:
+      commandFiles.forEach(async file => {
+        const passiveCommand = (await import('./commands/' + file)).default
+        if (passiveCommand.event === event) passiveCommand.execute(...args)
+      })
   }
 }
