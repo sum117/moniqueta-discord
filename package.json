@@ -27,9 +27,8 @@
   "dependencies": {
     "@discordjs/builders": "^0.15.0",
     "axios": "^0.27.2",
-    "better-sqlite3": "^7.5.3",
+    "better-sqlite3": "^7.6.1",
     "discord.js": "^13.8.0",
-    "get-image-colors": "^1.1.1",
     "quick.db": "^9.0.5",
     "sharp": "^0.30.7"
   },
@@ -39,7 +38,6 @@
     "devMoniqueta": "nodemon ."
   },
   "devDependencies": {
-    "node": "^16.15.1",
     "prettier": "^2.7.1"
   },
   "repository": {

@@ -1,4 +1,4 @@
-import getColors from 'get-image-colors';
+
 import { MessageEmbed } from 'discord.js';
 import { userMention } from '@discordjs/builders';
 export default {
@@ -33,14 +33,11 @@ export default {
               '❌ Você não informou um link no último elemento do parâmetro.',
             );
 
-          const color = () =>
-            getColors(link).then(
-              (color) => color.map((color) => color.hex())[0],
-            );
           let embed = new MessageEmbed()
             .setTitle(parsedTitle.join(' '))
             .setDescription(args.join('\n'))
             .setImage(link)
+            .setColor('RANDOM')
             .setAuthor({
               iconURL: msg.guild.iconURL({ dynamic: true, size: 1024 }),
               name: msg.channel.parent.name.slice(1).replace(/\| RP/, ''),
@@ -48,16 +45,12 @@ export default {
             .setFooter({
               text: '💡 Quer dar uma nova descrição ao canal? Contate os Admins!',
             });
-          color().then((color) => {
-            embed.setColor(color);
-            resolve(
-              msg.channel.send({
-                content:
-                  'Descrição atual produzida por ' + userMention(msg.author.id),
-                embeds: [embed],
-              }),
-            );
-          });
+          resolve(
+            msg.channel.send({
+              content:
+                'Descrição atual produzida por ' + userMention(msg.author.id),
+              embeds: [embed],
+            }))
         }
       }
     });

@@ -31,6 +31,7 @@ moniqueta.once('ready', async () => {
 });
 
 process.on('unhandledRejection', (e) => {
+  if (e.code == 'ERR_UNSUPPORTED_DIR_IMPORT') return
   console.log(e);
 });
 

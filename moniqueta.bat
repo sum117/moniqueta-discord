@@ -1,6 +1,6 @@
 
 @echo off
-rem I made this file so I could run the program from my command line. I recommend you using the regular npm run methods we have in the package.json file, because they are more reliable, and don't need a PATH to be added to this directory, it would render this batch useless without it. If you still want to use this, so you can run the bot with "moniqueta --code, or moniqueta --start" just go ahead and add the path to this directory to your PATH environment variable.
+rem I made this file so I could run the program from my windows command line. I recommend you using the regular npm run methods we have in the package.json file, because they are more reliable, and don't need a PATH to be added to this directory, it would render this batch useless without it. If you still want to use this, so you can run the bot with "moniqueta --code, or moniqueta --start" just go ahead and add the path to this directory to your PATH environment variable.
 
 rem set a variable called param to the value of the first parameter. It just accepts one parameter anyways.
 set param=%1
