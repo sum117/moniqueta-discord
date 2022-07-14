@@ -91,7 +91,7 @@ export function msToTime(ms) {
  * @returns {Promise} O objeto da reação da mensagem.
  */
 export function bulkEmoji(msg, Array) {
-  for (each of Array) msg.react(each);
+  for (let each of Array) msg.react(each);
 }
 /**
  * Atualiza um canal de contador de membros.
