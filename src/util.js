@@ -3,7 +3,7 @@ import { Client, Message, Interaction } from 'discord.js';
 import { moniqueta } from './index.js';
 // BOT STARTUP CREDENTIALS
 
-export const [prefix, token] = await import('./config.json',  {
+export const [prefix, token] = await import('./config.json', {
   assert: { type: 'json' },
 })
   .then((config) => {
@@ -16,6 +16,7 @@ export const [prefix, token] = await import('./config.json',  {
   });
 
 // SPECIFIC CHANNEL IDS FOR GUILD COMMANDS
+export const myGuild = '976870103125733388';
 export const categories = {
   arquivo: '977086756459511808',
 };
@@ -24,10 +25,19 @@ export const channels = {
   adminFichaRegistro: '986952888930697266',
   rpFichas: '986952888930697266',
   rolesChannel: '977068675343450133',
+  entranceChannel: '976880373118148678',
+  generalChannel: '977081396839448596',
+  mediaChannel: '977083633435279390',
+  memberCounter: '977082930402844692',
+  loginoutChannel: '977087066129174538',
+};
+export const roles = {
+  entranceRole: '983190321334726666',
 };
 const commandFiles = fs
   .readdirSync('src/commands')
   .filter((file) => file.endsWith('.js'));
+
 /**
  * @description Inicializa os eventos necessários para o funcionamento dos comandos.
  * @param {Client} client O cliente do bot.
@@ -37,7 +47,7 @@ export async function loadEvents(client, events = [{ name: '', once: false }]) {
   commandFiles.map(async (file) => {
     if (file.startsWith('slash.') || file.startsWith('interaction.')) return;
     const command = (await import('./commands/' + file)).default;
-    return moniqueta.commands.set(file.split('.')[0], {
+    return moniqueta.commands.set(file.split('.js')[0], {
       name: command.name,
       description: command.description,
     });
@@ -57,6 +67,50 @@ export function title(string = '') {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+/**
+ * Função para converter milissegundos em duração.
+ * @param {number} ms Tempo em milisegundos.
+ * @returns {string} Retorna o tempo formatado em duração humanamente legível.
+ */
+export function msToTime(ms) {
+  let seconds = (ms / 1000).toFixed(1);
+  let minutes = (ms / (1000 * 60)).toFixed(1);
+  let hours = (ms / (1000 * 60 * 60)).toFixed(1);
+  let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+
+  if (seconds < 60) return seconds + ' Segundos';
+  else if (minutes < 60) return minutes + ' Minutos';
+  else if (hours < 24) return hours + ' Horas';
+  else return days + ' Dias';
+}
+/**
+ * Função para adicionar multiplas reações em uma mensagem.
+ * @param {Object} msg O objeto da mensagem que será reagida.
+ * @param {Array} emojiArray Os emojis que serão usados para reagir.
+ * @example bulkEmoji(msg, ['✅', '❌']) // Irá reagir duas vezes à mensagem, com os dois emojis enviados.
+ * @returns {Promise} O objeto da reação da mensagem.
+ */
+export function bulkEmoji(msg, Array) {
+  for (each of Array) msg.react(each);
+}
+/**
+ * Atualiza um canal de contador de membros.
+ * @param {String} myGuild Uma guilda do bot.
+ */
+export function updateMemberCounter(myGuild) {
+  setInterval(() => {
+    const memberCounter = moniqueta.guilds.cache
+      .get(myGuild)
+      .channels.cache.get(channels.memberCounter);
+    moniqueta.memberCounter.forEach((time, user) => {
+      if (Date.now() - time > 8 * 3600 * 1000)
+        moniqueta.memberCounter.delete(user);
+    });
+    memberCounter.edit({
+      name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size),
+    });
+  }, 5 * 60 * 1000);
+}
 /**
  * @author Milo123459<https://github.com/Milo123459>
  * @description This progress bar logic was copied from <https://github.com/Sparker-99/string-progressbar/blob/master/index.js>, a NPM package by Sparker-99.
@@ -81,6 +135,7 @@ export async function registerSlashCommands(client, guildId) {
   const slashCommands = await Promise.all(slashArray);
   await client.application.commands.set(slashCommands, guildId);
 }
+
 /**
  * @description Roda os comandos do bot. Deve ser colocado nos eventos.
  * @param {String} event O nome do evento que executou este comando.
@@ -99,7 +154,7 @@ async function loadCommands(event, ...args) {
       if (msg.content.startsWith(prefix)) {
         const args = msg.content.slice(1).trim().split(/ +/);
         const name = args[0];
-        const command = commandFiles.find((e) => e === `${name}.js`);
+        const command = commandFiles.find((e) => e === `prefix.${name}.js`);
         args.shift();
         if (command)
           (await import('./commands/' + command)).default.execute(msg, args);
