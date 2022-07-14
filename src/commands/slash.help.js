@@ -1,5 +1,5 @@
 import { moniqueta } from '../index.js';
-import { Collection, MessageEmbed, Interaction } from 'discord.js';
+import { Collection, Interaction, MessageEmbed } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
 export default {
     name: 'Ajuda',

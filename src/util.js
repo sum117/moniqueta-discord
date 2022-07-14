@@ -3,7 +3,7 @@ import { Client, Message, Interaction } from 'discord.js';
 import { moniqueta } from './index.js';
 // BOT STARTUP CREDENTIALS
 
-export const [prefix, token] = await import('./config.json', {
+export const [prefix, token] = await import('./config.json',  {
   assert: { type: 'json' },
 })
   .then((config) => {
