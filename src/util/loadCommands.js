@@ -14,7 +14,6 @@ const systems = Object(commandSystems)
 
 
 export async function loadCommands(event, client, ...args) {
-    // Operação para o comando de ajuda.
     switch (event) {
         case "messageCreate":
             const msg = args[0];
