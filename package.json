@@ -1,0 +1,52 @@
+{
+  "name": "moniqueta-discordjs",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "keywords": [],
+  "author": "sum117",
+  "contributors": [
+    {
+      "name": "K4L1B3",
+      "url": "https://github.com/K4L1B3"
+    },
+    {
+      "name": "WillianBill1",
+      "url": "https://github.com/WillianBill1"
+    },
+    {
+      "name": "CeCeloz",
+      "url": "https://github.com/CeCeloz"
+    },
+    {
+      "name": "KaioHenrique21",
+      "url": "https://github.com/KaioHenrique21"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "axios": "^0.27.2",
+    "better-sqlite3": "^7.6.1",
+    "discord.js": "^13.8.0",
+    "quick.db": "^9.0.5",
+    "sharp": "^0.30.7"
+  },
+  "scripts": {
+    "prettier": "prettier --write \"./**/*.{ts,js,jsx,json}\"",
+    "moniqueta": "node --experimental-specifier-resolution=node src/index.js",
+    "devMoniqueta": "nodemon ."
+  },
+  "devDependencies": {
+    "prettier": "^2.7.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sum117/Moniqueta-Discord.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sum117/Moniqueta-Discord.js/issues"
+  },
+  "homepage": "https://github.com/sum117/Moniqueta-Discord.js#readme",
+  "description": ""
+}
