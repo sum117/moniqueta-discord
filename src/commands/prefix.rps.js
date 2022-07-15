@@ -4,15 +4,15 @@ import {
   MessageActionRow,
   MessageButton,
   MessageEmbed,
-} from 'discord.js';
-import { title } from '../util.js';
+} from "discord.js";
+import { title } from "../util.js";
 
 const { userMention } = Formatters;
 
 export default {
-  event: 'messageCreate',
-  name: 'Pedra, Papel e Tesoura',
-  description: 'Um jokenpô simples com botões, em javascript.',
+  event: "messageCreate",
+  name: "Pedra, Papel e Tesoura",
+  description: "Um jokenpô simples com botões, em javascript.",
   /**@param {Message} msg A mensagem que executou este comando*/
 
   async execute(msg) {
@@ -21,14 +21,14 @@ export default {
     const host = author;
     const rival = mentions.users.first();
     if (!rival)
-      return msg.reply('Você precisa mencionar alguém para jogar rps.');
+      return msg.reply("Você precisa mencionar alguém para jogar rps.");
     if (rival.id === client.user.id) {
-      const possibleChoices = ['pedra', 'papel', 'tesoura'];
+      const possibleChoices = ["pedra", "papel", "tesoura"];
       const choice =
         possibleChoices[Math.floor(Math.random() * possibleChoices.length)];
       session.set(rival.id, choice);
     }
-    const array = buttons('pedra', 'papel', 'tesoura');
+    const array = buttons("pedra", "papel", "tesoura");
     let buttonRow = new MessageActionRow().addComponents(array);
 
     const embed = new MessageEmbed()
@@ -37,20 +37,20 @@ export default {
         iconURL: host.avatarURL({ dynamic: true, size: 512 }),
       })
       .setColor(3553599)
-      .setThumbnail('attachment://rps.jpg')
-      .addField(host.username, 'Aguardando escolha...', true)
+      .setThumbnail("attachment://rps.jpg")
+      .addField(host.username, "Aguardando escolha...", true)
       .addField(
         rival.username,
         rival.id === client.user.id
-          ? 'Moniqueta já escolheu!'
-          : 'Aguardando escolha...',
-        true,
+          ? "Moniqueta já escolheu!"
+          : "Aguardando escolha...",
+        true
       );
     const game = await channel.send({
       content: `Pedra, Papel e Tesoura entre ${host} e ${rival} invocado!`,
       embeds: [embed],
       components: [buttonRow],
-      files: ['src/commands/resources/rps.jpg'],
+      files: ["src/commands/resources/rps.jpg"],
     });
     const filter = (button) =>
       [host.id, rival.id].includes(button.user.id) &&
@@ -59,19 +59,19 @@ export default {
       filter,
       time: 60 * 1000,
     });
-    collector.on('collect', (button) => {
+    collector.on("collect", (button) => {
       let index = button.user.id === host.id ? 0 : 1;
 
       if (session.size === 1) {
         const winConditions = new Map([
-          ['pedra', 'tesoura'],
-          ['papel', 'pedra'],
-          ['tesoura', 'papel'],
+          ["pedra", "tesoura"],
+          ["papel", "pedra"],
+          ["tesoura", "papel"],
         ]);
         const compare = session.values().next().value;
         if (compare === button.customId)
           return button.update({
-            content: 'Empate!',
+            content: "Empate!",
             embeds: [],
             components: [],
             files: [],
@@ -81,16 +81,16 @@ export default {
 
           session.set(button.user.id, button.customId);
           const results = `**${host.username}** escolheu: ${title(
-            session.get(host.id),
+            session.get(host.id)
           )} \n**${rival.username}** escolheu: ${title(session.get(rival.id))}`;
           return button.update({
             content:
               userMention(
                 compare === current
                   ? button.user.id
-                  : session.keys().next().value,
+                  : session.keys().next().value
               ) +
-              ' venceu!\n' +
+              " venceu!\n" +
               results,
             embeds: [],
             components: [],
@@ -102,26 +102,26 @@ export default {
       let embed = button.message.embeds[0];
       const choice = {
         name: embed.fields[index].name,
-        value: 'Opção selecionada!',
+        value: "Opção selecionada!",
         inline: true,
       };
 
       embed.setFields(
-        index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]],
+        index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]
       );
       button.update({ embeds: [embed], files: [] });
     });
     function buttons(options = [arguments]) {
       const emojis = {
-        pedra: '🪨',
-        papel: '🧻',
-        tesoura: '✂️',
+        pedra: "🪨",
+        papel: "🧻",
+        tesoura: "✂️",
       };
       if (options.constructor !== Array) options = Array.from(arguments);
       return options.map((value) => {
         return new MessageButton()
           .setCustomId(value)
-          .setStyle('PRIMARY')
+          .setStyle("PRIMARY")
           .setLabel(value.charAt(0).toUpperCase() + value.slice(1))
           .setEmoji(emojis[value]);
       });
