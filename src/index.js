@@ -34,7 +34,7 @@ moniqueta.once('ready', async () => {
 process.on('unhandledRejection', (e) => {
   console.log(e);
   moniqueta.channels.cache.get(channels.errorChannel).send({
-    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\nStack:${e.stack}`
+    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
   })
 });
 

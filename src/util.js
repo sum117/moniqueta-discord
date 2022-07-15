@@ -23,7 +23,7 @@ export const categories = {
 export const channels = {
   rpRegistro: '977090435845603379',
   adminFichaRegistro: '986952888930697266',
-  rpFichas: '986952888930697266',
+  rpFichas: '977090263438745620',
   rolesChannel: '977068675343450133',
   entranceChannel: '976880373118148678',
   generalChannel: '977081396839448596',
