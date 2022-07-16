@@ -19,11 +19,11 @@ export async function execute(msg) {
       ". Ela irá detonar em 45 segundos. Nada mais importa...",
     files: [
       {
-        attachment: "./src/commands/resources/bomba.gif",
+        attachment: "./src/resources/bomba.gif",
         name: "bomba.gif",
       },
       {
-        attachment: "./src/commands/resources/bomba.mp3",
+        attachment: "./src/resources/bomba.mp3",
         name: "bomba.mp3",
       },
     ],

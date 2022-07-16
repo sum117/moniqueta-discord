@@ -8,7 +8,7 @@ export const data = {
     "Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.",
 };
 /**@param {Message} msg */
-export async function execute(msg) {
+export async function execute(client, msg) {
   if (msg.channelId === channels.entranceChannel && !msg.author.bot) {
     let response;
     if (msg.content.match(/18/)) {
@@ -23,7 +23,7 @@ export async function execute(msg) {
             `${userMention(
               msg.author.id
             )} ganhou acesso à comunidade, ${roleMention(
-              "977087122345451530"
+              roles.welcomeRole
             )}! Falem com ele!`
           );
       }

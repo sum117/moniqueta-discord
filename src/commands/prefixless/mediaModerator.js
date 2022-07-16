@@ -7,7 +7,7 @@ export const data = {
   description:
     "Um comando automático do servidor que coloca as mensagens em seus devidos lugares.",
 };
-export function execute(msg) {
+export function execute(client, msg) {
   if (
     msg.channelId === channels.generalChannel &&
     (msg.attachments.size >= 1 || msg.content.match(/https?/g))

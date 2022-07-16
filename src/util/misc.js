@@ -29,4 +29,5 @@ export const channels = {
 };
 export const roles = {
   entranceRole: "983190321334726666", // the role which will be given to the user when they join the guild.
+  welcomeRole: "977087122345451530", // Role given to members that volunteered to cheer up newcomers.
 };

@@ -50,7 +50,7 @@ export async function execute(msg) {
     content: `Pedra, Papel e Tesoura entre ${host} e ${rival} invocado!`,
     embeds: [embed],
     components: [buttonRow],
-    files: ["src/commands/resources/rps.jpg"],
+    files: ["src/resources/rps.jpg"],
   });
   const filter = (button) =>
     [host.id, rival.id].includes(button.user.id) &&

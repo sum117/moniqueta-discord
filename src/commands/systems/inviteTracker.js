@@ -1,4 +1,4 @@
-import { myGuild } from "../../util";
+import { myGuild, channels } from "../../util";
 export const data = {
   name: "Invite Tracker",
   events: ["inviteCreate", "guildMemberAdd", "guildMemberRemove"],

@@ -1,4 +1,5 @@
 import { Collection, Interaction, MessageEmbed } from "discord.js";
+import { inlineCode, bold } from "@discordjs/builders";
 import { SlashCommandBuilder } from "@discordjs/builders";
 export const data = new SlashCommandBuilder()
   .setName("help")
@@ -19,11 +20,10 @@ export async function execute(interaction, client) {
     .setDescription(
       "💡 Possuo diversas integrações de Slash Commands além desta que você pode checar escrevendo `/`!\n\n" +
         commands
-          .map((command, name) => {
-            return `\`${`$` + name}\` - **${command?.data.name}** - ${
-              command?.data.description
-            }`;
-          })
+          .map(
+            (description, command) =>
+              inlineCode(moniqueta.prefix + command) + " " + bold(description)
+          )
           .join("\n")
     )
     .setColor(12340060)

@@ -1,4 +1,8 @@
-import { Client, Collection } from "discord.js";
+import {
+  Client,
+  Collection,
+  CommandInteractionOptionResolver,
+} from "discord.js";
 import {
   loadEvents,
   registerSlashCommands,
@@ -6,6 +10,7 @@ import {
   channels,
   token,
   myGuild,
+  prefix,
 } from "./util";
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from "./commands/prefix";
@@ -17,7 +22,7 @@ moniqueta.commands = new Collection();
 moniqueta.memberCounter = new Collection();
 moniqueta.inviteCodeUses = new Collection();
 moniqueta.guildInvites = new Collection();
-
+moniqueta.prefix = await prefix;
 moniqueta.on("ready", async () => {
   console.log("Moniqueta pronta.");
 
@@ -42,13 +47,10 @@ moniqueta.on("ready", async () => {
       console.log(moniqueta.guildInvites);
     })
   );
-  for (const [, values] of [
-    Object.entries(Object(slashCommands)),
-    Object.entries(Object(prefixCommands)),
-  ]) {
-    for (const [name, value] in values) {
-      moniqueta.commands.set(name !== "help" ? (name, value) : null);
-    }
+  for (const commands of [slashCommands, prefixCommands]) {
+    Object.entries(commands).forEach(([key, command]) => {
+      moniqueta.commands.set(key, command.data.description);
+    });
   }
 });
 
