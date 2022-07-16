@@ -12,7 +12,7 @@ export async function execute(msg, args) {
   if (paragraphs.length < 2)
     return msg.reply(
       "❌Você o que é preciso para a execução deste comando! Tente: " +
-      codeBlock("$embed <Descrição do Canal>\n<Link de Imagem>")
+        codeBlock("$embed <Descrição do Canal>\n<Link de Imagem>")
     );
   /**
    * @type {Array<String>}

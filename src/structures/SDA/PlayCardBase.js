@@ -44,13 +44,14 @@ export class PlayCardBase {
       if (!chosenChar) {
         throw (
           (await interaction[interaction.deferred ? "editReply" : "reply"]({
-            content: `Não há nenhum personagem criado ou selecionado para ${user.id === interaction.user.id ? "você" : user
-              }`,
+            content: `Não há nenhum personagem criado ou selecionado para ${
+              user.id === interaction.user.id ? "você" : user
+            }`,
           }),
-            new Error(
-              "Erro de personagem não criado ou selecionado acionado por: " +
+          new Error(
+            "Erro de personagem não criado ou selecionado acionado por: " +
               user.id
-            ))
+          ))
         );
       } else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
@@ -129,8 +130,8 @@ export class PlayCardBase {
             gender === "masculino"
               ? "♂️ Masculino"
               : gender === "feminino"
-                ? "♀️ Feminino"
-                : "👽 Descubra",
+              ? "♀️ Feminino"
+              : "👽 Descubra",
             true
           )
           .addField(
@@ -193,11 +194,11 @@ export class PlayCardBase {
         ],
         files: attachment
           ? [
-            {
-              attachment: attachment.attachment,
-              name: attachment.name,
-            },
-          ]
+              {
+                attachment: attachment.attachment,
+                name: attachment.name,
+              },
+            ]
           : [],
         components: [
           new MessageActionRow().addComponents(

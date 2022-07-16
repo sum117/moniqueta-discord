@@ -10,20 +10,21 @@ export const data = new SlashCommandBuilder()
 export async function execute(interaction, client) {
   const moniqueta = client;
   /**
-  * @type {Collection}
-  * @constant commands - Uma coleção do Discord com os comandos do bot.
-  */
+   * @type {Collection}
+   * @constant commands - Uma coleção do Discord com os comandos do bot.
+   */
   const commands = moniqueta.commands;
   const owner = await interaction.guild.fetchOwner();
   const embed = new MessageEmbed()
     .setDescription(
       "💡 Possuo diversas integrações de Slash Commands além desta que você pode checar escrevendo `/`!\n\n" +
-      commands
-        .map((command, name) => {
-          return `\`${`$` + name}\` - **${command.name}** - ${command.description
+        commands
+          .map((command, name) => {
+            return `\`${`$` + name}\` - **${command?.data.name}** - ${
+              command?.data.description
             }`;
-        })
-        .join("\n")
+          })
+          .join("\n")
     )
     .setColor(12340060)
     .setTitle("Meus Comandos~")

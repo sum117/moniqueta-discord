@@ -2,22 +2,21 @@ import { myGuild } from "../../util";
 export const data = {
   name: "Invite Tracker",
   events: ["inviteCreate", "guildMemberAdd", "guildMemberRemove"],
-  description:
-    "Um sistema para monitorar os convites dos membros do servidor.",
+  description: "Um sistema para monitorar os convites dos membros do servidor.",
 };
 
 export async function execute(event, client, ...args) {
   const moniqueta = client;
   switch (event) {
     case "inviteCreate":
-      const [invite] = args[0];
+      const [invite] = args;
       console.log("Novo convite salvo.");
       moniqueta.inviteCodeUses.set(invite.code, invite.uses);
       moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
       console.log(moniqueta.guildInvites);
       break;
     case "guildMemberAdd":
-      const [member] = args[0];
+      const [member] = args;
       const cachedInvites = moniqueta.guildInvites.get(member.guild.id);
       const newInvites = await member.guild.invites.fetch();
 
@@ -38,7 +37,8 @@ export async function execute(event, client, ...args) {
           .send(
             `🟩 O usuário ${userMention(
               member.user.id
-            )} entrou através do código de convite \`${usedInvite.code
+            )} entrou através do código de convite \`${
+              usedInvite.code
             }\`, gerado por ${userMention(
               usedInvite.inviterId
             )}. Agora somos ${bold(memberCount)}.`
@@ -54,7 +54,8 @@ export async function execute(event, client, ...args) {
       moniqueta.channels.cache
         .get(channels.loginoutChannel)
         .send(
-          `🟥 O usuário ${member.user.username}, de ID ${member.id
+          `🟥 O usuário ${member.user.username}, de ID ${
+            member.id
           } com \`${msToTime(
             Date.now() - member.joinedTimestamp
           )}\` de servidor saiu.`

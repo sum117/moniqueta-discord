@@ -91,8 +91,8 @@ export class Interaction extends PlayCardBase {
         gender === "masculino"
           ? "♂️ Masculino"
           : gender === "feminino"
-            ? "♀️ Feminino"
-            : "👽 Descubra",
+          ? "♀️ Feminino"
+          : "👽 Descubra",
         true
       )
       .addField("Soma", assets.sum[sum].emoji + " " + title(sum), true)
@@ -115,8 +115,8 @@ export class Interaction extends PlayCardBase {
       const threadChannel = interaction.message.hasThread
         ? interaction.message.thread
         : await interaction.message.startThread({
-          name: "Comentários do Post",
-        });
+            name: "Comentários do Post",
+          });
       const check = await handleWebhooks();
       const webhook = check
         ? check

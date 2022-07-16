@@ -3,8 +3,13 @@ import {
   loadEvents,
   registerSlashCommands,
   updateMemberCounter,
-  channels, token, myGuild
+  channels,
+  token,
+  myGuild,
 } from "./util";
+// Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
+import * as prefixCommands from "./commands/prefix";
+import * as slashCommands from "./commands/slash";
 export const moniqueta = new Client({
   intents: 32767,
 });
@@ -13,12 +18,12 @@ moniqueta.memberCounter = new Collection();
 moniqueta.inviteCodeUses = new Collection();
 moniqueta.guildInvites = new Collection();
 
-moniqueta.once("ready", async () => {
+moniqueta.on("ready", async () => {
   console.log("Moniqueta pronta.");
 
   registerSlashCommands(moniqueta, myGuild);
   loadEvents(moniqueta, [
-    { once: true, name: "ready" },
+    { once: "true", name: "ready" },
     { name: "messageCreate" },
     { name: "interactionCreate" },
     { name: "guildMemberAdd" },
@@ -27,16 +32,14 @@ moniqueta.once("ready", async () => {
   ]);
   updateMemberCounter(myGuild);
 
-  moniqueta.guilds.fetch(myGuild).then((guild) =>
-    guild.invites.fetch().then((invites) => {
-      console.log("Novos convites foram salvos.");
-      invites.each((invite) =>
-        moniqueta.inviteCodeUses.set(invite.code, invite.uses)
-      );
-      moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
-      console.log(moniqueta.guildInvites);
-    })
-  );
+  for (const [, values] of [
+    Object.entries(Object(slashCommands)),
+    Object.entries(Object(prefixCommands)),
+  ]) {
+    for (const [name, value] in values) {
+      moniqueta.commands.set(name !== "help" ? (name, value) : null);
+    }
+  }
 });
 
 process.on("unhandledRejection", (e) => {

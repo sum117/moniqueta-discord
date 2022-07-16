@@ -17,8 +17,9 @@ export async function execute(interaction) {
     await interaction.member.roles.add(interaction.values);
     await interaction.reply({
       ephemeral: true,
-      content: `Cargos atualizados para a sua sessão de ${interaction.component.placeholder
-        }: ${interaction.values.map((role) => "<@&" + role + ">").join(", ")}`,
+      content: `Cargos atualizados para a sua sessão de ${
+        interaction.component.placeholder
+      }: ${interaction.values.map((role) => "<@&" + role + ">").join(", ")}`,
     });
   } else {
     const allSelectorRoles = interaction.message.components.flatMap(

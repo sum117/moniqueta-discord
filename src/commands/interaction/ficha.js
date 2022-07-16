@@ -159,7 +159,8 @@ export async function execute(interaction) {
                 })(),
               });
               interaction.reply(
-                `📩 Disputa aberta para ${trialUser.user.username
+                `📩 Disputa aberta para ${
+                  trialUser.user.username
                 } no canal ${channelMention(ticket.id)}`
               );
               break;
@@ -214,15 +215,15 @@ export async function execute(interaction) {
               choices.get("genero") === "masculino"
                 ? "♂️ Masculino"
                 : choices.get("genero") === "feminino"
-                  ? "♀️ Feminino"
-                  : "👽 Descubra",
+                ? "♀️ Feminino"
+                : "👽 Descubra",
               true
             )
             .addField(
               "Fantasma",
               assets.phantom[choices.get("purgatorio")] +
-              " " +
-              title(choices.get("purgatorio")),
+                " " +
+                title(choices.get("purgatorio")),
               true
             ),
         ];

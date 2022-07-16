@@ -14,15 +14,14 @@ export const data = {
   name: "Pedra, Papel e Tesoura",
   description: "Um jokenpô simples com botões, em javascript.",
   /**@param {Message} msg A mensagem que executou este comando*/
-}
+};
 
 export async function execute(msg) {
   const { author, mentions, client, channel } = msg;
   let session = new Map();
   const host = author;
   const rival = mentions.users.first();
-  if (!rival)
-    return msg.reply("Você precisa mencionar alguém para jogar rps.");
+  if (!rival) return msg.reply("Você precisa mencionar alguém para jogar rps.");
   if (rival.id === client.user.id) {
     const possibleChoices = ["pedra", "papel", "tesoura"];
     const choice =
@@ -87,9 +86,7 @@ export async function execute(msg) {
         return button.update({
           content:
             userMention(
-              compare === current
-                ? button.user.id
-                : session.keys().next().value
+              compare === current ? button.user.id : session.keys().next().value
             ) +
             " venceu!\n" +
             results,

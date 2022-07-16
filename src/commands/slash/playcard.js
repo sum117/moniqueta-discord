@@ -65,8 +65,8 @@ export async function execute(interaction) {
     let MsgToRemove = interaction.options.getString("link");
     let match = MsgToRemove
       ? MsgToRemove.match(
-        /(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
-      )
+          /(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
+        )
       : null;
     await char.interact(
       interaction,

@@ -21,7 +21,7 @@ export const channels = {
   rpFichas: "977090263438745620", // where the sheets will be stored when approved
   rolesChannel: "977068675343450133", // where the role selector is placed.
   entranceChannel: "976880373118148678", // the place where the bot will run the "captcha" check.
-  generalChannel: "977081396839448596",  // the general channel of the guild.
+  generalChannel: "977081396839448596", // the general channel of the guild.
   mediaChannel: "977083633435279390", // the channel where the bot will upload media which was moderated.
   memberCounter: "977082930402844692", // the channel where the bot will count the members.
   loginoutChannel: "977087066129174538", // the channel where the bot will log users in and out.
