@@ -7,6 +7,6 @@ export const data = {
 };
 
 /**@param {Message} msg A mensagem que executou este comando*/
-async function execute(msg) {
+export async function execute(msg) {
   msg.reply("Olá!");
 }
