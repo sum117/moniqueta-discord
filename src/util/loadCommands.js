@@ -20,7 +20,7 @@ export async function loadCommands(event, client, ...args) {
         const userArgs = msg.content.slice(1).trim().split(/ +/);
         const name = userArgs[0].toLowerCase();
         const command = prefixed[name];
-        args.shift();
+        userArgs.shift();
         if (command) {
           await command.execute(msg, userArgs);
         } else
