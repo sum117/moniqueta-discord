@@ -16,14 +16,14 @@ export async function loadCommands(event, client, ...args) {
     switch (event) {
         case "messageCreate":
             const msg = args[0];
-            console.log(msg)
             if (msg.content.startsWith(prefix)) {
                 const userArgs = msg.content.slice(1).trim().split(/ +/);
-                const name = userArgs.toLowerCase();
+                const name = userArgs[0].toLowerCase();
                 const command = prefixed[name];
                 args.shift();
-                if (command)
-                    command.execute(msg, userArgs);
+                if (command) {
+                    await command.execute(msg, userArgs);
+                }
                 else
                     msg.reply("❌ Não encontrei o comando que você tentou executar.");
             }
