@@ -1,6 +1,5 @@
 import {
   Formatters,
-  Message,
   MessageActionRow,
   MessageButton,
   MessageEmbed,

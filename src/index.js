@@ -1,7 +1,6 @@
 import {
   Client,
   Collection,
-  CommandInteractionOptionResolver,
 } from "discord.js";
 import {
   loadEvents,
