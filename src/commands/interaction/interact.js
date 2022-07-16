@@ -1,5 +1,5 @@
 import { ButtonInteraction } from "discord.js";
-import { Interaction } from "../structures/SDA/Interaction.js";
+import { Interaction } from "../../structures/SDA/Interaction.js";
 
 export const data = {
   event: "interactionCreate",

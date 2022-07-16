@@ -1,5 +1,5 @@
 import { CommandInteraction } from "discord.js";
-import { PlayCardBase } from "../structures/SDA/PlayCardBase.js";
+import { PlayCardBase } from "../../structures/SDA/PlayCardBase.js";
 import { SlashCommandBuilder as SCB } from "@discordjs/builders";
 
 export const data = new SCB()

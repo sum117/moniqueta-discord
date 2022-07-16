@@ -1,7 +1,6 @@
-import { misc, bulkEmoji } from "../../util";
+import { channels, bulkEmoji } from "../../util";
 import { channelMention, userMention } from "@discordjs/builders";
 import { MessageAttachment } from "discord.js";
-const { channels } = misc;
 export const data = {
   event: "messageCreate",
   name: "Media Moderator",
@@ -10,7 +9,7 @@ export const data = {
 };
 export function execute(msg) {
   if (
-    msg.channel.id === channels.generalChannel &&
+    msg.channelId === channels.generalChannel &&
     (msg.attachments.size >= 1 || msg.content.match(/https?/g))
   ) {
     setTimeout(() => {

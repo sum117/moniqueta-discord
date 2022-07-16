@@ -1,7 +1,5 @@
 import { Collection, Interaction, MessageEmbed } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { misc } from "../../util"
-const { prefix } = misc;
 export const data = new SlashCommandBuilder()
   .setName("help")
   .setDescription("Mostra todos os comandos disponíveis na moniqueta.");
@@ -22,7 +20,7 @@ export async function execute(interaction, client) {
       "💡 Possuo diversas integrações de Slash Commands além desta que você pode checar escrevendo `/`!\n\n" +
       commands
         .map((command, name) => {
-          return `\`${prefix + name}\` - **${command.name}** - ${command.description
+          return `\`${`$` + name}\` - **${command.name}** - ${command.description
             }`;
         })
         .join("\n")

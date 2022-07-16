@@ -3,9 +3,8 @@ import {
   loadEvents,
   registerSlashCommands,
   updateMemberCounter,
-  misc
+  channels, token, myGuild
 } from "./util";
-const { channels, token, myGuild } = misc;
 export const moniqueta = new Client({
   intents: 32767,
 });

@@ -1,5 +1,4 @@
-import { misc } from "../../util";
-const { myGuild } = misc;
+import { myGuild } from "../../util";
 export const data = {
   name: "Invite Tracker",
   events: ["inviteCreate", "guildMemberAdd", "guildMemberRemove"],

@@ -1,7 +1,6 @@
-import { misc } from "../../util";
+import { channels, roles } from "../../util";
 import { userMention, roleMention } from "@discordjs/builders";
 import { Message } from "discord.js";
-const { channels, roles } = misc;
 export const data = {
   event: "messageCreate",
   name: "Script de entrada do servidor.",

@@ -12,22 +12,24 @@ const prefixless = Object(prefixlessCommands)
 const prefixed = Object(prefixCommands)
 const systems = Object(commandSystems)
 
-
 export async function loadCommands(event, client, ...args) {
     switch (event) {
         case "messageCreate":
             const msg = args[0];
+            console.log(msg)
             if (msg.content.startsWith(prefix)) {
-                const args = msg.content.slice(1).trim().split(/ +/);
-                const name = args[0].toLowerCase();
+                const userArgs = msg.content.slice(1).trim().split(/ +/);
+                const name = userArgs.toLowerCase();
                 const command = prefixed[name];
                 args.shift();
                 if (command)
-                    command.execute(msg, args);
+                    command.execute(msg, userArgs);
                 else
                     msg.reply("❌ Não encontrei o comando que você tentou executar.");
             }
-            for (const command in prefixless) command.execute(msg, args);
+            for (const [, command] of Object.entries(prefixless)) {
+                command.execute(client, msg)
+            }
             break;
         case "interactionCreate":
             const interaction = args[0];
@@ -39,7 +41,7 @@ export async function loadCommands(event, client, ...args) {
         default:
             for (const system in systems) {
                 if (systems[system].events.includes(event)) systems[system].execute(event, client, ...args)
-                if (event === "ready") for (const [, values] in [slash, prefixed]) {
+                if (event === "ready") for (const [, values] of [Object.entries(slash), Object.entries(prefixed)]) {
                     for (const [name, value] in values) {
                         moniqueta.commands.set(name, value)
                     }

@@ -7,13 +7,12 @@ import {
   SelectMenuInteraction,
   TextInputComponent,
 } from "discord.js";
-import { PlayCardBase, assets } from "../structures/SDA/PlayCardBase.js";
-import { title, misc } from "../../util";
-import { db } from "../db.js";
+import { PlayCardBase, assets } from "../../structures/SDA/PlayCardBase.js";
+import { title, categories, channels } from "../../util";
+import { db } from "../../db.js";
 import { channelMention, userMention } from "@discordjs/builders";
 const { sum } = assets;
 const sheet = new Map();
-const { categories, channels } = misc;
 export const data = {
   name: "Comando de Ficha de Personagem",
   description:

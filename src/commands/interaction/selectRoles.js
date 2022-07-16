@@ -1,6 +1,5 @@
 import { SelectMenuInteraction } from "discord.js";
-import { misc } from "../../util";
-const { channels } = misc;
+import { channels } from "../../util";
 export default {
   name: "Cargos por seletores",
   description: "Aquisição de cargos através de seletores.",
@@ -9,7 +8,7 @@ export default {
  * @param {SelectMenuInteraction} interaction A interação que iniciou o comando.
  */
 export async function execute(interaction) {
-  if (interaction.channel.id !== channels.rolesChannel) return;
+  if (interaction.channelId !== channels.rolesChannel) return;
   if (interaction.isSelectMenu()) {
     const possibleRoles = interaction.component.options.map(
       (option) => option.value
