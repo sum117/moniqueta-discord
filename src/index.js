@@ -32,6 +32,16 @@ moniqueta.on("ready", async () => {
   ]);
   updateMemberCounter(myGuild);
 
+  moniqueta.guilds.fetch(myGuild).then((guild) =>
+    guild.invites.fetch().then((invites) => {
+      console.log("Novos convites foram salvos.");
+      invites.each((invite) =>
+        moniqueta.inviteCodeUses.set(invite.code, invite.uses)
+      );
+      moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
+      console.log(moniqueta.guildInvites);
+    })
+  );
   for (const [, values] of [
     Object.entries(Object(slashCommands)),
     Object.entries(Object(prefixCommands)),
