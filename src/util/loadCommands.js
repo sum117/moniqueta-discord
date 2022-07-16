@@ -33,14 +33,14 @@ export async function loadCommands(event, client, ...args) {
             break;
         case "interactionCreate":
             const interaction = args[0];
-            if (interaction.isCommand()) slash[interaction.CommandName].execute(interaction, client)
+            if (interaction.isCommand()) await slash[interaction.commandName].execute(interaction, client)
             else for (const command in interactions) {
-                if (interactions[command].event === event) interactions[command].execute(interaction, client)
+                if (interactions[command].event === event) await interactions[command].execute(interaction, client)
             }
             break;
         default:
             for (const system in systems) {
-                if (systems[system].events.includes(event)) systems[system].execute(event, client, ...args)
+                if (systems[system].events.includes(event)) await systems[system].execute(event, client, ...args)
                 if (event === "ready") for (const [, values] of [Object.entries(slash), Object.entries(prefixed)]) {
                     for (const [name, value] in values) {
                         moniqueta.commands.set(name, value)
