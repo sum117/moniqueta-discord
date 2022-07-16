@@ -1,7 +1,4 @@
-import {
-  Client,
-  Collection,
-} from "discord.js";
+import { Client, Collection } from "discord.js";
 import {
   loadEvents,
   registerSlashCommands,
