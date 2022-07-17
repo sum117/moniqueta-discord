@@ -7,6 +7,7 @@ import * as prefixCommands from '../commands/prefix';
 import * as commandSystems from '../commands/systems';
 import * as musicCommands from '../commands/music';
 const music = Object(musicCommands);
+
 const slash = Object(slashCommands);
 const interactions = Object(interactionCommands);
 const prefixless = Object(prefixlessCommands);
