@@ -1,4 +1,5 @@
-import { myGuild, channels } from "../../util";
+import { bold, userMention } from "@discordjs/builders";
+import { channels, msToTime, myGuild } from "../../util";
 export const data = {
   name: "Invite Tracker",
   events: ["inviteCreate", "guildMemberAdd", "guildMemberRemove"],
@@ -37,8 +38,7 @@ export async function execute(event, client, ...args) {
           .send(
             `🟩 O usuário ${userMention(
               member.user.id
-            )} entrou através do código de convite \`${
-              usedInvite.code
+            )} entrou através do código de convite \`${usedInvite.code
             }\`, gerado por ${userMention(
               usedInvite.inviterId
             )}. Agora somos ${bold(memberCount)}.`
@@ -51,13 +51,13 @@ export async function execute(event, client, ...args) {
       moniqueta.guildInvites.set(member.guild.id, cachedInvites);
       break;
     case "guildMemberRemove":
+      const [memberThatLeft] = args;
       moniqueta.channels.cache
         .get(channels.loginoutChannel)
         .send(
-          `🟥 O usuário ${member.user.username}, de ID ${
-            member.id
+          `🟥 O usuário ${memberThatLeft.user.username}, de ID ${memberThatLeft.id
           } com \`${msToTime(
-            Date.now() - member.joinedTimestamp
+            Date.now() - memberThatLeft.joinedTimestamp
           )}\` de servidor saiu.`
         );
       break;

@@ -1,5 +1,4 @@
 import { prefix } from "./misc.js";
-import { moniqueta } from "../index.js";
 import * as slashCommands from "../commands/slash";
 import * as interactionCommands from "../commands/interaction";
 import * as prefixlessCommands from "../commands/prefixless";
@@ -35,10 +34,7 @@ export async function loadCommands(event, client, ...args) {
       if (interaction.isCommand())
         await slash[interaction.commandName].execute(interaction, client);
       else
-        for (const command in interactions) {
-          if (interactions[command].event === event)
-            await interactions[command].execute(interaction, client);
-        }
+        for (const action in interactions) await interactions[action].execute(interaction, client);
       break;
     default:
       for (const [, system] of Object.entries(systems)) {
