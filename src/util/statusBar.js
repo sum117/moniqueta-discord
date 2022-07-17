@@ -1,9 +1,9 @@
 export function statusBar(current, total, fill, empty) {
-  let percentage = current / total;
-  let progress = Math.round(5 * percentage);
-  let emptyProgress = 5 - progress;
-  let progressText = fill.repeat(progress);
-  let emptyProgressText = empty.repeat(emptyProgress);
-  let bar = progressText + emptyProgressText;
+  const percentage = current / total;
+  const progress = Math.round(5 * percentage);
+  const emptyProgress = 5 - progress;
+  const progressText = fill.repeat(progress);
+  const emptyProgressText = empty.repeat(emptyProgress);
+  const bar = progressText + emptyProgressText;
   return `${bar}`;
 }

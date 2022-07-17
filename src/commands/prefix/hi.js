@@ -1,12 +1,12 @@
-import { Message } from "discord.js";
+import {Message} from 'discord.js';
 
 export const data = {
-  event: "messageCreate",
-  name: "Diga Olá",
-  description: "O bot dirá olá. Comando feito por razões de teste.",
+  event: 'messageCreate',
+  name: 'Diga Olá',
+  description: 'O bot dirá olá. Comando feito por razões de teste.',
 };
 
-/**@param {Message} msg A mensagem que executou este comando*/
+/** @param {Message} msg A mensagem que executou este comando*/
 export async function execute(msg) {
-  msg.reply("Olá!");
+  msg.reply('Olá!');
 }

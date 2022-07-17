@@ -1,11 +1,10 @@
-import sharp from "sharp";
-import axios from "axios";
+import sharp from 'sharp';
+import axios from 'axios';
 
 export const data = {
-  event: "messageCreate",
-  name: "Imagem para Icone",
-  description:
-    "Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.",
+  event: 'messageCreate',
+  name: 'Imagem para Icone',
+  description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.',
 };
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
@@ -19,13 +18,9 @@ export async function execute(msg, args) {
    */
 
   const [color, imageUrl] = args;
-  if (!color)
-    return msg.reply("❌ Você precisa informar uma cor para o icone.");
-  const userInput = await (
-    await axios({ url: imageUrl, responseType: "arraybuffer" })
-  ).data;
-  if (!imageUrl)
-    return msg.reply("❌ Você precisa informar um link de imagem.");
+  if (!color) return msg.reply('❌ Você precisa informar uma cor para o icone.');
+  const userInput = await (await axios({url: imageUrl, responseType: 'arraybuffer'})).data;
+  if (!imageUrl) return msg.reply('❌ Você precisa informar um link de imagem.');
 
   const radius = Buffer.from(
     `<svg 
@@ -41,7 +36,7 @@ export async function execute(msg, args) {
                     r="256" 
                     fill="white"
                 />
-            </svg>`
+            </svg>`,
   );
   const border = Buffer.from(
     `<svg
@@ -55,29 +50,29 @@ export async function execute(msg, args) {
                     cx="256" 
                     cy="256" 
                     r="251" 
-                    stroke="${color.includes("#") ? color : "#" + color}" 
+                    stroke="${color.includes('#') ? color : '#' + color}" 
                     stroke-width="15"
                 />
             </svg>
-            `
+            `,
   );
   const output = await sharp(userInput)
     .resize(512, 512)
     .composite([
       {
         input: radius,
-        blend: "dest-in",
+        blend: 'dest-in',
       },
       {
         input: border,
-        blend: "atop",
+        blend: 'atop',
       },
     ])
     .png()
     .toBuffer();
 
   msg.reply({
-    content: "Icone gerado com sucesso!",
-    files: [{ name: "icon.png", attachment: output }],
+    content: 'Icone gerado com sucesso!',
+    files: [{name: 'icon.png', attachment: output}],
   });
 }

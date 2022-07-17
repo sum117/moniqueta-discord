@@ -1,9 +1,9 @@
-import { db } from "../../db.js";
+import {db} from '../../db.js';
 
 export const data = {
-  event: "messageCreate",
-  name: "Contador de Mensagens",
-  description: "Automaticamente conta as mensagens de cada jogador.",
+  event: 'messageCreate',
+  name: 'Contador de Mensagens',
+  description: 'Automaticamente conta as mensagens de cada jogador.',
 };
 export async function execute(client, msg) {
   const moniqueta = client;
