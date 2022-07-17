@@ -1,3 +1,3 @@
 export function bulkEmoji(msg, Array) {
-  for (let each of Array) msg.react(each);
+  for (const each of Array) msg.react(each);
 }

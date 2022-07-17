@@ -1,1 +1,1 @@
-export * as inviteTracker from "./inviteTracker.js";
+export * as inviteTracker from './inviteTracker.js';

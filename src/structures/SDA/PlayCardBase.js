@@ -8,50 +8,47 @@ import {
   MessageAttachment,
   MessageButton,
   MessageEmbed,
-} from "discord.js";
-import { db } from "../../db.js";
-import { title } from "../../util";
+} from 'discord.js';
+import {db} from '../../db.js';
+import {title} from '../../util';
 
-const { userMention } = Formatters;
+const {userMention} = Formatters;
 
 export const assets = {
   sum: {
-    austera: { color: 10517508, emoji: "<:Austeros:982077481702027344>" },
-    perserata: { color: 550020, emoji: "<:Perserata:982078451513184306>" },
-    insanata: { color: 11535364, emoji: "<:Insanata:982078436166221874>" },
-    equinocio: { color: 562180, emoji: "<:Equinocio:982082685889564772>" },
-    oscuras: { color: 3146828, emoji: "<:Oscuras:982082685835051078>" },
-    ehrantos: { color: 15236108, emoji: "<:Ehrantos:982082685793087578>" },
-    melancus: { color: 0, emoji: "<:Melancus:982082685801472060>" },
+    austera: {color: 10517508, emoji: '<:Austeros:982077481702027344>'},
+    perserata: {color: 550020, emoji: '<:Perserata:982078451513184306>'},
+    insanata: {color: 11535364, emoji: '<:Insanata:982078436166221874>'},
+    equinocio: {color: 562180, emoji: '<:Equinocio:982082685889564772>'},
+    oscuras: {color: 3146828, emoji: '<:Oscuras:982082685835051078>'},
+    ehrantos: {color: 15236108, emoji: '<:Ehrantos:982082685793087578>'},
+    melancus: {color: 0, emoji: '<:Melancus:982082685801472060>'},
     observata: {
       color: 16777215,
-      emoji: "<:Observata:982082685864378418>",
+      emoji: '<:Observata:982082685864378418>',
     },
-    invidia: { color: 547996, emoji: "<:Invidia:982082685503696967>" },
+    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
   },
   phantom: {
-    azul: "<:fantasmaAzul:982092065523507290>",
-    vermelho: "<:fantasmaVermelho:982092065989074994>",
-    branco: "<:fantasmaBranco:982092065599029268>",
+    azul: '<:fantasmaAzul:982092065523507290>',
+    vermelho: '<:fantasmaVermelho:982092065989074994>',
+    branco: '<:fantasmaBranco:982092065599029268>',
   },
 };
 
 export class PlayCardBase {
-  /**@param {Interaction} interaction  */
+  /** @param {Interaction} interaction  */
   constructor() {
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar) {
         throw (
-          (await interaction[interaction.deferred ? "editReply" : "reply"]({
+          (await interaction[interaction.deferred ? 'editReply' : 'reply']({
             content: `Não há nenhum personagem criado ou selecionado para ${
-              user.id === interaction.user.id ? "você" : user
+              user.id === interaction.user.id ? 'você' : user
             }`,
           }),
-          new Error(
-            "Erro de personagem não criado ou selecionado acionado por: " +
-              user.id
-          ))
+          new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id))
         );
       } else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
@@ -66,12 +63,11 @@ export class PlayCardBase {
    * @param {String} character.avatar - Avatar do personagem
    * @param {('austera'|'perserata'|'insanata'|'equinocio'|'oscuras'|'ehrantos'|'melancus'|'observata'|'invidia')} character.sum - O nome da soma do personagem
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
-   * @returns {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
+   * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({ message, user, guild }, approvedChannelId, character = {}) {
-    const { name, gender, personality, appearance, avatar, sum, phantom } =
-      character;
-    const { members, channels } = guild;
+  async create({message, user, guild}, approvedChannelId, character = {}) {
+    const {name, gender, personality, appearance, avatar, sum, phantom} = character;
+    const {members, channels} = guild;
 
     const userId = (() => {
       const [userId] = message.content.match(/\d{17,19}/) ?? [];
@@ -93,15 +89,15 @@ export class PlayCardBase {
         stamina: 50,
       },
     };
-    if (!id)
+    if (!id) {
       await db.set(`${userId}`, {
         chosenChar: 1,
         count: 1,
         chars: {
-          ["1"]: charObject,
+          ['1']: charObject,
         },
       });
-    else {
+    } else {
       await db.add(`${userId}.count`, 1);
       await db.set(`${userId}.chars.${id + 1}`, charObject);
     }
@@ -109,9 +105,7 @@ export class PlayCardBase {
     const aprovador = user;
     const canalAprovados = await channels.fetch(approvedChannelId);
     return canalAprovados.send({
-      content: `Ficha de ${userMention(
-        membro.user.id
-      )}, aprovada por ${userMention(aprovador.id)}`,
+      content: `Ficha de ${userMention(membro.user.id)}, aprovada por ${userMention(aprovador.id)}`,
       embeds: [
         new MessageEmbed()
           .setTitle(name)
@@ -126,20 +120,12 @@ export class PlayCardBase {
             }),
           })
           .addField(
-            "Gênero",
-            gender === "masculino"
-              ? "♂️ Masculino"
-              : gender === "feminino"
-              ? "♀️ Feminino"
-              : "👽 Descubra",
-            true
+            'Gênero',
+            gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+            true,
           )
-          .addField(
-            "Purgatório",
-            assets.phantom[phantom] + " " + title(phantom),
-            true
-          )
-          .addField("Soma", assets.sum[sum].emoji + " " + title(sum), true),
+          .addField('Purgatório', assets.phantom[phantom] + ' ' + title(phantom), true)
+          .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true),
       ],
     });
   }
@@ -150,24 +136,22 @@ export class PlayCardBase {
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
-  async interact(interaction, action, content = "", attachment = null) {
+  async interact(interaction, action, content = '', attachment = null) {
     let file;
     if (attachment) file = attachment.name;
-    const { user, channel, guildId } = interaction;
+    const {user, channel, guildId} = interaction;
 
     const data = await this.character(interaction, user);
 
-    const { name, avatar, sum } = data;
+    const {name, avatar, sum} = data;
 
     switch (action) {
-      case "send":
-        return await db.set(user.id + ".latestMessage", `${(await send()).id}`);
-      case "edit":
-        return edit(await db.get(user.id + ".latestMessage"));
-      case "remove":
-        return remove(
-          content ? content : await db.get(user.id + ".latestMessage")
-        );
+      case 'send':
+        return await db.set(user.id + '.latestMessage', `${(await send()).id}`);
+      case 'edit':
+        return edit(await db.get(user.id + '.latestMessage'));
+      case 'remove':
+        return remove(content ? content : await db.get(user.id + '.latestMessage'));
     }
 
     async function send() {
@@ -178,9 +162,7 @@ export class PlayCardBase {
             thumbnail: {
               url: avatar,
             },
-            image: attachment
-              ? { url: `attachment://${attachment.name}` }
-              : undefined,
+            image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
             color: assets.sum[sum].color,
             description: content,
             footer: {
@@ -202,11 +184,7 @@ export class PlayCardBase {
           : [],
         components: [
           new MessageActionRow().addComponents(
-            new MessageButton()
-              .setCustomId("interact")
-              .setEmoji("🖐️")
-              .setLabel("Interagir")
-              .setStyle("SECONDARY")
+            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('SECONDARY'),
           ),
         ],
       });
@@ -214,10 +192,7 @@ export class PlayCardBase {
       return message;
     }
     async function edit(msgId) {
-      if (!msgId)
-        throw new Error(
-          "Não foi possível encontrar a mensagem para ser editada"
-        );
+      if (!msgId) throw new Error('Não foi possível encontrar a mensagem para ser editada');
       const embed = (await channel.messages.fetch(msgId)).embeds[0];
       embed.setDescription(content);
       return await channel.messages.edit(msgId, {
@@ -226,18 +201,17 @@ export class PlayCardBase {
     }
     async function remove(msgId) {
       const messageToCheck = await db.get(`${guildId}.charMessages.${msgId}`);
-      if (!msgId)
-        throw interaction[interaction.deferred ? "editReply" : "reply"]({
-          content: "Não foi possível encontrar a mensagem para ser removida",
+      if (!msgId) {
+        throw interaction[interaction.deferred ? 'editReply' : 'reply']({
+          content: 'Não foi possível encontrar a mensagem para ser removida',
         });
-      else if (messageToCheck !== user.id)
-        throw interaction[interaction.deferred ? "editReply" : "reply"]({
-          content:
-            "Você não pode deletar uma mensagem que não pertence a você.",
+      } else if (messageToCheck !== user.id) {
+        throw interaction[interaction.deferred ? 'editReply' : 'reply']({
+          content: 'Você não pode deletar uma mensagem que não pertence a você.',
         });
+      }
 
-      if (msgId === (await db.get(user.id + ".latestMessage")))
-        db.delete(user.id + ".latestMessage");
+      if (msgId === (await db.get(user.id + '.latestMessage'))) db.delete(user.id + '.latestMessage');
       return await channel.messages.delete(msgId);
     }
   }

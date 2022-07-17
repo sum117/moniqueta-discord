@@ -1,2 +1,2 @@
-export * as help from "./help.js";
-export * as playcard from "./playcard.js";
+export * as help from './help.js';
+export * as playcard from './playcard.js';
