@@ -14,6 +14,7 @@ import {channelMention, userMention} from '@discordjs/builders';
 const {sum} = assets;
 const sheet = new Map();
 export const data = {
+  event: 'interactionCreate',
   name: 'Comando de Ficha de Personagem',
   description:
     'Gera uma ficha de personagem para a avaliação pelos administradores ao preencher o formulário no canal de fichas.',
