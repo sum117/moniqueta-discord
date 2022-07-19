@@ -2,6 +2,7 @@ import {QueryType} from 'discord-player';
 
 export const data = {
   name: 'play',
+  type: 'music',
   description: 'Toque uma música em seu canal',
   options: [
     {

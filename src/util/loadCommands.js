@@ -53,10 +53,10 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
             });
           }
           await music[interaction.commandName].execute(interaction, musicPlayer);
-        } else {
-          for (const command in interactions) {
-            if (interactions[command].event === event) await interactions[command].execute(interaction, moniqueta);
-          }
+        }
+      } else {
+        for (const command in interactions) {
+          if (interactions[command].data.event === event) await interactions[command].execute(interaction, moniqueta);
         }
       }
       break;

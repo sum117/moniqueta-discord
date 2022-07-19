@@ -1,6 +1,7 @@
 import {QueueRepeatMode} from 'discord-player';
 export const data = {
   name: 'loop',
+  type: 'music',
   description: 'Me faça repetir sua música!',
   options: [
     {

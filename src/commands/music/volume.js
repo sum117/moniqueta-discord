@@ -1,5 +1,6 @@
 export const data = {
   name: 'volume',
+  type: 'music',
   description: 'Mude o volume!',
   options: [
     {

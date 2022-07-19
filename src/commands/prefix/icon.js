@@ -3,6 +3,7 @@ import axios from 'axios';
 
 export const data = {
   event: 'messageCreate',
+  type: 'regular',
   name: 'Imagem para Icone',
   description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.',
 };
@@ -23,34 +24,34 @@ export async function execute(msg, args) {
   if (!imageUrl) return msg.reply('❌ Você precisa informar um link de imagem.');
 
   const radius = Buffer.from(
-    `<svg 
-                width="512" 
-                height="512" 
-                viewBox="0 0 512 512" 
-                fill="none" 
+    `<svg
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                <circle 
-                    cx="256" 
-                    cy="256" 
-                    r="256" 
+                <circle
+                    cx="256"
+                    cy="256"
+                    r="256"
                     fill="white"
                 />
             </svg>`,
   );
   const border = Buffer.from(
     `<svg
-                width="512" 
-                height="512" 
-                viewBox="0 0 512 512" 
-                fill="none" 
+                width="512"
+                height="512"
+                viewBox="0 0 512 512"
+                fill="none"
                 xmlns="http://www.w3.org/2000/svg"
             >
-                <circle 
-                    cx="256" 
-                    cy="256" 
-                    r="251" 
-                    stroke="${color.includes('#') ? color : '#' + color}" 
+                <circle
+                    cx="256"
+                    cy="256"
+                    r="251"
+                    stroke="${color.includes('#') ? color : '#' + color}"
                     stroke-width="15"
                 />
             </svg>

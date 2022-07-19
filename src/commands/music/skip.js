@@ -1,5 +1,6 @@
 export const data = {
   name: 'skip',
+  type: 'music',
   description: 'Passe uma música!',
 };
 export async function execute(interaction, player) {

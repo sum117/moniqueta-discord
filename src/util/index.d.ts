@@ -57,5 +57,6 @@ export declare async function bulkEmoji(msg: Message, emojis: Array<string>): Pr
  */
 export declare async function loadEvents(
   moniqueta: Client,
-  events: Array<{name: string; once: boolean}> | Map<string, Function<(queue: any, ...args: any) => void>>): Promise<void>;
+  events: Array<{name: string; once: boolean}> | Map<string, Function<(queue: any, ...args: any) => void>>,
+): Promise<void>;
 export * as misc from './misc.js';

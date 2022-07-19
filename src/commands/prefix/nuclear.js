@@ -2,6 +2,7 @@ import {Message} from 'discord.js';
 
 export const data = {
   event: 'messageCreate',
+  type: 'regular',
   name: '☢️ Bomba Nuclear',
   description: 'ELE VAI DAR PURGE, ELE VAI DAR PURGE!',
 };

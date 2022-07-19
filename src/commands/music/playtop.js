@@ -2,6 +2,7 @@ import {QueryType} from 'discord-player';
 
 export const data = {
   name: 'playtop',
+  type: 'music',
   description: 'Toque uma música antes da próxima no seu canal!!',
   options: [
     {

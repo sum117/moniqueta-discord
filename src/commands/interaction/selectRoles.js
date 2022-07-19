@@ -1,12 +1,11 @@
 import {SelectMenuInteraction} from 'discord.js';
 import {channels} from '../../util';
-export default {
+export const data = {
+  event: 'interactionCreate',
   name: 'Cargos por seletores',
   description: 'Aquisição de cargos através de seletores.',
 };
-/**
- * @param {SelectMenuInteraction} interaction A interação que iniciou o comando.
- */
+
 export async function execute(interaction) {
   if (interaction.channelId !== channels.rolesChannel) return;
   if (interaction.isSelectMenu()) {

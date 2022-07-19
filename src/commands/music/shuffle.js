@@ -1,5 +1,6 @@
 export const data = {
   name: 'shuffle',
+  type: 'music',
   description: 'Deixe tudo muito louco, aleatório, entende?!',
 };
 export async function execute(interaction, player) {
@@ -10,7 +11,7 @@ export async function execute(interaction, player) {
   }
   try {
     queue.shuffle();
-    trimString = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
+    const trimString = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
     return void interaction.followUp({
       embeds: [
         {

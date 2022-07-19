@@ -1,5 +1,6 @@
 export const data = {
   name: 'nowplaying',
+  type: 'music',
   description: 'Saiba o som que estou tocando no momento.',
 };
 export async function execute(interaction, player) {

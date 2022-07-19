@@ -1,6 +1,6 @@
-import { Client, Collection } from 'discord.js';
-import { Player } from 'discord-player';
-import { loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix } from './util';
+import {Client, Collection} from 'discord.js';
+import {Player} from 'discord-player';
+import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix} from './util';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
@@ -45,19 +45,19 @@ moniqueta.on('ready', async () => {
     ],
     [
       'botDisconnect',
-      (queue) => {
+      queue => {
         queue.metadata.send('😡 Eu fui desconectada do canal de voz... vou deletar a lista de todo mundo!');
       },
     ],
     [
       'channelEmpty',
-      (queue) => {
+      queue => {
         queue.metadata.send('💔 Vocês me deixaram sozinha... vou embora.');
       },
     ],
     [
       'queueEnd',
-      (queue) => {
+      queue => {
         queue.metadata.send('✅ Terminei de tocar tudo! O que vamos fazer agora?');
       },
     ],
@@ -65,12 +65,12 @@ moniqueta.on('ready', async () => {
   loadEvents(
     [moniqueta, player],
     [
-      { once: 'true', name: 'ready' },
-      { name: 'messageCreate' },
-      { name: 'interactionCreate' },
-      { name: 'guildMemberAdd' },
-      { name: 'guildMemberRemove' },
-      { name: 'inviteCreate' },
+      {once: 'true', name: 'ready'},
+      {name: 'messageCreate'},
+      {name: 'interactionCreate'},
+      {name: 'guildMemberAdd'},
+      {name: 'guildMemberRemove'},
+      {name: 'inviteCreate'},
     ],
     musicPlayerEvents,
   );
@@ -86,7 +86,7 @@ moniqueta.on('ready', async () => {
   );
   for (const commands of [slashCommands, prefixCommands, musicCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
-      moniqueta.commands.set(key, command.data.description);
+      moniqueta.commands.set(key, [command.data.description, command.data?.type]);
     });
   }
 });

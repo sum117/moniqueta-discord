@@ -2,6 +2,7 @@ import {MessageEmbed} from 'discord.js';
 import {userMention, codeBlock} from '@discordjs/builders';
 export const data = {
   event: 'messageCreate',
+  type: 'regular',
   name: 'Gerador de Embed',
   description: 'Comando de moderador para gerar descrições de canais.',
 };

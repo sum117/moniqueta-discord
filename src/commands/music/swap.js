@@ -1,5 +1,6 @@
 export const data = {
   name: 'swap',
+  type: 'music',
   description: 'Troque as posições das músicas!',
   options: [
     {
