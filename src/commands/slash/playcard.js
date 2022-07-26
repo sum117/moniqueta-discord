@@ -1,7 +1,7 @@
-import {CommandInteraction} from 'discord.js';
-import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
-import {SlashCommandBuilder as SCB} from '@discordjs/builders';
-
+import { CommandInteraction } from 'discord.js';
+import { PlayCardBase } from '../../structures/SDA/PlayCardBase.js';
+import { SlashCommandBuilder as SCB } from '@discordjs/builders';
+import { createForm } from '../interaction/ficha.js';
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')
@@ -34,21 +34,26 @@ export const data = new SCB()
       .addStringOption(option =>
         option.setName('link').setDescription('Link ou id da mensagem a ser removida').setRequired(false),
       ),
-  );
+  )
+  .addSubcommand(create =>
+    create
+      .setName('criar')
+      .setDescription('Crie um personagem de teste para avaliar as funções da Moniqueta Alpha')
+  )
 
 /** @param {CommandInteraction} interaction A opção que executou este comando*/
 export async function execute(interaction) {
   if (!interaction.isCommand()) return;
   const char = new PlayCardBase();
   if (interaction.options.getSubcommand() === 'editar') {
-    await interaction.deferReply({ephemeral: true});
+    await interaction.deferReply({ ephemeral: true });
     const content = interaction.options.getString('conteudo');
     await char.interact(interaction, 'edit', content);
     interaction.editReply({
       content: 'Playcard editado com sucesso!',
     });
   } else if (interaction.options.getSubcommand() === 'remover') {
-    await interaction.deferReply({ephemeral: true});
+    await interaction.deferReply({ ephemeral: true });
     const MsgToRemove = interaction.options.getString('link');
     const match = MsgToRemove
       ? MsgToRemove.match(/(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/)
@@ -57,6 +62,61 @@ export async function execute(interaction) {
     interaction.editReply({
       content: 'Mensagem removida com sucesso!',
     });
+  } else if (interaction.options.getSubcommand() === 'criar') {
+    await interaction.showModal(
+      createForm([
+        [
+          ,
+          'persoNome',
+          'Nome do Personagem',
+          'SHORT',
+          'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"',
+          128,
+        ],
+        [, 'persoPersonalidade', 'Personalidade', 'PARAGRAPH', 'Seja Interessante...', 4000],
+        [
+          ,
+          'persoFisico',
+          'Características Físicas',
+          'PARAGRAPH',
+          'Peso, aparência geral, altura e etc...',
+          4000,
+        ],
+        [
+          ,
+          'persoHabilidade',
+          'Habilidade',
+          'PARAGRAPH',
+          'A habilidade do personagem não irá interferir no combate.',
+          4000,
+        ],
+        [, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500],
+      ])
+    )
+    interaction.awaitModalSubmit({ filter: (modal) => modal.customId === 'ficha' && interaction.user.id === modal.user.id, time: 10 * 60 * 1000 })
+      .then(submittedForm => {
+        const char = ((inputs = [['']]) => {
+          const map = new Map();
+          inputs.map(([mapKey, fieldCustomId]) => map.set(mapKey, submittedForm.fields.getTextInputValue(fieldCustomId)));
+          return map;
+        })([
+          ['nome', 'persoNome'],
+          ['personalidade', 'persoPersonalidade'],
+          ['fisico', 'persoFisico'],
+          ['habilidade', 'persoHabilidade'],
+          ['imagem', 'persoImagem'],
+        ]);
+        new PlayCardBase().create(interaction, interaction.channel.id, {
+          name: char.get('nome'),
+          personality: char.get('personalidade'),
+          appearance: char.get('fisico'),
+          avatar: char.get('imagem'),
+          gender: 'genderless',
+          phantom: 'azul',
+          sum: 'perserata',
+        })
+        submittedForm.reply('Ficha criada.')
+      });
   } else {
     await interaction.deferReply();
     const content = interaction.options.getString('conteudo');
