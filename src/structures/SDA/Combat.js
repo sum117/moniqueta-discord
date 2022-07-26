@@ -89,7 +89,6 @@ function calculo(origem = {}, alvo = {}, actionOrigem, actionAlvo = '', dadoOrig
                 return 1;
         };
         return resultado * multiplicadorBase();
-
     }
 }
 

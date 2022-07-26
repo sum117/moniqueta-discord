@@ -74,7 +74,7 @@ const jogador1 = {
         },
         armaSecundaria: {}
     },
-    poderes: {
+    /* poderes: {
         1: {
             nome: '',
             soma: 'ehrantos',
@@ -99,7 +99,7 @@ const jogador1 = {
         4: {},
         5: {},
         6: {},
-    }
+    }*/
 };
 const jogador2 = {
     skills: {
