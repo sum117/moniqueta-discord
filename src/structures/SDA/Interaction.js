@@ -1,4 +1,4 @@
-import { ButtonInteraction, GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { ButtonInteraction, GuildMember, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { quote, userMention } from '@discordjs/builders';
 import { title } from '../../util';
 import { PlayCardBase, assets } from './PlayCardBase.js';
@@ -12,13 +12,12 @@ export class Interaction extends PlayCardBase {
   constructor(interaction) {
     super();
     this.interaction = interaction;
-    this.target = (async (interaction) => {
-      const messageToQuery = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
-      const fetchedTarget = await interaction.guild.members.fetch(messageToQuery);
-      return fetchedTarget;
-    })(interaction);
   }
   async handle() {
+    const { interaction } = this;
+    const messageToQuery = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
+    const fetchedTarget = await interaction.guild.members.fetch(messageToQuery);
+    this.target = fetchedTarget;
     this.panel();
   }
   async panel() {
@@ -33,7 +32,6 @@ export class Interaction extends PlayCardBase {
         new MessageActionRow().addComponents(
           new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
           new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
-          new MessageButton().setCustomId('attack').setLabel('Atacar').setEmoji('⚔').setStyle('SECONDARY'),
         ),
       ],
     });
