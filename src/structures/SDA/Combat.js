@@ -20,12 +20,12 @@ export class Combat extends PlayCardBase {
             const batalha1v1 = await db.get(`${interaction.channelId}.${interaction.user.id}.batalha1v1`)
             if (!batalha1v1) await db.set(`${interaction.channelId}.${interaction.user.id}.batalha1v1`, {
                 alvo: {
-                    saude: [this.alvo.vitalidade * 10],
-                    mana: [this.alvo.vigor * 5],
+                    saude: [this.alvo.skills.vitalidade * 10],
+                    mana: [this.alvo.skills.vigor * 5],
                 },
                 origem: {
-                    saude: [this.origem.vitalidade * 10],
-                    mana: [this.origem.vigor * 5]
+                    saude: [this.origem.skills.vitalidade * 10],
+                    mana: [this.origem.skills.vigor * 5]
                 },
             })
 
@@ -36,6 +36,7 @@ export class Combat extends PlayCardBase {
     async fisico() {
 
         const { alvo, batalha1v1, origem, interaction } = this;
+        console.log(batalha1v1, origem, alvo)
         if (!interaction.customId.startsWith('ataque_fisico')) throw new Error('Você usou o método de ataque físico em uma interação incongruente.');
         console.log(interaction.customId.split('_')[3])
         if (!await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`)) return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
