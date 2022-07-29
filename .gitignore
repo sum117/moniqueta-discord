@@ -4,3 +4,4 @@ replit.nix
 node_modules
 .vscode
 .scannerwork
+.env
