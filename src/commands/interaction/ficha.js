@@ -7,11 +7,11 @@ import {
   SelectMenuInteraction,
   TextInputComponent,
 } from 'discord.js';
-import { PlayCardBase, assets } from '../../structures/SDA/PlayCardBase.js';
-import { title, categories, channels } from '../../util';
-import { db } from '../../db.js';
-import { channelMention, userMention } from '@discordjs/builders';
-const { sum } = assets;
+import {PlayCardBase, assets} from '../../structures/SDA/PlayCardBase.js';
+import {title, categories, channels} from '../../util';
+import {db} from '../../db.js';
+import {channelMention, userMention} from '@discordjs/builders';
+const {sum} = assets;
 const sheet = new Map();
 export const data = {
   event: 'interactionCreate',
@@ -23,7 +23,7 @@ export const data = {
  * @param {ModalSubmitInteraction | SelectMenuInteraction} interaction A interação que iniciou o comando.
  */
 export async function execute(interaction) {
-  const { user, values, customId, component, channelId } = interaction;
+  const {user, values, customId, component, channelId} = interaction;
   if (![channels.rpRegistro, channels.adminFichaRegistro].includes(channelId)) return;
 
   switch (interaction.type) {
@@ -175,8 +175,8 @@ export async function execute(interaction) {
               choices.get('genero') === 'masculino'
                 ? '♂️ Masculino'
                 : choices.get('genero') === 'feminino'
-                  ? '♀️ Feminino'
-                  : '👽 Descubra',
+                ? '♀️ Feminino'
+                : '👽 Descubra',
               true,
             )
             .addField(

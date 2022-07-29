@@ -1,5 +1,5 @@
 export const [prefix, token] = await import('./config.json', {
-  assert: { type: 'json' },
+  assert: {type: 'json'},
 })
   .then(config => {
     console.log('Using config.json.');

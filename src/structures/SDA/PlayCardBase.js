@@ -9,25 +9,25 @@ import {
   MessageButton,
   MessageEmbed,
 } from 'discord.js';
-import { db } from '../../db.js';
-import { title } from '../../util';
+import {db} from '../../db.js';
+import {title} from '../../util';
 
-const { userMention } = Formatters;
+const {userMention} = Formatters;
 
 export const assets = {
   sum: {
-    austera: { color: 10517508, emoji: '<:Austeros:982077481702027344>' },
-    perserata: { color: 550020, emoji: '<:Perserata:982078451513184306>' },
-    insanata: { color: 11535364, emoji: '<:Insanata:982078436166221874>' },
-    equinocio: { color: 562180, emoji: '<:Equinocio:982082685889564772>' },
-    oscuras: { color: 3146828, emoji: '<:Oscuras:982082685835051078>' },
-    ehrantos: { color: 15236108, emoji: '<:Ehrantos:982082685793087578>' },
-    melancus: { color: 0, emoji: '<:Melancus:982082685801472060>' },
+    austera: {color: 10517508, emoji: '<:Austeros:982077481702027344>'},
+    perserata: {color: 550020, emoji: '<:Perserata:982078451513184306>'},
+    insanata: {color: 11535364, emoji: '<:Insanata:982078436166221874>'},
+    equinocio: {color: 562180, emoji: '<:Equinocio:982082685889564772>'},
+    oscuras: {color: 3146828, emoji: '<:Oscuras:982082685835051078>'},
+    ehrantos: {color: 15236108, emoji: '<:Ehrantos:982082685793087578>'},
+    melancus: {color: 0, emoji: '<:Melancus:982082685801472060>'},
     observata: {
       color: 16777215,
       emoji: '<:Observata:982082685864378418>',
     },
-    invidia: { color: 547996, emoji: '<:Invidia:982082685503696967>' },
+    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
@@ -44,10 +44,11 @@ export class PlayCardBase {
       if (!chosenChar) {
         throw (
           (await interaction[interaction.deferred ? 'editReply' : 'reply']({
-            content: `Não há nenhum personagem criado ou selecionado para ${user.id === interaction.user.id ? 'você' : user
-              }`,
+            content: `Não há nenhum personagem criado ou selecionado para ${
+              user.id === interaction.user.id ? 'você' : user
+            }`,
           }),
-            new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id))
+          new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id))
         );
       } else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
@@ -64,9 +65,9 @@ export class PlayCardBase {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({ message, user, guild }, approvedChannelId, character = {}) {
-    const { name, gender, personality, appearance, avatar, sum, phantom } = character;
-    const { members, channels } = guild;
+  async create({message, user, guild}, approvedChannelId, character = {}) {
+    const {name, gender, personality, appearance, avatar, sum, phantom} = character;
+    const {members, channels} = guild;
 
     const userId = (() => {
       const [userId] = message.content.match(/\d{17,19}/) ?? [];
@@ -83,79 +84,79 @@ export class PlayCardBase {
       sum: sum,
       phantom: phantom,
       skills: {
-        "vitalidade": 40,
-        "força": 20,
-        "resistência": 25,
-        "vigor": 15,
-        "destreza": 17,
+        vitalidade: 40,
+        força: 20,
+        resistência: 25,
+        vigor: 15,
+        destreza: 17,
       },
       equipamentos: {
         cabeça: {
-          nome: "Capacete de Ferro",
+          nome: 'Capacete de Ferro',
           base: 8,
           multiplicador: {
             num: 1.75,
-            tipo: "resistência"
-          }
+            tipo: 'resistência',
+          },
         },
         pescoço: {
-          nome: "Amuleto de Darandur",
+          nome: 'Amuleto de Darandur',
           base: 5,
           multiplicador: {
             num: 1.5,
-            tipo: "vigor"
-          }
+            tipo: 'vigor',
+          },
         },
         ombros: {
-          nome: "Mochila do Sapo Ardente",
+          nome: 'Mochila do Sapo Ardente',
         },
         maos: {
-          nome: "Luvas do Tanner",
+          nome: 'Luvas do Tanner',
           base: 3,
           multiplicador: {
             num: 1.5,
-            tipo: "destreza"
-          }
+            tipo: 'destreza',
+          },
         },
         peitoral: {
-          nome: "Cota de Malha",
+          nome: 'Cota de Malha',
           base: 10,
           multiplicador: {
             num: 2.5,
-            tipo: "resistência",
-          }
+            tipo: 'resistência',
+          },
         },
         cintura: {
-          nome: "Cinto de Explorador"
+          nome: 'Cinto de Explorador',
         },
         pernas: {
-          nome: "Calça de Couro",
+          nome: 'Calça de Couro',
           base: 8,
           multiplicador: {
             num: 2,
-            tipo: "resistência"
-          }
+            tipo: 'resistência',
+          },
         },
         pes: {
-          nome: "Botas de Couro",
+          nome: 'Botas de Couro',
           base: 5,
           multiplicador: {
             num: 1.5,
-            tipo: "resistência"
-          }
+            tipo: 'resistência',
+          },
         },
       },
       armas: {
         armaPrimaria: {
-          nome: "Machado de Ferro",
+          nome: 'Machado de Ferro',
           base: 78,
-          tipo: "pesada",
+          tipo: 'pesada',
           multiplicador: {
             num: 3.2,
-            tipo: "força"
-          }
+            tipo: 'força',
+          },
         },
-        armaSecundaria: {}
+        armaSecundaria: {},
       },
     };
     if (!id) {
@@ -208,11 +209,11 @@ export class PlayCardBase {
   async interact(interaction, action, content = '', attachment = null) {
     let file;
     if (attachment) file = attachment.name;
-    const { user, channel, guildId } = interaction;
+    const {user, channel, guildId} = interaction;
 
     const data = await this.character(interaction, user);
 
-    const { name, avatar, sum } = data;
+    const {name, avatar, sum} = data;
 
     switch (action) {
       case 'send':
@@ -231,7 +232,7 @@ export class PlayCardBase {
             thumbnail: {
               url: avatar,
             },
-            image: attachment ? { url: `attachment://${attachment.name}` } : undefined,
+            image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
             color: assets.sum[sum].color,
             description: content,
             footer: {
@@ -245,11 +246,11 @@ export class PlayCardBase {
         ],
         files: attachment
           ? [
-            {
-              attachment: attachment.attachment,
-              name: attachment.name,
-            },
-          ]
+              {
+                attachment: attachment.attachment,
+                name: attachment.name,
+              },
+            ]
           : [],
         components: [
           new MessageActionRow().addComponents(
