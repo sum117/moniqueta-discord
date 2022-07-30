@@ -1,0 +1,24 @@
+Combate:
+  perserata:
+    hp:
+      self:
+        - Sem ti, o mundo nunca ficará livre da Terra Fosca! És condenado a viver, não desista!
+        - Aceitarás tal humilhação, Perserata?! Mostre para este iniciante quem verdadeiramente conhece estas terras!
+        - Não é hora de grunhir, Perserata! Mantenha-se de pé, e divague fora da terra os seus pecados!
+        - Sidera te chama, mas não é tua hora! Lute, LUTE PERSERATA!
+      inimigo:
+        - Estão com o fio na navalha. Execute-os, em nome de Sidera!
+        - Está na hora, Perserata. Mostre-o que tu não és o único a pagar por pecados nestas terras!
+        - Tire-o da própria miséria, Perserata! Ele mesmo cedeu-se este destino!
+        - Não tenha misericórdia. Eles não teriam para contigo, profano Perserata!
+    mana:
+      self:
+        - Tua energia está prestes a abandonar-te, Perserata. Permaneça de pé!
+        - Não fraqueje, Perserata, mostre para eles tua resiliência!
+        - Ainda consegues mostra-los que sem energia és tão forte quanto!
+        - Perserata! Enquanto riem de tua fadiga, entrega-os o inferno!
+      inimigo:
+        - Tu os vê cansados? Não são páreos para ti.
+        - O inimigo não suporta ficar de pé perante um verdadeiro filho do Profano!
+        - O inimigo está esgotado. Hora de removê-lo do plano de Imprévia!
+        - É tua chance. Acabe com ele agora, Perserata!
