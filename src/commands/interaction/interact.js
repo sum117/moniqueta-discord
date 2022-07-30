@@ -14,7 +14,8 @@ export async function execute(interaction) {
     await panel.handle();
   } else if (interaction.customId.startsWith('ataque_fisico_')) {
     const target = await interaction.guild.members.fetch(interaction.customId.split('_')[2]);
-    const combat = await new Combat(interaction, target).init(interaction, target);
+    const staticUser = await interaction.guild.members.fetch(interaction.customId.split('_')[3]);
+    const combat = await new Combat(interaction, target).init(interaction, target, staticUser);
     await combat.fisico();
   }
 }
