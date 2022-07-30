@@ -69,11 +69,7 @@ export class PlayCardBase {
     const {name, gender, personality, appearance, avatar, sum, phantom} = character;
     const {members, channels} = guild;
 
-    const userId = (() => {
-      const [userId] = message.content.match(/\d{17,19}/) ?? [];
-      if (!userId) return user.id;
-      else return userId;
-    })();
+    const userId = user.id;
     const id = await db.get(`${userId}.count`);
     const charObject = {
       name: name,
@@ -217,11 +213,16 @@ export class PlayCardBase {
 
     switch (action) {
       case 'send':
-        return await db.set(user.id + '.latestMessage', `${(await send()).id}`);
+        const msg = await send();
+        return await db.set(user.id + '.latestMessage', {
+          id: `${msg.id}`,
+          channelId: `${msg.channelId}`,
+          time: Date.now(),
+        });
       case 'edit':
-        return edit(await db.get(user.id + '.latestMessage'));
+        return edit(await db.get(user.id + '.latestMessage.id'));
       case 'remove':
-        return remove(content ? content : await db.get(user.id + '.latestMessage'));
+        return remove(content ? content : await db.get(user.id + '.latestMessage.id'));
     }
 
     async function send() {
@@ -281,7 +282,7 @@ export class PlayCardBase {
         });
       }
 
-      if (msgId === (await db.get(user.id + '.latestMessage'))) db.delete(user.id + '.latestMessage');
+      if (msgId === (await db.get(user.id + '.latestMessage.id'))) db.delete(user.id + '.latestMessage');
       return await channel.messages.delete(msgId);
     }
   }
