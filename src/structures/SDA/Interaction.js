@@ -33,7 +33,7 @@ export class Interaction extends PlayCardBase {
           new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
           new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
           new MessageButton()
-            .setCustomId(`attack_${target.id}_${interaction.message.id}`)
+            .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
             .setLabel('Atacar')
             .setEmoji('🗡️')
             .setStyle('SECONDARY'),
@@ -54,13 +54,13 @@ export class Interaction extends PlayCardBase {
         components: [],
       });
       this.comment();
-    } else if (action.customId === `attack_${target.id}_${interaction.message.id}`) {
+    } else if (action.customId === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
       action.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
             new MessageButton()
-              .setCustomId(`ataque_fisico_${target.id}_${interaction.message.id}`)
+              .setCustomId(`ataque_fisico_${target.id}_${interaction.message.id}_${interaction.user.id}`)
               .setLabel('Ataque Físico')
               .setEmoji('⚔️')
               .setStyle('DANGER'),
