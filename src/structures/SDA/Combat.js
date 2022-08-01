@@ -72,7 +72,6 @@ export class Combat extends PlayCardBase {
 
     // Ataque validado - Enviando prompt de resposta para o alvo e aguardando resposta
     interaction.deferReply({fetchReply: true});
-    await interaction.channel.send(JSON.stringify(batalha.db));
     const dadoOrigem = Math.floor(Math.random() * 20) + 1;
     const dadoAlvo = Math.floor(Math.random() * 20) + 1;
     const painelParaResposta = await interaction.channel.send({
@@ -174,11 +173,11 @@ export class Combat extends PlayCardBase {
               origem.name,
             )}, que decidiu poupar o(a) opositor(a)!`,
           });
-          await db.table('batalha_' + interaction.channelId).delete(target.id);
-          await db.table('batalha_' + interaction.channelId).delete(userId);
-          await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, false);
-          await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, false);
         }
+        await db.table('batalha_' + interaction.channelId).delete(target.id);
+        await db.table('batalha_' + interaction.channelId).delete(userId);
+        await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, false);
+        await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, false);
       });
       coletorOrigem.on('end', collected => {
         if (!collected) return handleExecutar();
@@ -200,8 +199,6 @@ export class Combat extends PlayCardBase {
             JSON.stringify(updatedChar),
           )}`,
         });
-        await db.table('batalha_' + interaction.channelId).delete(target.id);
-        await db.table('batalha_' + interaction.channelId).delete(userId);
       }
     } else
       await interaction.editReply(

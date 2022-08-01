@@ -10,7 +10,7 @@ import {
   MessageEmbed,
 } from 'discord.js';
 import {db} from '../../db.js';
-import {title} from '../../util';
+import {statusBar, title} from '../../util';
 
 const {userMention} = Formatters;
 
@@ -208,12 +208,11 @@ export class PlayCardBase {
     const {user, channel, guildId} = interaction;
 
     const data = await this.character(interaction, user);
-
     const {name, avatar, sum} = data;
 
     switch (action) {
       case 'send':
-        const msg = await send();
+        const msg = await send(data?.inCombat);
         return await db.set(user.id + '.latestMessage', {
           id: `${msg.id}`,
           channelId: `${msg.channelId}`,
@@ -226,7 +225,20 @@ export class PlayCardBase {
         return remove(content ? content : await db.get(user.id + '.latestMessage.id'));
     }
 
-    async function send() {
+    async function send(combat = false) {
+      let combate;
+      if (combat)
+        combate = await (async () => {
+          const batalha = await db.table('batalha_' + interaction.channelId).all();
+          const status = batalha
+            .filter(value => value.id === user.id)
+            .map(obj => {
+              const status = obj.value[user.id];
+              return {saude: status.saude, mana: status.mana};
+            })
+            .shift();
+          return status;
+        })();
       const message = await channel.send({
         embeds: [
           {
@@ -244,6 +256,22 @@ export class PlayCardBase {
                 size: 512,
               }),
             },
+            [combat ? 'fields' : undefined]: [
+              {
+                name: 'Status',
+                value: `💓 ${statusBar(
+                  combate?.saude,
+                  data.skills.vitalidade * 10,
+                  '<:barLife:994630714312106125>',
+                  '<:BarEmpty:994631056378564750>',
+                )}\n🧠 ${statusBar(
+                  combate?.mana,
+                  data.skills.vigor * 5,
+                  '<:barEnergy:994630956180840529>',
+                  '<:BarEmpty:994631056378564750>',
+                )}`,
+              },
+            ],
           },
         ],
         files: attachment
