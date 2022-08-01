@@ -44,18 +44,21 @@ export class Interaction extends PlayCardBase {
     await action.deferUpdate();
     if (action.customId === 'profile') {
       action.editReply({
+        fetchReply: true,
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: [],
       });
     } else if (action.customId === 'comment') {
       action.editReply({
+        fetchReply: true,
         content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: [],
       });
       this.comment();
     } else if (action.customId === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
       action.editReply({
+        fetchReply: true,
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
