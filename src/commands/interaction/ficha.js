@@ -206,7 +206,6 @@ export async function execute(interaction) {
         embeds: embedArray,
         components: [components],
       });
-      console.log(sheet.get(user.id));
       const char = sheet.get(user.id);
       db.set(`${interaction.guild.id}.pending.${user.id}`, {
         name: char.get('nome'),
