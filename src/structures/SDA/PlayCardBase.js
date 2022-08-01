@@ -218,6 +218,7 @@ export class PlayCardBase {
           id: `${msg.id}`,
           channelId: `${msg.channelId}`,
           time: Date.now(),
+          token: false,
         });
       case 'edit':
         return edit(await db.get(user.id + '.latestMessage.id'));

@@ -26,14 +26,14 @@ export class Combat extends PlayCardBase {
     this.falasAlvo = Combate[this.alvo.sum];
     this.falasOrigem = Combate[this.origem.sum];
     this.interaction = interaction;
-    this.batalha1v1 = await (async () => {
-      const batalha1v1 = db.table('batalha_' + interaction.channelId);
+    this.batalha = await (async () => {
+      const batalha = db.table('batalha_' + interaction.channelId);
       const emCurso = await (async (origem, alvo) => {
-        const dbOrigem = await batalha1v1.get(origem);
-        const dbAlvo = await batalha1v1.get(alvo);
+        const dbOrigem = await batalha.get(origem);
+        const dbAlvo = await batalha.get(alvo);
         const check = dbOrigem ? {db: dbOrigem, id: origem} : dbAlvo ? {db: dbAlvo, id: alvo} : null;
         if (check === null) {
-          await batalha1v1.set(origem, {
+          await batalha.set(origem, {
             [origem]: {
               saude: this.alvo.skills.vitalidade * 10,
               mana: this.alvo.skills.vigor * 5,
@@ -43,7 +43,7 @@ export class Combat extends PlayCardBase {
               mana: this.origem.skills.vigor * 5,
             },
           });
-          return {db: await batalha1v1.get(origem), id: origem};
+          return {db: await batalha.get(origem), id: origem};
         } else return check;
       })(this.userId, this.target.id);
 
@@ -53,7 +53,7 @@ export class Combat extends PlayCardBase {
   }
 
   async fisico() {
-    const {alvo, batalha1v1, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
+    const {alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
     const ultimoPost = await db.get(`${userId}.latestMessage`);
     // Erros de validação
     if (!(ultimoPost?.channelId === interaction.channelId && ultimoPost.time > Date.now() - 1000 * 60 * 45))
@@ -67,9 +67,12 @@ export class Combat extends PlayCardBase {
     if (!(await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`)))
       return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
 
+    if (ultimoPost.token)
+      return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
+
     // Ataque validado - Enviando prompt de resposta para o alvo e aguardando resposta
     interaction.deferReply({fetchReply: true});
-    await interaction.channel.send(JSON.stringify(batalha1v1.db));
+    await interaction.channel.send(JSON.stringify(batalha.db));
     const dadoOrigem = Math.floor(Math.random() * 20) + 1;
     const dadoAlvo = Math.floor(Math.random() * 20) + 1;
     const painelParaResposta = await interaction.channel.send({
@@ -103,15 +106,17 @@ export class Combat extends PlayCardBase {
       ],
     });
     const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
+    const personagemAtualOrigem = await db.get(`${userId}.chosenChar`);
     await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, true);
+    await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, true);
 
     // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-    if (batalha1v1.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha1v1.db[target.id].warned) {
+    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[target.id].warned) {
       await interaction.channel.send({
         content: bold(alvo.name) + '! ' + falasAlvo.hp.self[Math.floor(Math.random() * falasAlvo.hp.self.length)],
       });
-      batalha1v1.db[target.id].warned = true;
-      await db.table('batalha_' + interaction.channelId).set(batalha1v1.id, batalha1v1.db);
+      batalha.db[target.id].warned = true;
+      await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
     }
     const reacaoAlvo = await painelParaResposta.awaitMessageComponent({
       filter: i => i.user.id === target.id,
@@ -134,7 +139,7 @@ export class Combat extends PlayCardBase {
     const escolhaAlvo = reacaoAlvo?.customId.split('_')[0] ?? 'defender';
     const resposta = calculo(origem, alvo, undefined, escolhaAlvo, dadoOrigem, dadoAlvo);
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
-    if (resposta?.dano > batalha1v1.db[target.id].saude) {
+    if (resposta?.dano > batalha.db[target.id].saude) {
       const painelFinal = await interaction.editReply({
         content: `${bold(origem.name)} derrubou ${bold(
           alvo.name,
@@ -171,6 +176,8 @@ export class Combat extends PlayCardBase {
           });
           await db.table('batalha_' + interaction.channelId).delete(target.id);
           await db.table('batalha_' + interaction.channelId).delete(userId);
+          await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, false);
+          await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, false);
         }
       });
       coletorOrigem.on('end', collected => {
@@ -206,12 +213,13 @@ export class Combat extends PlayCardBase {
                 : `${bold(alvo.name)} ignorou ${resposta.esquiva} de dano!`
             }`,
       );
-    batalha1v1.db[target.id].saude = batalha1v1.db[target.id].saude - (resposta.dano ? resposta.dano : 0);
-    await db.table('batalha_' + interaction.channelId).set(batalha1v1.id, batalha1v1.db);
+    batalha.db[target.id].saude = batalha.db[target.id].saude - (resposta.dano ? resposta.dano : 0);
+    await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
+    await db.set(`${userId}.latestMessage.token`, true);
     // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
-    if (batalha1v1.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha1v1.db[userId]?.encouraged) {
-      batalha1v1.db[userId].encouraged = true;
-      await db.table('batalha_' + interaction.channelId).set(batalha1v1.id, batalha1v1.db);
+    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[userId]?.encouraged) {
+      batalha.db[userId].encouraged = true;
+      await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
       await interaction.followUp({
         content:
           bold(origem.name) + '! ' + falasOrigem.hp.inimigo[Math.floor(Math.random() * falasOrigem.hp.inimigo.length)],
