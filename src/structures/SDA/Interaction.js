@@ -1,4 +1,4 @@
-import {quote, userMention} from '@discordjs/builders';
+import {bold, quote, userMention} from '@discordjs/builders';
 import {ButtonInteraction, GuildMember, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
 import {db} from '../../db.js';
 import {title} from '../../util';
@@ -73,7 +73,7 @@ export class Interaction extends PlayCardBase {
   async profile() {
     const {interaction, target} = this;
     const db = await this.character(interaction, target);
-    const {name, avatar, sum, appearance, gender, phantom} = db;
+    const {name, avatar, sum, appearance, gender, phantom, skills, equipamentos, armas} = db;
     return new MessageEmbed()
       .setTitle(name)
       .setThumbnail(avatar)
@@ -82,7 +82,49 @@ export class Interaction extends PlayCardBase {
         name: target.user.username,
         iconURL: target.avatarURL({dynamic: true, size: 512}),
       })
-      .setDescription(appearance ? appearance : 'O personagem em questão não possui descrição alguma.')
+      .setDescription(
+        `${appearance ? appearance : 'O personagem em questão não possui descrição alguma.'}\n\n${bold(
+          'Equipamentos:',
+        )}\n${Object.entries(equipamentos)
+          .map(
+            ([key, value]) =>
+              `${assets.itens[key] + ' ' + bold(title(key === 'pes' ? 'Pés' : key))}:${title(
+                `${
+                  typeof value === 'object'
+                    ? ` ${value.num ? value.num : ''} ${title(value.tipo ? value.tipo : '')}`
+                    : value !== undefined
+                    ? value
+                    : ''
+                }`,
+              )}`,
+          )
+          .join('\n')}\n${Object.entries(armas)
+          .filter(([key]) => key !== 'equipado')
+          .map(
+            ([key, value]) =>
+              `${assets.itens[key]} ${bold(
+                title(
+                  (() => {
+                    switch (key) {
+                      case 'armaPrimaria':
+                        return 'Arma Primária';
+                      case 'armaSecundaria':
+                        return 'Arma Secundária';
+                      default:
+                        return key;
+                    }
+                  })(),
+                ),
+              )}: ${
+                typeof value === 'object'
+                  ? ` ${value.num ? value.num : ''} ${title(value.tipo ? value.tipo : '')}`
+                  : value !== undefined
+                  ? value
+                  : ''
+              }`,
+          )
+          .join('\n')}`,
+      )
       .addField(
         'Genero',
         gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',

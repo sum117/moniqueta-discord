@@ -8,7 +8,22 @@ export const data = new SCB()
     criar
       .setName('criar')
       .setDescription('cria um item para o servidor.')
-
+      .addStringOption(option =>
+        option
+          .setName('slot')
+          .setRequired(true)
+          .addChoices(
+            {name: 'arma', value: 'arma'},
+            {name: 'cabeça', value: 'cabeça'},
+            {name: 'pescoço', value: 'pescoço'},
+            {name: 'ombros', value: 'maos'},
+            {name: 'peitoral', value: 'peitoral'},
+            {name: 'cintura', value: 'cintura'},
+            {name: 'pernas', value: 'pernas'},
+            {name: 'pes', value: 'pes'},
+          )
+          .setDescription('O slot onde o item vai ficar alocado'),
+      )
       .addStringOption(option => option.setName('nome').setRequired(true).setDescription('o nome do item'))
       .addStringOption(option => option.setName('desc').setRequired(true).setDescription('o descricao do item'))
 
@@ -31,8 +46,8 @@ export const data = new SCB()
           .setRequired(true)
           .addChoices(
             {name: 'vitalidade', value: 'vitalidade'},
-            {name: 'forca', value: 'forca'},
-            {name: 'resistencia', value: 'resistencia'},
+            {name: 'força', value: 'força'},
+            {name: 'resistência', value: 'resistência'},
             {name: 'vigor', value: 'vigor'},
             {name: 'destreza', value: 'destreza'},
           ),
@@ -79,6 +94,7 @@ export async function execute(interaction) {
     case 'criar':
       if (!interaction.memberPermissions.has('MANAGE_GUILD'))
         return interaction.reply('❌ Você não tem permissão para criar itens.');
+      const slot = interaction.options.getString('slot');
       const nome = interaction.options.getString('nome');
       const desc = interaction.options.getString('desc');
       const tipo = interaction.options.getString('tipo');
@@ -88,6 +104,7 @@ export async function execute(interaction) {
       const valor = interaction.options.getNumber('valor');
 
       const item = await Item.create({
+        slot,
         nome,
         desc,
         tipo,

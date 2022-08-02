@@ -11,7 +11,7 @@ Combate:
         - Está na hora, Perserata. Mostre-o que tu não és o único a pagar por pecados nestas terras!
         - Tire-o da própria miséria, Perserata! Ele mesmo cedeu-se este destino!
         - Não tenha misericórdia. Eles não teriam para contigo, profano Perserata!
-    mana:
+    vigor:
       self:
         - Tua energia está prestes a abandonar-te, Perserata. Permaneça de pé!
         - Não fraqueje, Perserata, mostre para eles tua resiliência!
@@ -34,7 +34,7 @@ Combate:
         - Diante de seu poder, os menores sucumbirão.
         - Não ouse exitar... a justiça só poderá ser trazida através do sangue do seu inimigo.
         - Não lamente por formigas, a brincadeira acabou.
-    mana:
+    vigor:
       self:
         - Seu éter está acabando... Não lamente, enquanto seu corpo estiver inteiro, a batalha não estará acabada.
         - Com ou sem éter, o inimigo sucumbirá de um jeito ou de outro.
@@ -57,7 +57,7 @@ Combate:
         - Já decidiu se vai matá-lo ou deixá-lo viver, Soma?
         - Pobre Soma, achou mesmo que teria o mínimo de chance contra os Oscuras.
         - A lâmina imbuída por ira corta mais fundo...
-    mana:
+    vigor:
       self:
         - Agora não vai dar! Parece que teremos que voltar à antiguidade! Use somente a tua arma.
         - Sua Energia Somática está baixa, mas o fogo que incendeia a tua alma não tem limites!

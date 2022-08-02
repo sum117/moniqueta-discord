@@ -36,11 +36,11 @@ export class Combat extends PlayCardBase {
           await batalha.set(origem, {
             [origem]: {
               saude: this.origem.skills.vitalidade * 10,
-              mana: this.origem.skills.vigor * 5,
+              vigor: this.origem.skills.vigor * 5,
             },
             [alvo]: {
               saude: this.alvo.skills.vitalidade * 10,
-              mana: this.alvo.skills.vigor * 5,
+              vigor: this.alvo.skills.vigor * 5,
             },
           });
           return {db: await batalha.get(origem), id: origem};
@@ -79,7 +79,7 @@ export class Combat extends PlayCardBase {
     // ------------------------------------------------ Ataque validado ------------------------------------------------
     interaction.deferReply({fetchReply: true});
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
-    const resposta = calculo(origem, alvo, undefined, escolhaAlvo, dadoOrigem, dadoAlvo);
+    const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha, target.id, userId);
     await setCombatState(target, personagemAtualAlvo, true);
     await setCombatState(userId, personagemAtualOrigem, true);
 
@@ -89,20 +89,45 @@ export class Combat extends PlayCardBase {
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
     if (resposta?.dano > batalha.db[target.id].saude) {
       await this.executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem);
-    } else
-      await interaction.editReply(
-        resposta.msg
-          ? resposta.msg
-          : `${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!\n${
-              resposta.defesa
-                ? `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`
-                : `${bold(alvo.name)} ignorou ${resposta.esquiva} de dano!`
-            }`,
-      );
-    // Caso contratio, apenas subtraia a vida do alvo
-    this.setHealth(batalha, target.id, -resposta?.dano);
+    } else {
+      // Caso contrario, apenas subtraia a vida do alvo e envie uma mensagem ao canal com os dados do turno.
+      const mensagem = (() => {
+        let msg;
+        if (resposta?.msg) return resposta.msg;
+        else {
+          if (resposta?.dano > 0)
+            msg += `${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!`;
+          else msg += `${bold(origem.name)} não causou dano em ${bold(alvo.name)}!`;
+          if (resposta?.defesa > 0) {
+            if (batalha.db[target.id].vigor > resposta?.custo)
+              msg += `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`;
+            else msg += `${bold(alvo.name)} não defendeu nenhum dano pois está cansado(a) demais!`;
+          } else if (resposta?.esquiva > 0) {
+            if (batalha.db[target.id].vigor > resposta?.custo)
+              msg += `${bold(alvo.name)} ignorou ${resposta?.esquiva} do ataque!`;
+            else msg += `${bold(alvo.name)} não ignorou o ataque pois está cansado(a) demais!`;
+          }
+
+          if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
+            msg += `${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
+              origem.alvo
+            }!`;
+          return msg;
+        }
+      })();
+      await interaction.editReply(mensagem);
+    }
+    // Administrando o dano causado no turno e os custos dos movimentos.
+    if (resposta?.danoAlvo) this.setHealth(batalha, userId, -resposta.danoAlvo);
+    if (batalha.db[target.id].vigor > resposta?.custo) {
+      batalha.db[target.id].esquivas += 1;
+      batalha.db[target.id].vigor = batalha.db[target.id].vigor - resposta?.custo;
+      this.setHealth(batalha, target.id, -resposta?.dano);
+    } else this.setHealth(batalha, target.id, -resposta?.danoTotal);
+
+    if (resposta?.payback.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
+    else await setCombatToken(userId, true);
     await updateDb(interaction, batalha);
-    await setCombatToken(userId, true);
     // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
     await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
   }
@@ -270,7 +295,7 @@ async function updateDb(interaction, batalha) {
  * @param {number} dadoAlvo - Dado do personagem que é atacado
  * @returns Um calculo de dano ou um objeto com dados sobre a batalha.
  */
-function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0) {
+function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0, esquivas = 0) {
   const dano = Object.values(origem.armas)
     .filter(item => item.base)
     .map(item => itemComRng(origem, item, dadoOrigem))
@@ -286,16 +311,30 @@ function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dad
     case 'defender':
       if (dadoAlvo === 20)
         return {
-          msg: easterEggChance >= 90 ? 'Parry Inacreditável!\nhttps://youtu.be/C4gntXWPrw4' : 'Parry perfeito! PRIIIM!',
-          payback: 'defender_perfeito',
+          msg:
+            easterEggChance >= 90
+              ? 'Parry Inacreditável!\nhttps://youtu.be/C4gntXWPrw4\n⚠️ Você pode atacar o inimigo agora, sem fazer posts, pois reflexões assim não gastam tokens de combate.'
+              : 'Parry perfeito! PRIIIM!\n⚠️ Você pode atacar o inimigo agora, sem fazer posts, pois reflexões assim não gastam tokens de combate.',
+          payback: 'defesa_perfeito',
         };
       else {
         const handleEscudo = alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
-        if (handleEscudo) return dano - itemComRng(alvo, alvo.armas.armaSecundaria, dadoAlvo);
-        else
+
+        if (handleEscudo) {
+          const escudoBase = itemComRng(alvo, alvo.armas.armaSecundaria, dadoAlvo);
+          return dano - escudoBase < 0 ? 0 : dano - escudoBase;
+        } else
           return {
-            dano: Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25),
-            defesa: Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25),
+            danoTotal: dano,
+            dano:
+              Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa) < 0
+                ? 0
+                : Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa),
+            defesa:
+              Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa) < 0
+                ? 0
+                : Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa),
+            custo: 15,
           };
       }
     case 'esquiva':
@@ -309,9 +348,37 @@ function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dad
         };
       else
         return {
-          dano: Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25),
-          esquiva: Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25),
+          danoTotal: dano,
+          dano:
+            Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+              ? 0
+              : Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+          esquiva:
+            Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+              ? 0
+              : Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+          custo: 5 * (esquivas ? esquivas : 1),
         };
+
+    case 'contra-ataque':
+      const danoAlvo = Object.values(alvo.armas)
+        .filter(item => item.base)
+        .map(item => itemComRng(alvo, item, dadoAlvo))
+        .reduce((a, b) => a + b, 0);
+
+      const defesaOrigem = Object.values(origem.equipamentos)
+        .filter(item => item.base)
+        .map(item => itemComRng(origem, item, dadoOrigem))
+        .reduce((a, b) => a + b, 0);
+      return {
+        danoTotal: dano,
+        dano: dano - defesa < 0 ? 0 : Math.floor(dano - defesa),
+        danoAlvo:
+          Math.floor(danoAlvo - danoAlvo * (0.15 + (0.3 * origem.skills.resistencia) / 100) * 1.25 - defesaOrigem) < 0
+            ? 0
+            : Math.floor(danoAlvo - danoAlvo * (0.15 + (0.3 * origem.skills.resistencia) / 100) * 1.25 - defesaOrigem),
+        payback: 'contra_ataque',
+      };
   }
 
   function itemComRng(player, item = {}, dado = 0) {

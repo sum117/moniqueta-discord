@@ -15,6 +15,18 @@ import {statusBar, title} from '../../util';
 const {userMention} = Formatters;
 
 export const assets = {
+  itens: {
+    cabeça: '<:helmet:1004131097396912168>',
+    pescoço: '<:amulet:1004145505921683466>',
+    ombros: '<:capa:1004147328518725672>',
+    maos: '<:gauntlet:1004131099334680616>',
+    peitoral: '<:chest:1004131104833417246>',
+    cintura: '<:belt:1004145504185241690>',
+    pernas: '<:legs:1004131094678995035>',
+    pes: '<:boots:1004130682794156083>',
+    armaPrimaria: '<:battleaxe:1004131092112085063>',
+    armaSecundaria: '<:battleshield:1004131103063412856>',
+  },
   sum: {
     austera: {color: 10517508, emoji: '<:Austeros:982077481702027344>'},
     perserata: {color: 550020, emoji: '<:Perserata:982078451513184306>'},
@@ -150,7 +162,7 @@ export class PlayCardBase {
           const status = batalha
             .map(obj => {
               const status = obj.value[user.id];
-              return {saude: status.saude, mana: status.mana};
+              return {saude: status.saude, vigor: status.vigor};
             })
             .shift();
           return status;
@@ -174,11 +186,16 @@ export class PlayCardBase {
             },
             [combat ? 'fields' : undefined]: [
               {
-                name: 'Status',
+                name: 'ㅤ',
                 value: `💓 ${statusBar(
                   combate?.saude,
                   data.skills.vitalidade * 10,
                   '<:barLife:994630714312106125>',
+                  '<:BarEmpty:994631056378564750>',
+                )}\n 💨 ${statusBar(
+                  combate?.vigor,
+                  data.skills.vigor * 5,
+                  '<:barVigor:994630903181615215>',
                   '<:BarEmpty:994631056378564750>',
                 )}`,
               },

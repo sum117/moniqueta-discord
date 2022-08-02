@@ -9,13 +9,14 @@ export class Item extends Combat {
   }
 
   static async create(item = {}) {
-    const {nome, desc, base, tipo, multiplicador = {num: 0, tipo: ''}, valor} = item;
+    const {slot, nome, desc, base, tipo, multiplicador = {num: 0, tipo: ''}, valor} = item;
     const serverItems = db.table('server_items');
     const id = (await serverItems.all()).length + 1;
-    const itemObject = {nome, desc, base, tipo, multiplicador, valor};
+    const itemObject = {slot, nome, desc, base, tipo, multiplicador, valor, equipado: false};
     await serverItems.set(`${id}`, itemObject);
     return await embedComponent(
       `✅ ${bold(nome)} criado com sucesso:\n\n${Object.entries(itemObject)
+        .filter(([key]) => key !== 'equipado')
         .map(
           ([key, value]) =>
             `${bold(title(key))}: ${title(
