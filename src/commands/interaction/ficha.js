@@ -30,7 +30,7 @@ export async function execute(interaction) {
     case 'MESSAGE_COMPONENT':
       switch (channelId) {
         case channels.rpRegistro:
-          if (!interaction.customId.match(/soma|genero|purgatorio/)) return;
+          if (!interaction.customId.match(/soma|genero|purgatorio|itens_iniciais/)) return;
           if (!sheet.get(user.id)) {
             const choices = new Map([[customId, values[0]]]);
             sheet.set(user.id, choices);

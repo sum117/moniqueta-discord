@@ -2,7 +2,7 @@ import {prefix} from './misc.js';
 import {GuildMember} from 'discord.js';
 import * as slashCommands from '../commands/slash';
 import * as interactionCommands from '../commands/interaction';
-import * as prefixlessCommands from '../commands/prefixless';
+import * as prefixlessCommands from '../commands/prefixless/index.js';
 import * as prefixCommands from '../commands/prefix';
 import * as commandSystems from '../commands/systems';
 import * as musicCommands from '../commands/music';
