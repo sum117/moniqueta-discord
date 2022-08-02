@@ -1,5 +1,5 @@
+import {codeBlock, userMention} from '@discordjs/builders';
 import {MessageEmbed} from 'discord.js';
-import {userMention, codeBlock} from '@discordjs/builders';
 export const data = {
   event: 'messageCreate',
   type: 'regular',

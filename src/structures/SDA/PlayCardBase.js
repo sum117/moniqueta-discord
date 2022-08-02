@@ -65,7 +65,7 @@ export class PlayCardBase {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({message, guild}, approvedChannelId, character = {}, user) {
+  async create({guild}, approvedChannelId, character = {}, user) {
     const {name, gender, personality, appearance, avatar, sum, phantom} = character;
     const {members, channels} = guild;
 

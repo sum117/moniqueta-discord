@@ -1,7 +1,6 @@
 import {ButtonInteraction} from 'discord.js';
-import {Interaction} from '../../structures/SDA/Interaction.js';
 import {Combat} from '../../structures/SDA/Combat.js';
-import {db} from '../../db.js';
+import {Interaction} from '../../structures/SDA/Interaction.js';
 export const data = {
   event: 'interactionCreate',
   type: 'buttonInteraction',
