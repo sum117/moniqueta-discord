@@ -1,8 +1,8 @@
 const jogador1 = {
   skills: {
     vitalidade: 40,
-    força: 20,
-    resistência: 25,
+    forca: 20,
+    resistencia: 25,
     vigor: 15,
     destreza: 17,
   },
@@ -12,7 +12,7 @@ const jogador1 = {
       base: 8,
       multiplicador: {
         num: 1.75,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     pescoço: {
@@ -39,7 +39,7 @@ const jogador1 = {
       base: 10,
       multiplicador: {
         num: 2.5,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     cintura: {
@@ -50,7 +50,7 @@ const jogador1 = {
       base: 8,
       multiplicador: {
         num: 2,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     pes: {
@@ -58,7 +58,7 @@ const jogador1 = {
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
   },
@@ -69,7 +69,7 @@ const jogador1 = {
       tipo: 'pesada',
       multiplicador: {
         num: 1.6,
-        tipo: 'força',
+        tipo: 'forca',
       },
     },
     armaSecundaria: {},
@@ -104,8 +104,8 @@ const jogador1 = {
 const jogador2 = {
   skills: {
     vitalidade: 45,
-    força: 7,
-    resistência: 30,
+    forca: 7,
+    resistencia: 30,
     vigor: 10,
     destreza: 25,
   },
@@ -115,7 +115,7 @@ const jogador2 = {
       base: 8,
       multiplicador: {
         num: 1.75,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     pescoço: {
@@ -142,7 +142,7 @@ const jogador2 = {
       base: 10,
       multiplicador: {
         num: 2.5,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     cintura: {
@@ -153,7 +153,7 @@ const jogador2 = {
       base: 8,
       multiplicador: {
         num: 2,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
     pes: {
@@ -161,7 +161,7 @@ const jogador2 = {
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'resistência',
+        tipo: 'resistencia',
       },
     },
   },

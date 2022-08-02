@@ -1,5 +1,5 @@
 import {ButtonInteraction, MessageActionRow, MessageButton} from 'discord.js';
-import {bold, codeBlock, userMention} from '@discordjs/builders';
+import {bold, userMention} from '@discordjs/builders';
 import {db} from '../../db.js';
 import {PlayCardBase} from './PlayCardBase.js';
 import {title} from '../../util';
@@ -88,16 +88,7 @@ export class Combat extends PlayCardBase {
 
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
     if (resposta?.dano > batalha.db[target.id].saude) {
-      await this.executionPanel(
-        interaction,
-        origem,
-        alvo,
-        target,
-        userId,
-        handleExecutar,
-        personagemAtualAlvo,
-        personagemAtualOrigem,
-      );
+      await this.executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem);
     } else
       await interaction.editReply(
         resposta.msg
@@ -108,12 +99,17 @@ export class Combat extends PlayCardBase {
                 : `${bold(alvo.name)} ignorou ${resposta.esquiva} de dano!`
             }`,
       );
-    batalha.db[target.id].saude = batalha.db[target.id].saude - (resposta.dano ? resposta.dano : 0);
+    // Caso contratio, apenas subtraia a vida do alvo
+    this.setHealth(batalha, target.id, -resposta?.dano);
     await updateDb(interaction, batalha);
     await setCombatToken(userId, true);
     // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
     await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
   }
+  setHealth(batalha, targetId, value) {
+    batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0);
+  }
+
   // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
   async poder() {
     if (!interaction.customId === 'ataque_de_poder')
@@ -247,7 +243,12 @@ export class Combat extends PlayCardBase {
 async function setCombatToken(userId, bool) {
   await db.set(`${userId}.latestMessage.token`, bool);
 }
-
+/**
+ * Função que define o estado de combate de um personagem
+ * @param {object} target O usuário que está sendo administrado
+ * @param {object} personagemAtual O personagem que está sendo administrado
+ * @param {boolean} bool O estado de combate do personagem
+ */
 async function setCombatState(target, personagemAtual, bool) {
   await db.set(`${target.id}.chars.${personagemAtual}.inCombat`, bool);
 }
@@ -259,7 +260,16 @@ async function deleteDb(interaction, target) {
 async function updateDb(interaction, batalha) {
   await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
 }
-
+/**
+ * Uma função que retorna um calculo de dano baseado no ataque do personagem e na defesa do oponente
+ * @param {object} origem - O personagem que ataca
+ * @param {object} alvo - O personagem que é atacado
+ * @param {string} actionOrigem - Ação do personagem que ataca
+ * @param {string} actionAlvo - Ação do personagem que é atacado
+ * @param {number} dadoOrigem - Dado do personagem que ataca
+ * @param {number} dadoAlvo - Dado do personagem que é atacado
+ * @returns Um calculo de dano ou um objeto com dados sobre a batalha.
+ */
 function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0) {
   const dano = Object.values(origem.armas)
     .filter(item => item.base)
@@ -284,8 +294,8 @@ function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dad
         if (handleEscudo) return dano - itemComRng(alvo, alvo.armas.armaSecundaria, dadoAlvo);
         else
           return {
-            dano: Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistência) / 100) * 1.25),
-            defesa: Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistência) / 100) * 1.25),
+            dano: Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25),
+            defesa: Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25),
           };
       }
     case 'esquiva':

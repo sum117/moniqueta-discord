@@ -2,7 +2,6 @@ import {prefix} from './misc.js';
 import {GuildMember} from 'discord.js';
 import * as slashCommands from '../commands/slash';
 import * as interactionCommands from '../commands/interaction';
-import * as prefixlessCommands from '../commands/prefixless/index.js';
 import * as prefixCommands from '../commands/prefix';
 import * as commandSystems from '../commands/systems';
 import * as musicCommands from '../commands/music';
@@ -10,7 +9,6 @@ const music = Object(musicCommands);
 
 const slash = Object(slashCommands);
 const interactions = Object(interactionCommands);
-const prefixless = Object(prefixlessCommands);
 const prefixed = Object(prefixCommands);
 const systems = Object(commandSystems);
 
@@ -26,9 +24,6 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
         if (command) {
           await command.execute(msg, userArgs);
         } else msg.reply('❌ Não encontrei o comando que você tentou executar.');
-      }
-      for (const [, command] of Object.entries(prefixless)) {
-        command.execute(moniqueta, msg);
       }
       break;
     case 'interactionCreate':

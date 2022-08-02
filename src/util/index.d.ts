@@ -1,13 +1,5 @@
-import {Client, Message, Snowflake} from 'discord.js';
+import { Client, Message, MessageEmbed, Snowflake } from 'discord.js';
 
-import {bulkEmoji} from './bulkEmoji.js';
-import {loadEvents} from './loadEvents.js';
-import {loadCommands} from './loadCommands.js';
-import {msToTime} from './msToTime.js';
-import {registerSlashCommands} from './registerSlashCommands.js';
-import {statusBar} from './statusBar.js';
-import {title} from './title.js';
-import {updateMemberCounter} from './updateMemberCounter.js';
 /**
  * Gera uma string com o tempo formatado de forma legível.
  * @param ms O tempo em milisegundos para ser formatado.
@@ -59,4 +51,9 @@ export declare async function loadEvents(
   moniqueta: Client,
   events: Array<{name: string; once: boolean}> | Map<string, Function<(queue: any, ...args: any) => void>>,
 ): Promise<void>;
+
+export declare async function embedComponent(
+  description: string,
+  fields?: [{name: string, value: string}]
+): Promise<MessageEmbed>
 export * as misc from './misc.js';

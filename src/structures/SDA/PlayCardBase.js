@@ -71,90 +71,7 @@ export class PlayCardBase {
 
     const userId = user.id;
     const id = await db.get(`${userId}.count`);
-    const charObject = {
-      name: name,
-      gender: gender,
-      personality: personality,
-      appearance: appearance,
-      avatar: avatar,
-      sum: sum,
-      phantom: phantom,
-      skills: {
-        vitalidade: 25,
-        força: 30,
-        resistência: 20,
-        vigor: 10,
-        destreza: 32,
-      },
-      equipamentos: {
-        cabeça: {
-          nome: 'Capacete de Ferro',
-          base: 8,
-          multiplicador: {
-            num: 1.75,
-            tipo: 'resistência',
-          },
-        },
-        pescoço: {
-          nome: 'Amuleto de Darandur',
-          base: 5,
-          multiplicador: {
-            num: 1.5,
-            tipo: 'vigor',
-          },
-        },
-        ombros: {
-          nome: 'Mochila do Sapo Ardente',
-        },
-        maos: {
-          nome: 'Luvas do Tanner',
-          base: 3,
-          multiplicador: {
-            num: 1.5,
-            tipo: 'destreza',
-          },
-        },
-        peitoral: {
-          nome: 'Cota de Malha',
-          base: 10,
-          multiplicador: {
-            num: 2.5,
-            tipo: 'resistência',
-          },
-        },
-        cintura: {
-          nome: 'Cinto de Explorador',
-        },
-        pernas: {
-          nome: 'Calça de Couro',
-          base: 8,
-          multiplicador: {
-            num: 2,
-            tipo: 'resistência',
-          },
-        },
-        pes: {
-          nome: 'Botas de Couro',
-          base: 5,
-          multiplicador: {
-            num: 1.5,
-            tipo: 'resistência',
-          },
-        },
-      },
-      armas: {
-        armaPrimaria: {
-          nome: 'Machado de Ferro',
-          base: 78,
-          tipo: 'pesada',
-          multiplicador: {
-            num: 1.6,
-            tipo: 'força',
-          },
-        },
-        armaSecundaria: {},
-      },
-    };
+    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom);
     if (!id) {
       await db.set(`${userId}`, {
         chosenChar: 1,
@@ -309,4 +226,40 @@ export class PlayCardBase {
       return await channel.messages.delete(msgId);
     }
   }
+}
+function char(
+  name,
+  gender,
+  personality,
+  appearance,
+  avatar,
+  sum,
+  phantom,
+  skills = {vitalidade: 0, forca: 0, resistencia: 0, destreza: 0},
+) {
+  return {
+    name: name,
+    gender: gender,
+    personality: personality,
+    appearance: appearance,
+    avatar: avatar,
+    sum: sum,
+    phantom: phantom,
+    skills: skills,
+
+    equipamentos: {
+      cabeça: {},
+      pescoço: {},
+      ombros: {},
+      maos: {},
+      peitoral: {},
+      cintura: {},
+      pernas: {},
+      pes: {},
+    },
+    armas: {
+      armaPrimaria: {},
+      armaSecundaria: {},
+    },
+  };
 }
