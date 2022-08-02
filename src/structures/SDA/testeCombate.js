@@ -68,7 +68,7 @@ const jogador1 = {
       base: 78,
       tipo: 'pesada',
       multiplicador: {
-        num: 3.2,
+        num: 1.6,
         tipo: 'força',
       },
     },

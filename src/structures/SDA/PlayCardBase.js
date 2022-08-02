@@ -65,7 +65,7 @@ export class PlayCardBase {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({message, user, guild}, approvedChannelId, character = {}) {
+  async create({message, guild}, approvedChannelId, character = {}, user) {
     const {name, gender, personality, appearance, avatar, sum, phantom} = character;
     const {members, channels} = guild;
 
@@ -80,11 +80,11 @@ export class PlayCardBase {
       sum: sum,
       phantom: phantom,
       skills: {
-        vitalidade: 40,
-        força: 20,
-        resistência: 25,
-        vigor: 15,
-        destreza: 17,
+        vitalidade: 25,
+        força: 30,
+        resistência: 20,
+        vigor: 10,
+        destreza: 32,
       },
       equipamentos: {
         cabeça: {
@@ -148,7 +148,7 @@ export class PlayCardBase {
           base: 78,
           tipo: 'pesada',
           multiplicador: {
-            num: 3.2,
+            num: 1.6,
             tipo: 'força',
           },
         },
@@ -231,7 +231,6 @@ export class PlayCardBase {
         combate = await (async () => {
           const batalha = await db.table('batalha_' + interaction.channelId).all();
           const status = batalha
-            .filter(value => value.id === user.id)
             .map(obj => {
               const status = obj.value[user.id];
               return {saude: status.saude, mana: status.mana};
@@ -263,11 +262,6 @@ export class PlayCardBase {
                   combate?.saude,
                   data.skills.vitalidade * 10,
                   '<:barLife:994630714312106125>',
-                  '<:BarEmpty:994631056378564750>',
-                )}\n🧠 ${statusBar(
-                  combate?.mana,
-                  data.skills.vigor * 5,
-                  '<:barEnergy:994630956180840529>',
                   '<:BarEmpty:994631056378564750>',
                 )}`,
               },

@@ -35,12 +35,12 @@ export class Combat extends PlayCardBase {
         if (check === null) {
           await batalha.set(origem, {
             [origem]: {
-              saude: this.alvo.skills.vitalidade * 10,
-              mana: this.alvo.skills.vigor * 5,
-            },
-            [alvo]: {
               saude: this.origem.skills.vitalidade * 10,
               mana: this.origem.skills.vigor * 5,
+            },
+            [alvo]: {
+              saude: this.alvo.skills.vitalidade * 10,
+              mana: this.alvo.skills.vigor * 5,
             },
           });
           return {db: await batalha.get(origem), id: origem};
@@ -55,7 +55,13 @@ export class Combat extends PlayCardBase {
   async fisico() {
     const {alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
     const ultimoPost = await db.get(`${userId}.latestMessage`);
-    // Erros de validação
+    const charMessagesDb = await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`);
+    const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
+    const personagemAtualOrigem = await db.get(`${userId}.chosenChar`);
+    const dadoAlvo = Math.floor(Math.random() * 20) + 1;
+    const dadoOrigem = Math.floor(Math.random() * 20) + 1;
+
+    // ------------------------------------------------ Erros de validação ------------------------------------------------
     if (!(ultimoPost?.channelId === interaction.channelId && ultimoPost.time > Date.now() - 1000 * 60 * 45))
       return interaction.reply({
         content:
@@ -64,17 +70,128 @@ export class Combat extends PlayCardBase {
       });
     if (!interaction.customId.startsWith('ataque_fisico'))
       throw new Error('Você usou o método de ataque físico em uma interação incongruente.');
-    if (!(await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`)))
-      return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
+
+    if (!charMessagesDb) return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
 
     if (ultimoPost.token)
       return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
-    // Ataque validado - Enviando prompt de resposta para o alvo e aguardando resposta
+    // ------------------------------------------------ Ataque validado ------------------------------------------------
     interaction.deferReply({fetchReply: true});
-    const dadoOrigem = Math.floor(Math.random() * 20) + 1;
-    const dadoAlvo = Math.floor(Math.random() * 20) + 1;
-    const painelParaResposta = await interaction.channel.send({
+    const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
+    const resposta = calculo(origem, alvo, undefined, escolhaAlvo, dadoOrigem, dadoAlvo);
+    await setCombatState(target, personagemAtualAlvo, true);
+    await setCombatState(userId, personagemAtualOrigem, true);
+
+    // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
+    this.handleEffectPhrase(batalha, target, alvo, target.id, interaction, falasAlvo, 'warned');
+
+    // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
+    if (resposta?.dano > batalha.db[target.id].saude) {
+      await this.executionPanel(
+        interaction,
+        origem,
+        alvo,
+        target,
+        userId,
+        handleExecutar,
+        personagemAtualAlvo,
+        personagemAtualOrigem,
+      );
+    } else
+      await interaction.editReply(
+        resposta.msg
+          ? resposta.msg
+          : `${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!\n${
+              resposta.defesa
+                ? `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`
+                : `${bold(alvo.name)} ignorou ${resposta.esquiva} de dano!`
+            }`,
+      );
+    batalha.db[target.id].saude = batalha.db[target.id].saude - (resposta.dano ? resposta.dano : 0);
+    await updateDb(interaction, batalha);
+    await setCombatToken(userId, true);
+    // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
+    await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
+  }
+  // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
+  async poder() {
+    if (!interaction.customId === 'ataque_de_poder')
+      throw new Error('Você usou o método de ataque poderoso em uma interação incongruente.');
+  }
+  async handleEffectPhrase(batalha, target, alvo, userId, interaction, falas, state = 'encouraged' || 'warned') {
+    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[userId]?.[state]) {
+      batalha.db[userId][state] = true;
+      await updateDb(interaction, batalha);
+      await interaction.followUp({
+        content: `🌟 ${userMention(target.id)} 🌟\n${
+          falas.hp.inimigo[Math.floor(Math.random() * falas.hp.inimigo.length)]
+        }`,
+      });
+    }
+  }
+  async executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem) {
+    const painelFinal = await interaction.editReply({
+      content: `${bold(origem.name)} derrubou ${bold(
+        alvo.name,
+      )}!\nO destino dele(a) deverá ser decidido nos proximos dez minutos, ou morrerá de sangramento de qualquer forma!`,
+      components: [
+        new MessageActionRow().addComponents([
+          new MessageButton()
+            .setCustomId(`executar_${target.id}_${userId}`)
+            .setStyle('DANGER')
+            .setLabel('EXECUTAR!')
+            .setEmoji('🗡️'),
+          new MessageButton()
+            .setCustomId(`poupar_${target.id}_${userId}`)
+            .setStyle('PRIMARY')
+            .setLabel('POUPAR!')
+            .setEmoji('🆘'),
+        ]),
+      ],
+    });
+    const coletorOrigem = painelFinal.createMessageComponentCollector({
+      filter: i => i.user.id === userId,
+      time: 60 * 10 * 1000,
+      max: 1,
+    });
+
+    coletorOrigem.on('collect', async button => {
+      if (button.customId === 'executar_' + target.id + `_${userId}`) await handleExecutar(button);
+      else {
+        button.message.edit({content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: []});
+        await button.channel.send({
+          content: `A batalha entre ${bold(origem.name)} e ${bold(alvo.name)} acabou. O vencedor é ${bold(
+            origem.name,
+          )}, que decidiu poupar o(a) opositor(a)!`,
+        });
+      }
+      await deleteDb(interaction, target);
+      await deleteDb(interaction, userId);
+      await setCombatState(target, personagemAtualAlvo, false);
+      await setCombatState(userId, personagemAtualOrigem, false);
+    });
+    coletorOrigem.on('end', collected => {
+      if (!collected) return handleExecutar();
+    });
+    async function handleExecutar(btn) {
+      await btn.message.edit({
+        content: `${bold(origem.name)} executou ${bold(alvo.name)}... Que Sidera o(a) tenha! 💀`,
+        components: [],
+      });
+
+      await db.add(`${userId}.chars.${personagemAtualOrigem}.kills`, 1);
+      await db.set(`${target.id}.chars.${personagemAtualAlvo}.dead`, true);
+      await btn.channel.send({
+        content: `💀 ${bold(alvo.name)} morreu, ${userMention(
+          target.id,
+        )}!\n\nEm breve você poderá sair da carcaça somática e virar um fantasma. Porém, se você for um(a) ceifador(a), este personagem foi perdido para sempre!`,
+      });
+    }
+  }
+
+  async responsePanel(interaction, origem, target, alvo, userId) {
+    const painel = await interaction.channel.send({
       content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${
         !origem.inCombat
           ? `\n💀 ${bold(
@@ -104,133 +221,46 @@ export class Combat extends PlayCardBase {
         ),
       ],
     });
-    const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
-    const personagemAtualOrigem = await db.get(`${userId}.chosenChar`);
-    await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, true);
-    await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, true);
-
-    // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[target.id].warned) {
-      await interaction.channel.send({
-        content: bold(alvo.name) + '! ' + falasAlvo.hp.self[Math.floor(Math.random() * falasAlvo.hp.self.length)],
-      });
-      batalha.db[target.id].warned = true;
-      await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
-    }
-    const reacaoAlvo = await painelParaResposta.awaitMessageComponent({
+    const reacaoAlvo = await painel.awaitMessageComponent({
       filter: i => i.user.id === target.id,
       time: 60 * 10 * 1000,
     });
+
     if (!reacaoAlvo)
-      await painelParaResposta.edit({
+      return await painel.edit({
         content: `${userMention(
           target.id,
         )} não respondeu ao seu ataque no tempo estipulado. O personagem tentará defender automaticamente!`,
         components: [],
       });
 
-    await painelParaResposta.edit({
+    await painel.edit({
       content: `${userMention(target.id)} escolheu ${bold(title(reacaoAlvo.component.label))}!`,
       components: [],
     });
 
     // Finalizando turno de combate com o calculo de dano
-    const escolhaAlvo = reacaoAlvo?.customId.split('_')[0] ?? 'defender';
-    const resposta = calculo(origem, alvo, undefined, escolhaAlvo, dadoOrigem, dadoAlvo);
-    // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
-    if (resposta?.dano > batalha.db[target.id].saude) {
-      const painelFinal = await interaction.editReply({
-        content: `${bold(origem.name)} derrubou ${bold(
-          alvo.name,
-        )}!\nO destino dele(a) deverá ser decidido nos proximos dez minutos, ou morrerá de sangramento de qualquer forma!`,
-        components: [
-          new MessageActionRow().addComponents([
-            new MessageButton()
-              .setCustomId(`executar_${target.id}_${userId}`)
-              .setStyle('DANGER')
-              .setLabel('EXECUTAR!')
-              .setEmoji('🗡️'),
-            new MessageButton()
-              .setCustomId(`poupar_${target.id}_${userId}`)
-              .setStyle('PRIMARY')
-              .setLabel('POUPAR!')
-              .setEmoji('🆘'),
-          ]),
-        ],
-      });
-      const coletorOrigem = painelFinal.createMessageComponentCollector({
-        filter: i => i.user.id === userId,
-        time: 60 * 10 * 1000,
-        max: 1,
-      });
-
-      coletorOrigem.on('collect', async button => {
-        if (button.customId === 'executar_' + target.id + `_${userId}`) await handleExecutar(button);
-        else {
-          button.message.edit({content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: []});
-          await button.channel.send({
-            content: `A batalha entre ${bold(origem.name)} e ${bold(alvo.name)} acabou. O vencedor é ${bold(
-              origem.name,
-            )}, que decidiu poupar o(a) opositor(a)!`,
-          });
-        }
-        await db.table('batalha_' + interaction.channelId).delete(target.id);
-        await db.table('batalha_' + interaction.channelId).delete(userId);
-        await db.set(`${target.id}.chars.${personagemAtualAlvo}.inCombat`, false);
-        await db.set(`${userId}.chars.${personagemAtualOrigem}.inCombat`, false);
-      });
-      coletorOrigem.on('end', collected => {
-        if (!collected) return handleExecutar();
-      });
-      async function handleExecutar(btn) {
-        await btn.message.edit({
-          content: `${bold(origem.name)} executou ${bold(alvo.name)}... Que Sidera o(a) tenha! 💀`,
-          components: [],
-        });
-        const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
-        const personagemAtualOrigem = await db.get(`${userId}.chosenChar`);
-        await db.add(`${userId}.chars.${personagemAtualOrigem}.kills`, 1);
-        await db.set(`${target.id}.chars.${personagemAtualAlvo}.dead`, true);
-        const updatedChar = await db.get(`${target.id}.chars.${personagemAtualAlvo}`);
-        await btn.channel.send({
-          content: `💀 ${bold(alvo.name)} morreu, ${userMention(
-            target.id,
-          )}!\n\nEm breve você poderá sair da carcaça somática e virar um fantasma. Porém, se você for um(a) ceifador(a), este personagem foi perdido para sempre!\n${codeBlock(
-            JSON.stringify(updatedChar),
-          )}`,
-        });
-      }
-    } else
-      await interaction.editReply(
-        resposta.msg
-          ? resposta.msg
-          : `${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!\n${
-              resposta.defesa
-                ? `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`
-                : `${bold(alvo.name)} ignorou ${resposta.esquiva} de dano!`
-            }`,
-      );
-    batalha.db[target.id].saude = batalha.db[target.id].saude - (resposta.dano ? resposta.dano : 0);
-    await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
-    await db.set(`${userId}.latestMessage.token`, true);
-    // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
-    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[userId]?.encouraged) {
-      batalha.db[userId].encouraged = true;
-      await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
-      await interaction.followUp({
-        content:
-          bold(origem.name) + '! ' + falasOrigem.hp.inimigo[Math.floor(Math.random() * falasOrigem.hp.inimigo.length)],
-      });
-    }
-  }
-  // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
-  async poder() {
-    if (!interaction.customId === 'ataque_de_poder')
-      throw new Error('Você usou o método de ataque poderoso em uma interação incongruente.');
+    return reacaoAlvo?.customId.split('_')[0] ?? 'defender';
   }
 }
+// ------------------------------------------------ Database functions and helpers ------------------------------------------------
+async function setCombatToken(userId, bool) {
+  await db.set(`${userId}.latestMessage.token`, bool);
+}
 
-function calculo(origem = {}, alvo = {}, actionOrigem, actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0) {
+async function setCombatState(target, personagemAtual, bool) {
+  await db.set(`${target.id}.chars.${personagemAtual}.inCombat`, bool);
+}
+
+async function deleteDb(interaction, target) {
+  await db.table('batalha_' + interaction.channelId).delete(target.id);
+}
+
+async function updateDb(interaction, batalha) {
+  await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
+}
+
+function calculo(origem = {}, alvo = {}, actionOrigem = '', actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0) {
   const dano = Object.values(origem.armas)
     .filter(item => item.base)
     .map(item => itemComRng(origem, item, dadoOrigem))
@@ -252,7 +282,11 @@ function calculo(origem = {}, alvo = {}, actionOrigem, actionAlvo = '', dadoOrig
       else {
         const handleEscudo = alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
         if (handleEscudo) return dano - itemComRng(alvo, alvo.armas.armaSecundaria, dadoAlvo);
-        else return {dano: Math.floor(dano - dano * 0.15), defesa: Math.floor(dano * 0.15)};
+        else
+          return {
+            dano: Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistência) / 100) * 1.25),
+            defesa: Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistência) / 100) * 1.25),
+          };
       }
     case 'esquiva':
       if (dadoAlvo === 20)
@@ -263,9 +297,11 @@ function calculo(origem = {}, alvo = {}, actionOrigem, actionAlvo = '', dadoOrig
               : 'Esquiva perfeita! VOOSH!',
           payback: 'esquiva_perfeita',
         };
-      else return {dano: Math.floor(dano - dano * 0.25), esquiva: Math.floor(dano * 0.25)};
-    default:
-      return {dano: Math.floor(dano - defesa), defesa: Math.floor(defesa)};
+      else
+        return {
+          dano: Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25),
+          esquiva: Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25),
+        };
   }
 
   function itemComRng(player, item = {}, dado = 0) {
