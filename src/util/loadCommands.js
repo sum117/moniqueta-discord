@@ -34,7 +34,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
           if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
             return void interaction.reply({
               content: '😡 Ei! Você não tá num canal de música, tá tentando me bugar?!',
-              ephemeral: true,
+              ephemeral: true
             });
           }
           if (
@@ -44,7 +44,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
             return void interaction.reply({
               content:
                 '😡 Eu sei que você quer ficar sozinho, mas se sou eu que vou tocar pra você, vai ter que ficar no mesmo canal que eu!',
-              ephemeral: true,
+              ephemeral: true
             });
           }
           await music[interaction.commandName].execute(interaction, musicPlayer);

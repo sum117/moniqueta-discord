@@ -6,7 +6,7 @@ export function updateMemberCounter(moniqueta, myGuild) {
       if (Date.now() - time > 8 * 3600 * 1000) moniqueta.memberCounter.delete(user);
     });
     memberCounter.edit({
-      name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size),
+      name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size)
     });
   }, 5 * 60 * 1000);
 }

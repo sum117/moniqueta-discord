@@ -7,11 +7,11 @@ import {
   MessageActionRow,
   MessageAttachment,
   MessageButton,
-  MessageEmbed,
+  MessageEmbed
 } from 'discord.js';
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
-
+import {bold} from '@discordjs/builders';
 const {userMention} = Formatters;
 
 export const assets = {
@@ -25,7 +25,7 @@ export const assets = {
     pernas: '<:legs:1004131094678995035>',
     pes: '<:boots:1004130682794156083>',
     armaPrimaria: '<:battleaxe:1004131092112085063>',
-    armaSecundaria: '<:battleshield:1004131103063412856>',
+    armaSecundaria: '<:battleshield:1004131103063412856>'
   },
   sum: {
     austera: {color: 10517508, emoji: '<:Austeros:982077481702027344>'},
@@ -37,15 +37,15 @@ export const assets = {
     melancus: {color: 0, emoji: '<:Melancus:982082685801472060>'},
     observata: {
       color: 16777215,
-      emoji: '<:Observata:982082685864378418>',
+      emoji: '<:Observata:982082685864378418>'
     },
-    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
+    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'}
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
     vermelho: '<:fantasmaVermelho:982092065989074994>',
-    branco: '<:fantasmaBranco:982092065599029268>',
-  },
+    branco: '<:fantasmaBranco:982092065599029268>'
+  }
 };
 
 export class PlayCardBase {
@@ -58,7 +58,7 @@ export class PlayCardBase {
           (await interaction[interaction.deferred ? 'editReply' : 'reply']({
             content: `Não há nenhum personagem criado ou selecionado para ${
               user.id === interaction.user.id ? 'você' : user
-            }`,
+            }`
           }),
           new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id))
         );
@@ -78,19 +78,19 @@ export class PlayCardBase {
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
   async create({guild}, approvedChannelId, character = {}, user) {
-    const {name, gender, personality, appearance, avatar, sum, phantom} = character;
+    const {name, gender, personality, appearance, avatar, sum, phantom, equipamentos} = character;
     const {members, channels} = guild;
 
     const userId = user.id;
     const id = await db.get(`${userId}.count`);
-    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom);
+    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom, equipamentos);
     if (!id) {
       await db.set(`${userId}`, {
         chosenChar: 1,
         count: 1,
         chars: {
-          ['1']: charObject,
-        },
+          ['1']: charObject
+        }
       });
     } else {
       await db.add(`${userId}.count`, 1);
@@ -111,17 +111,17 @@ export class PlayCardBase {
             name: membro.user.username,
             iconURL: membro.user.avatarURL({
               dynamic: true,
-              size: 512,
-            }),
+              size: 512
+            })
           })
           .addField(
             'Gênero',
             gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
-            true,
+            true
           )
           .addField('Purgatório', assets.phantom[phantom] + ' ' + title(phantom), true)
-          .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true),
-      ],
+          .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true)
+      ]
     });
   }
 
@@ -146,7 +146,7 @@ export class PlayCardBase {
           id: `${msg.id}`,
           channelId: `${msg.channelId}`,
           time: Date.now(),
-          token: false,
+          token: false
         });
       case 'edit':
         return edit(await db.get(user.id + '.latestMessage.id'));
@@ -172,7 +172,7 @@ export class PlayCardBase {
           {
             title: name,
             thumbnail: {
-              url: avatar,
+              url: avatar
             },
             image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
             color: assets.sum[sum].color,
@@ -181,8 +181,8 @@ export class PlayCardBase {
               text: user.username,
               icon_url: user.avatarURL({
                 dynamic: true,
-                size: 512,
-              }),
+                size: 512
+              })
             },
             [combat ? 'fields' : undefined]: [
               {
@@ -191,30 +191,30 @@ export class PlayCardBase {
                   combate?.saude,
                   data.skills.vitalidade * 10,
                   '<:barLife:994630714312106125>',
-                  '<:BarEmpty:994631056378564750>',
+                  '<:BarEmpty:994631056378564750>'
                 )}\n 💨 ${statusBar(
                   combate?.vigor,
                   data.skills.vigor * 5,
                   '<:barVigor:994630903181615215>',
-                  '<:BarEmpty:994631056378564750>',
-                )}`,
-              },
-            ],
-          },
+                  '<:BarEmpty:994631056378564750>'
+                )}`
+              }
+            ]
+          }
         ],
         files: attachment
           ? [
               {
                 attachment: attachment.attachment,
-                name: attachment.name,
-              },
+                name: attachment.name
+              }
             ]
           : [],
         components: [
           new MessageActionRow().addComponents(
-            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('SECONDARY'),
-          ),
-        ],
+            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('SECONDARY')
+          )
+        ]
       });
       await db.set(`${guildId}.charMessages.${message.id}`, user.id);
       return message;
@@ -224,24 +224,80 @@ export class PlayCardBase {
       const embed = (await channel.messages.fetch(msgId)).embeds[0];
       embed.setDescription(content);
       return await channel.messages.edit(msgId, {
-        embeds: [embed],
+        embeds: [embed]
       });
     }
     async function remove(msgId) {
       const messageToCheck = await db.get(`${guildId}.charMessages.${msgId}`);
       if (!msgId) {
         throw interaction[interaction.deferred ? 'editReply' : 'reply']({
-          content: 'Não foi possível encontrar a mensagem para ser removida',
+          content: 'Não foi possível encontrar a mensagem para ser removida'
         });
       } else if (messageToCheck !== user.id) {
         throw interaction[interaction.deferred ? 'editReply' : 'reply']({
-          content: 'Você não pode deletar uma mensagem que não pertence a você.',
+          content: 'Você não pode deletar uma mensagem que não pertence a você.'
         });
       }
 
       if (msgId === (await db.get(user.id + '.latestMessage.id'))) db.delete(user.id + '.latestMessage');
       return await channel.messages.delete(msgId);
     }
+  }
+  async list(interaction) {
+    const {user} = interaction;
+    const data = await this.character(interaction, user);
+    const {avatar, sum} = data;
+
+    const chosenCheck = await db.get(user.id + '.chosenChar');
+    const list = Object.entries(await db.get(user.id + '.chars'))
+      .map(([id, char]) => {
+        return `${bold(id)} : ${assets.sum[char.sum].emoji} ${assets.phantom[char.phantom]} ${char.name} ${
+          toString(chosenCheck) === toString(id) ? ' ⭐' : ''
+        }`;
+      })
+      .join('\n');
+    return await interaction.reply({
+      content: 'Exibindo personagens de ' + user.username,
+      embeds: [
+        {
+          description: list,
+          thumbnail: {url: avatar},
+          color: assets.sum[sum].color,
+          footer: {
+            text: 'Use o comando /playcard escolher <id> para escolher um personagem.',
+            icon_url: user.avatarURL({
+              dynamic: true,
+              size: 512
+            })
+          }
+        }
+      ]
+    });
+  }
+  async choose(interaction, id) {
+    const {user} = interaction;
+    const chosenCheck = await db.get(user.id + '.chosenChar');
+    const list = Object.entries(await db.get(user.id + '.chars'))
+      .map(([id]) => {
+        return id;
+      })
+      .join('\n');
+    if (toString(id) === toString(chosenCheck))
+      return interaction.reply('Você já escolheu esse personagem como seu personagem.');
+    if (!list.includes(id)) return interaction.reply('Esse personagem não existe.');
+    await db.set(user.id + '.chosenChar', id);
+    const chosen = await this.character(interaction, user);
+    const {avatar, name} = chosen;
+    return await interaction.reply({
+      embeds: [
+        {
+          title: name,
+          description: 'Você escolheu o personagem ' + name + '!',
+          thumbnail: {url: avatar},
+          color: assets.sum[sum].color
+        }
+      ]
+    });
   }
 }
 function char(
@@ -252,8 +308,100 @@ function char(
   avatar,
   sum,
   phantom,
-  skills = {vitalidade: 0, forca: 0, resistencia: 0, destreza: 0},
+  equipamentos = {cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {}}
 ) {
+  const sumSkills = {
+    oscuras: {
+      vitalidade: 10,
+      vigor: 4,
+      destreza: 5,
+      mente: 0,
+      força: 10,
+      resistência: 7,
+      primordio: 0,
+      elemental: 0,
+      profano: 0
+    },
+
+    ehrantos: {
+      vitalidade: 10,
+      vigor: 5,
+      destreza: 0,
+      mente: 7,
+      força: 0,
+      resistência: 0,
+      primordio: 14,
+      elemental: 0,
+      profano: 0
+    },
+    insanata: {
+      vitalidade: 10,
+      vigor: 3,
+      destreza: 5,
+      mente: 5,
+      força: 2,
+      resistência: 5,
+      primordio: 0,
+      elemental: 0,
+      profano: 6
+    },
+    observata: {
+      vitalidade: 10,
+      vigor: 6,
+      destreza: 7,
+      mente: 3,
+      força: 6,
+      resistência: 4,
+      primordio: 0,
+      elemental: 0,
+      profano: 0
+    },
+    austera: {
+      vitalidade: 10,
+      vigor: 2,
+      destreza: 2,
+      mente: 4,
+      força: 0,
+      resistência: 3,
+      primordio: 13,
+      elemental: 0,
+      profano: 0
+    },
+    perserata: {
+      vitalidade: 10,
+      vigor: 6,
+      destreza: 7,
+      mente: 4,
+      força: 0,
+      resistência: 2,
+      primordio: 0,
+      elemental: 0,
+      profano: 7
+    },
+    equinocio: {
+      vitalidade: 10,
+      vigor: 6,
+      destreza: 7,
+      mente: 9,
+      força: 0,
+      resistência: 4,
+      primordio: 0,
+      elemental: 0,
+      profano: 0
+    },
+    melancus: {
+      vitalidade: 10,
+      vigor: 3,
+      destreza: 3,
+      mente: 3,
+      força: 5,
+      resistência: 5,
+      primordio: 0,
+      elemental: 3,
+      profano: 4
+    }
+  };
+
   return {
     name: name,
     gender: gender,
@@ -262,9 +410,9 @@ function char(
     avatar: avatar,
     sum: sum,
     phantom: phantom,
-    skills: skills,
+    skills: sumSkills[sum],
 
-    equipamentos: {
+    equipamentos: equipamentos ?? {
       cabeça: {},
       pescoço: {},
       ombros: {},
@@ -272,11 +420,11 @@ function char(
       peitoral: {},
       cintura: {},
       pernas: {},
-      pes: {},
+      pes: {}
     },
     armas: {
       armaPrimaria: {},
-      armaSecundaria: {},
-    },
+      armaSecundaria: {}
+    }
   };
 }

@@ -20,10 +20,10 @@ export class Item extends Combat {
         .map(
           ([key, value]) =>
             `${bold(title(key))}: ${title(
-              `${typeof value === 'object' ? `\n> ${value.num}\n> ${title(value.tipo)}` : value}`,
-            )}`,
+              `${typeof value === 'object' ? `\n> ${value.num}\n> ${title(value.tipo)}` : value}`
+            )}`
         )
-        .join('\n')}`,
+        .join('\n')}`
     );
   }
 
@@ -40,12 +40,22 @@ export class Item extends Combat {
     const item = await serverItems.get(id);
     if (!item) return `❌ Item não encontrado`;
     return await embedComponent(
-      `✅ ${bold(item.nome)}:\n${Object.entries(item)
-        .map(([key, value]) => `${bold(title(key))}: ${title(toString(value))}`)
-        .join('\n')}`,
+      `✅ ${bold(item.nome)}:\n\n${Object.entries(item)
+        .filter(([key]) => key !== 'equipado')
+        .map(
+          ([key, value]) =>
+            `${bold(title(key))}: ${title(
+              `${typeof value === 'object' ? `\n> ${value.num}\n> ${title(value.tipo)}` : value}`
+            )}`
+        )
+        .join('\n')}`
     );
   }
-
+  static async list() {
+    const serverItems = db.table('server_items');
+    const items = await serverItems.all();
+    return await embedComponent(items.map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`).join('\n'));
+  }
   static async give(id = '', givingUser, receivingUser, quantia = 1) {
     const serverItems = db.table('server_items');
     const serverItem = await serverItems.get(id);
@@ -65,19 +75,20 @@ export class Item extends Combat {
     await setInventory(receivingUser, id, {...serverItem, quantia: receivingUserItem.quantia + quantia});
 
     return await embedComponent(
-      `✅ ${bold(serverItem.nome)} adicionado ao inventário de ${bold(receivingUserChar.nome)}. Ele foi dado por ${bold(
-        user.username,
-      )}`,
+      `✅ ${bold(serverItem.nome)} adicionado ao inventário de ${bold(receivingUserChar.name)}. Ele foi dado por ${bold(
+        givingUser.username
+      )}`
     );
   }
 }
 async function getInventory(user) {
-  await db.get(`${user.id}.chosenChar`);
+  const chosenChar = await db.get(`${user.id}.chosenChar`);
   return {
     items: await db.get(`${user.id}.chars.${chosenChar}.items`),
-    char: await db.get(`${user.id}.chars.${chosenChar}`),
+    char: await db.get(`${user.id}.chars.${chosenChar}`)
   };
 }
 async function setInventory(user, itemId, item) {
+  const chosenChar = await db.get(`${user.id}.chosenChar`);
   return await db.set(`${user.id}.chars.${chosenChar}.items.${itemId}`, item);
 }

@@ -4,7 +4,7 @@ const jogador1 = {
     forca: 20,
     resistencia: 25,
     vigor: 15,
-    destreza: 17,
+    destreza: 17
   },
   equipamentos: {
     cabeça: {
@@ -12,55 +12,55 @@ const jogador1 = {
       base: 8,
       multiplicador: {
         num: 1.75,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     pescoço: {
       nome: 'Amuleto de Darandur',
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'vigor',
-      },
+        tipo: 'vigor'
+      }
     },
     ombros: {
-      nome: 'Mochila do Sapo Ardente',
+      nome: 'Mochila do Sapo Ardente'
     },
     maos: {
       nome: 'Luvas do Tanner',
       base: 3,
       multiplicador: {
         num: 1.5,
-        tipo: 'destreza',
-      },
+        tipo: 'destreza'
+      }
     },
     peitoral: {
       nome: 'Cota de Malha',
       base: 10,
       multiplicador: {
         num: 2.5,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     cintura: {
-      nome: 'Cinto de Explorador',
+      nome: 'Cinto de Explorador'
     },
     pernas: {
       nome: 'Calça de Couro',
       base: 8,
       multiplicador: {
         num: 2,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     pes: {
       nome: 'Botas de Couro',
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'resistencia',
-      },
-    },
+        tipo: 'resistencia'
+      }
+    }
   },
   armas: {
     armaPrimaria: {
@@ -69,11 +69,11 @@ const jogador1 = {
       tipo: 'pesada',
       multiplicador: {
         num: 1.6,
-        tipo: 'forca',
-      },
+        tipo: 'forca'
+      }
     },
-    armaSecundaria: {},
-  },
+    armaSecundaria: {}
+  }
   /* poderes: {
         1: {
             nome: '',
@@ -107,7 +107,7 @@ const jogador2 = {
     forca: 7,
     resistencia: 30,
     vigor: 10,
-    destreza: 25,
+    destreza: 25
   },
   equipamentos: {
     cabeça: {
@@ -115,55 +115,55 @@ const jogador2 = {
       base: 8,
       multiplicador: {
         num: 1.75,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     pescoço: {
       nome: 'Amuleto de Darandur',
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'vigor',
-      },
+        tipo: 'vigor'
+      }
     },
     ombros: {
-      nome: 'Mochila do Sapo Ardente',
+      nome: 'Mochila do Sapo Ardente'
     },
     maos: {
       nome: 'Luvas do Tanner',
       base: 3,
       multiplicador: {
         num: 1.5,
-        tipo: 'destreza',
-      },
+        tipo: 'destreza'
+      }
     },
     peitoral: {
       nome: 'Cota de Malha',
       base: 10,
       multiplicador: {
         num: 2.5,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     cintura: {
-      nome: 'Cinto de Explorador',
+      nome: 'Cinto de Explorador'
     },
     pernas: {
       nome: 'Calça de Couro',
       base: 8,
       multiplicador: {
         num: 2,
-        tipo: 'resistencia',
-      },
+        tipo: 'resistencia'
+      }
     },
     pes: {
       nome: 'Botas de Couro',
       base: 5,
       multiplicador: {
         num: 1.5,
-        tipo: 'resistencia',
-      },
-    },
+        tipo: 'resistencia'
+      }
+    }
   },
   armas: {
     armaPrimaria: {
@@ -172,11 +172,11 @@ const jogador2 = {
       tipo: 'pesada',
       multiplicador: {
         num: 5,
-        tipo: 'destreza',
-      },
+        tipo: 'destreza'
+      }
     },
-    armaSecundaria: {},
-  },
+    armaSecundaria: {}
+  }
 };
 
 const rng1 = 20;
@@ -208,7 +208,7 @@ const calculo = (origem = {}, [alvo = {}, action = '']) => {
     return {
       msg:
         easterEgg >= 90 ? 'Parry e Easter Egg. Sorte Máxima!\nhttps://youtu.be/C4gntXWPrw4' : 'Parry perfeito! PRIIIM!',
-      payback: 'defesa',
+      payback: 'defesa'
     };
   else if (action === 'desvio' && rng2 === 20)
     return {
@@ -216,7 +216,7 @@ const calculo = (origem = {}, [alvo = {}, action = '']) => {
         easterEgg >= 90
           ? 'Desvio e Easter Egg. Sorte Máxima!\nhttps://www.youtube.com/shorts/bLC4F51xLVQ'
           : 'Esquiva perfeita! VOOSH!',
-      payback: 'desvio',
+      payback: 'desvio'
     };
   else return dano - defesa;
 };

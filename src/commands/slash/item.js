@@ -20,9 +20,9 @@ export const data = new SCB()
             {name: 'peitoral', value: 'peitoral'},
             {name: 'cintura', value: 'cintura'},
             {name: 'pernas', value: 'pernas'},
-            {name: 'pes', value: 'pes'},
+            {name: 'pes', value: 'pes'}
           )
-          .setDescription('O slot onde o item vai ficar alocado'),
+          .setDescription('O slot onde o item vai ficar alocado')
       )
       .addStringOption(option => option.setName('nome').setRequired(true).setDescription('o nome do item'))
       .addStringOption(option => option.setName('desc').setRequired(true).setDescription('o descricao do item'))
@@ -35,9 +35,9 @@ export const data = new SCB()
             {name: 'arma', value: 'arma'},
             {name: 'equipamento', value: 'equipamento'},
             {name: 'consumivel', value: 'consumivel'},
-            {name: 'outro', value: 'outro'},
+            {name: 'outro', value: 'outro'}
           )
-          .setDescription('o tipo do item'),
+          .setDescription('o tipo do item')
       )
       .addStringOption(option =>
         option
@@ -49,31 +49,31 @@ export const data = new SCB()
             {name: 'força', value: 'força'},
             {name: 'resistência', value: 'resistência'},
             {name: 'vigor', value: 'vigor'},
-            {name: 'destreza', value: 'destreza'},
-          ),
+            {name: 'destreza', value: 'destreza'}
+          )
       )
       .addNumberOption(option =>
-        option.setName('multiplicador_numero').setRequired(true).setDescription('o multiplicador do item'),
+        option.setName('multiplicador_numero').setRequired(true).setDescription('o multiplicador do item')
       )
       .addNumberOption(option =>
-        option.setName('base').setRequired(true).setDescription('o numero que representa a base do item'),
+        option.setName('base').setRequired(true).setDescription('o numero que representa a base do item')
       )
       .addNumberOption(option =>
-        option.setName('valor').setRequired(true).setDescription('o valor do item em moedas somaticas'),
-      ),
+        option.setName('valor').setRequired(true).setDescription('o valor do item em moedas somaticas')
+      )
   )
 
   .addSubcommand(deletar =>
     deletar
       .setName('deletar')
       .setDescription('deleta um item do servidor')
-      .addStringOption(option => option.setName('id').setDescription('nome ou id do item').setRequired(true)),
+      .addStringOption(option => option.setName('id').setDescription('nome ou id do item').setRequired(true))
   )
   .addSubcommand(mostrar =>
     mostrar
       .setName('mostrar')
       .setDescription('mostre um item, esteja ele no seu inventario ou nao')
-      .addStringOption(option => option.setName('id').setDescription('nome ou id do item').setRequired(true)),
+      .addStringOption(option => option.setName('id').setDescription('nome ou id do item').setRequired(true))
   )
   .addSubcommand(dar =>
     dar
@@ -82,9 +82,10 @@ export const data = new SCB()
       .addStringOption(option => option.setName('id').setDescription('nome ou id do item').setRequired(true))
       .addNumberOption(option => option.setName('quantidade').setDescription('quantidade do item').setRequired(true))
       .addUserOption(option =>
-        option.setName('usuario').setRequired(true).setDescription('o usuario que recebera o item.'),
-      ),
-  );
+        option.setName('usuario').setRequired(true).setDescription('o usuario que recebera o item.')
+      )
+  )
+  .addSubcommand(listar => listar.setName('listar').setDescription('lista todos os itens do servidor'));
 
 /** @param {CommandInteraction} interaction A interação que executou este comando*/
 export async function execute(interaction) {
@@ -110,7 +111,7 @@ export async function execute(interaction) {
         tipo,
         multiplicador: {tipo: multiplicador_tipo, num: multiplicador_numero},
         base,
-        valor,
+        valor
       });
 
       return await interaction.reply({embeds: [item]});
@@ -134,5 +135,7 @@ export async function execute(interaction) {
       const itemDado = await Item.give(id, interaction.user, usuario, quantidade);
 
       return await interaction.reply({embeds: [itemDado]});
+    case 'listar':
+      return await interaction.reply({embeds: [await Item.list()]});
   }
 }

@@ -7,7 +7,7 @@ export async function embedComponent(description = '', fields = [{name: '', valu
     .setTimestamp(Date.now())
     .setFooter({
       iconURL: moniqueta.user.avatarURL({dynamic: true, size: 512}),
-      text: '© 2022 Moniqueta',
+      text: '© 2022 Moniqueta'
     })
     .setDescription(description);
 }

@@ -1,4 +1,4 @@
-import { Client, Message, MessageEmbed, Snowflake } from 'discord.js';
+import {Client, Message, MessageEmbed, Snowflake} from 'discord.js';
 
 /**
  * Gera uma string com o tempo formatado de forma legível.
@@ -49,11 +49,11 @@ export declare async function bulkEmoji(msg: Message, emojis: Array<string>): Pr
  */
 export declare async function loadEvents(
   moniqueta: Client,
-  events: Array<{name: string; once: boolean}> | Map<string, Function<(queue: any, ...args: any) => void>>,
+  events: Array<{name: string; once: boolean}> | Map<string, Function<(queue: any, ...args: any) => void>>
 ): Promise<void>;
 
 export declare async function embedComponent(
   description: string,
-  fields?: [{name: string, value: string}]
-): Promise<MessageEmbed>
+  fields?: [{name: string; value: string}]
+): Promise<MessageEmbed>;
 export * as misc from './misc.js';

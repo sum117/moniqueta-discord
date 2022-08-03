@@ -6,7 +6,7 @@ import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import * as musicCommands from './commands/music';
 export const moniqueta = new Client({
-  intents: 32767,
+  intents: 32767
 });
 export const player = new Player(moniqueta);
 moniqueta.commands = new Collection();
@@ -23,44 +23,44 @@ moniqueta.on('ready', async () => {
       'error',
       (queue, error) => {
         new Error(`${queue.guild.name} Erro emitido da lista: ${error.message}`);
-      },
+      }
     ],
     [
       'connectionError',
       (queue, error) => {
         new Error(`[${queue.guild.name}] Erro emitido da conexão: ${error.message}`);
-      },
+      }
     ],
     [
       'trackStart',
       (queue, track) => {
         new Error(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
-      },
+      }
     ],
     [
       'trackAdd',
       (queue, track) => {
         queue.metadata.send(`🎶 Adicionei **${track.title}** para a fila!`);
-      },
+      }
     ],
     [
       'botDisconnect',
       queue => {
         queue.metadata.send('😡 Eu fui desconectada do canal de voz... vou deletar a lista de todo mundo!');
-      },
+      }
     ],
     [
       'channelEmpty',
       queue => {
         queue.metadata.send('💔 Vocês me deixaram sozinha... vou embora.');
-      },
+      }
     ],
     [
       'queueEnd',
       queue => {
         queue.metadata.send('✅ Terminei de tocar tudo! O que vamos fazer agora?');
-      },
-    ],
+      }
+    ]
   ]);
   loadEvents(
     [moniqueta, player],
@@ -70,9 +70,9 @@ moniqueta.on('ready', async () => {
       {name: 'interactionCreate'},
       {name: 'guildMemberAdd'},
       {name: 'guildMemberRemove'},
-      {name: 'inviteCreate'},
+      {name: 'inviteCreate'}
     ],
-    musicPlayerEvents,
+    musicPlayerEvents
   );
   updateMemberCounter(moniqueta, myGuild);
 
@@ -82,7 +82,7 @@ moniqueta.on('ready', async () => {
       invites.each(invite => moniqueta.inviteCodeUses.set(invite.code, invite.uses));
       moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
       console.log(moniqueta.guildInvites);
-    }),
+    })
   );
   for (const commands of [slashCommands, prefixCommands, musicCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
@@ -94,7 +94,7 @@ moniqueta.on('ready', async () => {
 process.on('unhandledRejection', e => {
   console.log(e);
   moniqueta.channels.cache.get(channels.errorChannel).send({
-    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`,
+    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
   });
 });
 

@@ -10,11 +10,11 @@ export const data = new SCB()
       .setName('enviar')
       .setDescription('Envia uma mensagem com o playcard.')
       .addStringOption(option =>
-        option.setName('conteudo').setDescription('O conteúdo que será atribuído ao playcard').setRequired(true),
+        option.setName('conteudo').setDescription('O conteúdo que será atribuído ao playcard').setRequired(true)
       )
       .addAttachmentOption(option =>
-        option.setName('anexo').setRequired(false).setDescription('Um anexo para servir de imagem para seu embed.'),
-      ),
+        option.setName('anexo').setRequired(false).setDescription('Um anexo para servir de imagem para seu embed.')
+      )
   )
   .addSubcommand(edit =>
     edit
@@ -24,22 +24,29 @@ export const data = new SCB()
         option
           .setName('conteudo')
           .setDescription('O conteúdo da mensagem que substituirá o do último playcard postado.')
-          .setRequired(true),
-      ),
+          .setRequired(true)
+      )
   )
   .addSubcommand(remove =>
     remove
       .setName('remover')
       .setDescription('Remove a última ação (ou uma especificada) do seu personagem.')
       .addStringOption(option =>
-        option.setName('link').setDescription('Link ou id da mensagem a ser removida').setRequired(false),
-      ),
+        option.setName('link').setDescription('Link ou id da mensagem a ser removida').setRequired(false)
+      )
   )
   .addSubcommand(create =>
     create
       .setName('criar')
       .setDescription('Crie um personagem de teste para avaliar as funções da Moniqueta Alpha')
-      .addUserOption(option => option.setName('usuario').setRequired(false).setDescription('O usuário da ficha')),
+      .addUserOption(option => option.setName('usuario').setRequired(false).setDescription('O usuário da ficha'))
+  )
+  .addSubcommand(listar => listar.setName('listar').setDescription('Lista todos os seus personagens.'))
+  .addSubcommand(escolher =>
+    escolher
+      .setName('escolher')
+      .setDescription('Escolhe um personagem para usar.')
+      .addStringOption(option => option.setName('id').setRequired(true).setDescription('O id do personagem'))
   );
 
 /** @param {CommandInteraction} interaction A opção que executou este comando*/
@@ -51,7 +58,7 @@ export async function execute(interaction) {
     const content = interaction.options.getString('conteudo');
     await char.interact(interaction, 'edit', content);
     interaction.editReply({
-      content: 'Playcard editado com sucesso!',
+      content: 'Playcard editado com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'remover') {
     await interaction.deferReply({ephemeral: true});
@@ -61,7 +68,7 @@ export async function execute(interaction) {
       : null;
     await char.interact(interaction, 'remove', match?.groups.msg ? match?.groups.msg : undefined);
     interaction.editReply({
-      content: 'Mensagem removida com sucesso!',
+      content: 'Mensagem removida com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'criar') {
     await interaction.showModal(
@@ -75,21 +82,21 @@ export async function execute(interaction) {
           'Habilidade',
           'PARAGRAPH',
           'A habilidade do personagem não irá interferir no combate.',
-          4000,
+          4000
         ],
-        [, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500],
-      ]),
+        [, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500]
+      ])
     );
     interaction
       .awaitModalSubmit({
         filter: modal => modal.customId === 'ficha' && interaction.user.id === modal.user.id,
-        time: 10 * 60 * 1000,
+        time: 10 * 60 * 1000
       })
       .then(submittedForm => {
         const char = ((inputs = [['']]) => {
           const map = new Map();
           inputs.map(([mapKey, fieldCustomId]) =>
-            map.set(mapKey, submittedForm.fields.getTextInputValue(fieldCustomId)),
+            map.set(mapKey, submittedForm.fields.getTextInputValue(fieldCustomId))
           );
           return map;
         })([
@@ -97,7 +104,7 @@ export async function execute(interaction) {
           ['soma', 'persoSoma'],
           ['fisico', 'persoFisico'],
           ['habilidade', 'persoHabilidade'],
-          ['imagem', 'persoImagem'],
+          ['imagem', 'persoImagem']
         ]);
         const user = interaction.options.getUser('usuario') || interaction.user;
         new PlayCardBase().create(
@@ -110,12 +117,16 @@ export async function execute(interaction) {
             avatar: char.get('imagem'),
             gender: 'genderless',
             phantom: 'vermelho',
-            sum: char.get('soma'),
+            sum: char.get('soma')
           },
-          user,
+          user
         );
         submittedForm.reply('Ficha criada.');
       });
+  } else if (interaction.options.getSubcommand() === 'listar') {
+    char.list(interaction);
+  } else if (interaction.options.getSubcommand() === 'escolher') {
+    char.choose(interaction, interaction.options.getString('id'));
   } else {
     await interaction.deferReply();
     const content = interaction.options.getString('conteudo');

@@ -7,7 +7,7 @@ export const data = {
   event: 'messageCreate',
   type: 'regular',
   name: 'Pedra, Papel e Tesoura',
-  description: 'Um jokenpô simples com botões, em javascript.',
+  description: 'Um jokenpô simples com botões, em javascript.'
   /** @param {Message} msg A mensagem que executou este comando*/
 };
 
@@ -28,7 +28,7 @@ export async function execute(msg) {
   const embed = new MessageEmbed()
     .setAuthor({
       name: host.username,
-      iconURL: host.avatarURL({dynamic: true, size: 512}),
+      iconURL: host.avatarURL({dynamic: true, size: 512})
     })
     .setColor(3553599)
     .setThumbnail('attachment://rps.jpg')
@@ -38,12 +38,12 @@ export async function execute(msg) {
     content: `Pedra, Papel e Tesoura entre ${host} e ${rival} invocado!`,
     embeds: [embed],
     components: [buttonRow],
-    files: ['src/resources/rps.jpg'],
+    files: ['src/resources/rps.jpg']
   });
   const filter = button => [host.id, rival.id].includes(button.user.id) && !session.get(button.user.id);
   const collector = game.createMessageComponentCollector({
     filter,
-    time: 60 * 1000,
+    time: 60 * 1000
   });
   collector.on('collect', button => {
     const index = button.user.id === host.id ? 0 : 1;
@@ -52,7 +52,7 @@ export async function execute(msg) {
       const winConditions = new Map([
         ['pedra', 'tesoura'],
         ['papel', 'pedra'],
-        ['tesoura', 'papel'],
+        ['tesoura', 'papel']
       ]);
       const compare = session.values().next().value;
       if (compare === button.customId) {
@@ -60,7 +60,7 @@ export async function execute(msg) {
           content: 'Empate!',
           embeds: [],
           components: [],
-          files: [],
+          files: []
         });
       } else {
         const current = winConditions.get(button.customId);
@@ -74,7 +74,7 @@ export async function execute(msg) {
             userMention(compare === current ? button.user.id : session.keys().next().value) + ' venceu!\n' + results,
           embeds: [],
           components: [],
-          files: [],
+          files: []
         });
       }
     }
@@ -83,7 +83,7 @@ export async function execute(msg) {
     const choice = {
       name: embed.fields[index].name,
       value: 'Opção selecionada!',
-      inline: true,
+      inline: true
     };
 
     embed.setFields(index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]);
@@ -93,7 +93,7 @@ export async function execute(msg) {
     const emojis = {
       pedra: '🪨',
       papel: '🧻',
-      tesoura: '✂️',
+      tesoura: '✂️'
     };
     if (options.constructor !== Array) options = Array.from(arguments);
     return options.map(value => {

@@ -7,15 +7,15 @@ export const data = {
       name: 'track',
       type: 4, // 'INTEGER' Type
       description: 'O número da música que você quer mover',
-      required: true,
+      required: true
     },
     {
       name: 'position',
       type: 4, // 'INTEGER' Type
       description: 'A posição que você quer que a música seja movida para',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
@@ -27,7 +27,7 @@ export async function execute(interaction, player) {
   if (queueNumbers[0] > queue.tracks.length || queueNumbers[1] > queue.tracks.length) {
     return void interaction.followUp({
       content:
-        '🦝 O número especificado é maior do que a quantia de músicas na minha lista. O que você tá tentando fazer?',
+        '🦝 O número especificado é maior do que a quantia de músicas na minha lista. O que você tá tentando fazer?'
     });
   }
 
@@ -35,12 +35,12 @@ export async function execute(interaction, player) {
     const track = queue.remove(queueNumbers[0]);
     queue.insert(track, queueNumbers[1]);
     return void interaction.followUp({
-      content: `✅ Movi **${track}**!`,
+      content: `✅ Movi **${track}**!`
     });
   } catch (error) {
     console.log(error);
     return void interaction.followUp({
-      content: 'Me desculpa, eu... eu dei erro!',
+      content: 'Me desculpa, eu... eu dei erro!'
     });
   }
 }
