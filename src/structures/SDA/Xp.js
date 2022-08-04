@@ -10,6 +10,7 @@ import {assets, PlayCardBase} from './PlayCardBase.js';
 import {statusBar, title} from '../../util';
 import {bold} from '@discordjs/builders';
 import {levels} from './levels';
+import {db} from '../../db.js';
 export class Xp extends PlayCardBase {
   constructor() {
     super();
@@ -87,7 +88,7 @@ export class Xp extends PlayCardBase {
           return await interaction.update({embeds: [panel]});
         } else return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
       default:
-        return await interaction.reply({
+        return await interaction.update({
           fetchReply: true,
           ephemeral: true,
           embeds: [panel],
@@ -150,7 +151,6 @@ export class Xp extends PlayCardBase {
         }\nXP Total: ${totalXp}\nXP para o próximo nível: ${levels[character.level]}`
       );
       setTimeout(() => msg.delete().catch(err => console.log(`A mensagem de nível já foi deletada: ${err}`)), 10000);
-      this.xpPanel(interaction);
     } else character.xpLog += count;
 
     character.xpCount += count;
@@ -170,6 +170,6 @@ function sortStatusBar(key) {
 }
 
 async function updateDb(userId, char) {
-  const currentCharacter = db.get(userId + '.chosenChar');
+  const currentCharacter = await db.get(userId + '.chosenChar');
   return await db.set(`${userId}.chars.${currentCharacter}`, char);
 }
