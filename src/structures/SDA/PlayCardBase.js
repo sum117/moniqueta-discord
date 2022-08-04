@@ -15,6 +15,18 @@ import {bold} from '@discordjs/builders';
 const {userMention} = Formatters;
 
 export const assets = {
+  skills: {
+    vitalidade: '❤️',
+    vigor: '💦',
+    destreza: '🏃‍♂️',
+    mente: '🧠',
+    forca: '💪',
+    resistencia: '🛡️',
+    primordio: '🔖',
+    elemental: '🔥',
+    profano: '💀'
+  },
+
   itens: {
     cabeça: '<:helmet:1004131097396912168>',
     pescoço: '<:amulet:1004145505921683466>',
@@ -132,8 +144,6 @@ export class PlayCardBase {
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
   async interact(interaction, action, content = '', attachment = null) {
-    let file;
-    if (attachment) file = attachment.name;
     const {user, channel, guildId} = interaction;
 
     const data = await this.character(interaction, user);
@@ -411,7 +421,7 @@ function char(
     sum: sum,
     phantom: phantom,
     skills: sumSkills[sum],
-
+    mochila: [{}],
     equipamentos: equipamentos ?? {
       cabeça: {},
       pescoço: {},

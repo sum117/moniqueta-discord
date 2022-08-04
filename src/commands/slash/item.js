@@ -49,7 +49,10 @@ export const data = new SCB()
             {name: 'força', value: 'força'},
             {name: 'resistência', value: 'resistência'},
             {name: 'vigor', value: 'vigor'},
-            {name: 'destreza', value: 'destreza'}
+            {name: 'destreza', value: 'destreza'},
+            {name: 'primordio', value: 'primordio'},
+            {name: 'profano', value: 'profano'},
+            {name: 'elemental', value: 'elemental'}
           )
       )
       .addNumberOption(option =>

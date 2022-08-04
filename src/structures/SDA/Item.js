@@ -11,7 +11,12 @@ export class Item extends Combat {
   static async create(item = {}) {
     const {slot, nome, desc, base, tipo, multiplicador = {num: 0, tipo: ''}, valor} = item;
     const serverItems = db.table('server_items');
-    const id = (await serverItems.all()).length + 1;
+
+    const id =
+      +(await serverItems.all())
+        .map(object => object.id)
+        .sort((a, b) => a - b)
+        .pop() + 1;
     const itemObject = {slot, nome, desc, base, tipo, multiplicador, valor, equipado: false};
     await serverItems.set(`${id}`, itemObject);
     return await embedComponent(
@@ -52,6 +57,7 @@ export class Item extends Combat {
     );
   }
   static async list() {
+    await sortItems();
     const serverItems = db.table('server_items');
     const items = await serverItems.all();
     return await embedComponent(items.map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`).join('\n'));
@@ -80,6 +86,18 @@ export class Item extends Combat {
       )}`
     );
   }
+}
+async function sortItems() {
+  const serverItems = db.table('server_items');
+  const itemList = await serverItems.all();
+  itemList.forEach(async (item, index) => {
+    const value = item.value;
+
+    if (item.id !== index.toString()) {
+      await serverItems.delete(`${item.id}`);
+      await serverItems.set(`${index}`, value);
+    }
+  });
 }
 async function getInventory(user) {
   const chosenChar = await db.get(`${user.id}.chosenChar`);

@@ -1,9 +1,9 @@
 import {bold, quote, userMention} from '@discordjs/builders';
 import {ButtonInteraction, GuildMember, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
 import {db} from '../../db.js';
-import {title} from '../../util';
+import {statusBar, title} from '../../util';
 import {assets, PlayCardBase} from './PlayCardBase.js';
-
+import {levels} from './levels';
 export class Interaction extends PlayCardBase {
   /**
    * @param {ButtonInteraction} interaction - O botão que iniciou o painel.
@@ -74,6 +74,10 @@ export class Interaction extends PlayCardBase {
     const {interaction, target} = this;
     const db = await this.character(interaction, target);
     const {name, avatar, sum, appearance, gender, phantom, skills, equipamentos, armas} = db;
+    const xpLog = db?.xpLog ?? 1;
+    const totalXp = db?.xpCount ?? 0;
+    const level = db?.level ?? 1;
+    const nextLevelXp = levels[level] === 0 ? 4089 : levels[level];
     return new MessageEmbed()
       .setTitle(name)
       .setThumbnail(avatar)
@@ -84,11 +88,43 @@ export class Interaction extends PlayCardBase {
       })
       .setDescription(
         `${appearance ? appearance : 'O personagem em questão não possui descrição alguma.'}\n\n${bold(
-          'Equipamentos:'
-        )}\n${Object.entries(equipamentos)
+          'PROGRESSO'
+        )}\n${level} ${statusBar(
+          xpLog,
+          nextLevelXp,
+          '<:barEnergy:994630956180840529>',
+          '<:BarEmpty:994631056378564750>',
+          10
+        )} ${level + 1}\n\n${bold('XP TOTAL:')} ${totalXp}`
+      )
+      .addField(
+        'Atributos',
+        Object.entries(skills)
+          .map(([key, value]) => {
+            return `${assets.skills[key]} ${bold(
+              title(
+                (() => {
+                  switch (key) {
+                    case 'forca':
+                      return 'força';
+                    case 'resistencia':
+                      return 'resistência';
+                    default:
+                      return key;
+                  }
+                })()
+              )
+            )}: ${value}`;
+          })
+          .join('\n'),
+        true
+      )
+      .addField(
+        'Equipamentos',
+        Object.entries(equipamentos)
           .map(
             ([key, value]) =>
-              `${assets.itens[key] + ' ' + bold(title(key === 'pes' ? 'Pés' : key))}:${title(
+              `${assets.itens[key] + ' ' + bold(title(key === 'pes' ? 'Pés' : key === 'maos' ? 'mãos' : key))}:${title(
                 `${
                   typeof value === 'object'
                     ? ` ${value.num ? value.num : ''} ${title(value.tipo ? value.tipo : '')}`
@@ -98,7 +134,12 @@ export class Interaction extends PlayCardBase {
                 }`
               )}`
           )
-          .join('\n')}\n${Object.entries(armas)
+          .join('\n'),
+        true
+      )
+      .addField(
+        'Armas',
+        Object.entries(armas)
           .filter(([key]) => key !== 'equipado')
           .map(
             ([key, value]) =>
@@ -123,7 +164,8 @@ export class Interaction extends PlayCardBase {
                   : ''
               }`
           )
-          .join('\n')}`
+          .join('\n'),
+        true
       )
       .addField(
         'Genero',

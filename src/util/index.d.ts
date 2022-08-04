@@ -12,7 +12,7 @@ export declare function msToTime(ms: number): string;
  * @param fill O caracter que deve ser usado para preencher a barra de status
  * @param empty O caracter que deve ser usado para preencher a barra de status quando não houver nada para preencher
  */
-export declare function statusBar(current: number, total: number, fill: string, empty: string): string;
+export declare function statusBar(current: number, total: number, fill: string, empty: string, width?: number): string;
 /**
  * Formata uma string em um título.
  * @param string string a ser formatada
