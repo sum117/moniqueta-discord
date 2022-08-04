@@ -1,24 +1,35 @@
-import {Interaction} from 'discord.js';
+import {
+  ButtonInteraction,
+  Interaction,
+  MessageActionRow,
+  MessageButton,
+  MessageSelectMenu,
+  SelectMenuInteraction
+} from 'discord.js';
 import {assets, PlayCardBase} from './PlayCardBase.js';
-import {statusBar} from '../../util';
+import {statusBar, title} from '../../util';
 import {bold} from '@discordjs/builders';
 import {levels} from './levels';
 export class Xp extends PlayCardBase {
   constructor() {
     super();
   }
+  /**
+   *
+   * @param {SelectMenuInteraction | ButtonInteraction} interaction
+   * @param {*} action
+   * @returns
+   */
   async xpPanel(interaction, action = interaction.customId ?? '') {
     const {user} = interaction;
     const character = await this.character(interaction, user);
-    const pickedSkill = character.skills.find(skill => skill === interaction.customId.split('_')[2]);
-    const skillToEdit = interaction.message.embeds[0].footer.text.trim().split(':')[1];
+    const skillToEdit = interaction.message.embeds[0]?.footer.text.trim().split(':')[1] ?? '';
     /**
      * @type {Interaction}
      */
-    com;
     const panel = {
       title: `Painel de Atributos de ${character.name}`,
-      description: `Pontos disponiveis: ${character.attributePoints}`,
+      description: `Pontos disponiveis: ${character.attributePoints ?? 0}`,
       color: assets.sum[character.sum].color,
       fields: Object.entries(character.skills).map(([key, value]) => {
         return {
@@ -33,23 +44,21 @@ export class Xp extends PlayCardBase {
         };
       }),
       footer: {
-        IconURL: character.avatar,
+        icon_url: character.avatar,
         text: 'Clique em um atributo para aumentar ou diminuir o valor...'
       }
     };
-    await interaction.reply({
-      fetchReply: true,
-      ephemeral: true,
-      embeds: [panel]
-    });
     switch (action) {
-      case `pick_skill_${pickedSkill}`:
+      case 'pick_skill':
+        const pickedSkill = interaction.values[0];
         if (character.skills[pickedSkill] === 117)
-          return await interaction.editReply({content: 'Você já possui o nível máximo nesta habilidade.'});
+          return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
         else {
           panel.footer.text = 'Editando o atributo de: ' + pickedSkill;
-          return await interaction.editReply({embeds: [panel]});
+          interaction.message.components[1].components.forEach(component => (component.disabled = false));
+          return await interaction.update({embeds: [panel], components: [...interaction.message.components]});
         }
+
       case 'increment_attribute':
         if (character.attributePoints > 0) {
           const increasedLevel = character.skills[skillToEdit] + 1;
@@ -61,8 +70,8 @@ export class Xp extends PlayCardBase {
             increasedLevel
           )} ${statusBar(increasedLevel, 117, sortStatusBar(key), '<:BarEmpty:994631056378564750>', 10)} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.editReply({embeds: [panel]});
-        } else return await interaction.editReply({content: '❌ Você não possui pontos para aumentar os atributos.'});
+          return await interaction.update({embeds: [panel]});
+        } else return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
 
       case 'decrement_attribute':
         if (character.skills[skillToEdit] > 0) {
@@ -75,8 +84,47 @@ export class Xp extends PlayCardBase {
             decreasedLevel
           )} ${statusBar(decreasedLevel, 117, sortStatusBar(key), '<:BarEmpty:994631056378564750>', 10)} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.editReply({embeds: [panel]});
-        }
+          return await interaction.update({embeds: [panel]});
+        } else return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
+      default:
+        return await interaction.reply({
+          fetchReply: true,
+          ephemeral: true,
+          embeds: [panel],
+          components: [
+            new MessageActionRow().addComponents(
+              new MessageSelectMenu()
+                .setCustomId('pick_skill')
+                .setPlaceholder('Selecione uma habilidade...')
+                .setMaxValues(1)
+                .setMinValues(1)
+                .setOptions(
+                  Object.entries(character.skills).map(([key, value]) => {
+                    return {
+                      label: title(key),
+                      value: key,
+                      emoji: assets.skills[key],
+                      description: 'Nivel Atual: ' + value
+                    };
+                  })
+                )
+            ),
+            new MessageActionRow().addComponents(
+              new MessageButton()
+                .setCustomId('increment_attribute')
+                .setEmoji('➕')
+                .setLabel('Aumentar')
+                .setDisabled(true)
+                .setStyle('SUCCESS'),
+              new MessageButton()
+                .setCustomId('decrement_attribute')
+                .setEmoji('➖')
+                .setLabel('Diminuir')
+                .setDisabled(true)
+                .setStyle('DANGER')
+            )
+          ]
+        });
     }
   }
   async passiveXp(interaction, count) {

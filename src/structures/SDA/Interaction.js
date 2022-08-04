@@ -30,6 +30,9 @@ export class Interaction extends PlayCardBase {
       content: 'Interagindo com o personagem de ' + target.user.username,
       components: [
         new MessageActionRow().addComponents(
+          target.id === interaction.user.id
+            ? new MessageButton().setCustomId('atributos').setLabel('Atributos').setEmoji('📈').setStyle('SECONDARY')
+            : undefined,
           new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
           new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
           new MessageButton()
@@ -43,7 +46,7 @@ export class Interaction extends PlayCardBase {
     const action = await reply.awaitMessageComponent();
     await action.deferUpdate();
     if (action.customId === 'profile') {
-      action.editReply({
+      return action.editReply({
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: []
@@ -53,9 +56,9 @@ export class Interaction extends PlayCardBase {
         content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: []
       });
-      this.comment();
+      return this.comment();
     } else if (action.customId === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
-      action.editReply({
+      return action.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
@@ -84,7 +87,7 @@ export class Interaction extends PlayCardBase {
       .setColor(assets.sum[sum].color)
       .setAuthor({
         name: target.user.username,
-        iconURL: target.avatarURL({dynamic: true, size: 512})
+        iconURL: target.displayAvatarURL({dynamic: true, size: 512})
       })
       .setDescription(
         `${appearance ? appearance : 'O personagem em questão não possui descrição alguma.'}\n\n${bold(
