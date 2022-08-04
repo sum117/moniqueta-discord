@@ -2,6 +2,7 @@ import {CommandInteraction} from 'discord.js';
 import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {SlashCommandBuilder as SCB} from '@discordjs/builders';
 import {createForm} from '../interaction/ficha.js';
+import {Xp} from '../../structures/SDA/Xp.js';
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')
@@ -132,6 +133,7 @@ export async function execute(interaction) {
     const content = interaction.options.getString('conteudo');
     const attachment = interaction.options.getAttachment('anexo');
     await char.interact(interaction, 'send', content, attachment ? attachment : undefined);
+    await new Xp().passiveXp(interaction, content.length);
     interaction.deleteReply();
   }
 }
