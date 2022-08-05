@@ -135,6 +135,7 @@ export async function execute(interaction) {
     const attachment = interaction.options.getAttachment('anexo');
     await char.interact(interaction, 'send', content, attachment ? attachment : undefined);
     await new Xp().passiveXp(interaction, content.length);
+    await new Xp().passiveXp(interaction, content.length);
     interaction.deleteReply();
   }
 }

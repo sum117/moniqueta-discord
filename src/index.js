@@ -1,11 +1,13 @@
-import {Client, Collection, Message, MessageSelectMenu} from 'discord.js';
+import {Client, Collection, Message, MessageSelectMenu, Message, MessageSelectMenu} from 'discord.js';
+import {channelMention} from '@discordjs/builders';
 import {channelMention} from '@discordjs/builders';
 import {Player} from 'discord-player';
-import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles} from './util';
+import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles, roles} from './util';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import * as musicCommands from './commands/music';
+
 
 export const moniqueta = new Client({
   intents: 32767
@@ -86,6 +88,7 @@ moniqueta.on('ready', async () => {
       console.log(moniqueta.guildInvites);
     })
   );
+  // Registrando comandos
   // Registrando comandos
   for (const commands of [slashCommands, prefixCommands, musicCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
