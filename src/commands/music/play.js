@@ -9,9 +9,9 @@ export const data = {
       name: 'query',
       type: 3, // 'STRING' Type
       description: 'A música que você quer tocar',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 };
 export async function execute(interaction, player) {
   try {
@@ -21,7 +21,7 @@ export async function execute(interaction, player) {
     const searchResult = await player
       .search(query, {
         requestedBy: interaction.user,
-        searchEngine: QueryType.AUTO,
+        searchEngine: QueryType.AUTO
       })
       .catch(() => {});
     if (!searchResult || !searchResult.tracks.length) {
@@ -33,9 +33,9 @@ export async function execute(interaction, player) {
         quality: 'highest',
         filter: 'audioonly',
         highWaterMark: 1 << 25,
-        dlChunkSize: 0,
+        dlChunkSize: 0
       },
-      metadata: interaction.channel,
+      metadata: interaction.channel
     });
 
     try {
@@ -43,19 +43,19 @@ export async function execute(interaction, player) {
     } catch {
       void player.deleteQueue(interaction.guildId);
       return void interaction.followUp({
-        content: 'Abre espaço! Não consigo entrar nesse canal, aff!',
+        content: 'Abre espaço! Não consigo entrar nesse canal, aff!'
       });
     }
 
     await interaction.followUp({
-      content: `⏱ | Carregando sua ${searchResult.playlist ? 'playlist' : 'música'}...`,
+      content: `⏱ | Carregando sua ${searchResult.playlist ? 'playlist' : 'música'}...`
     });
     searchResult.playlist ? queue.addTracks(searchResult.tracks) : queue.addTrack(searchResult.tracks[0]);
     if (!queue.playing) await queue.play();
   } catch (error) {
     console.log(error);
     interaction.followUp({
-      content: 'Eu buguei tentando executar esse comando: ' + error.message,
+      content: 'Eu buguei tentando executar esse comando: ' + error.message
     });
   }
 }

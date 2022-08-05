@@ -7,9 +7,9 @@ export const data = {
       name: 'number',
       type: 4, // 'INTEGER' Type
       description: 'O número da música da lista que você quer remover.',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
@@ -23,6 +23,6 @@ export async function execute(interaction, player) {
   }
   const removedTrack = queue.remove(number);
   return void interaction.followUp({
-    content: removedTrack ? `✅ Removi **${removedTrack}**!` : '❌ Hehe... algo... deu errado, e eu buguei...',
+    content: removedTrack ? `✅ Removi **${removedTrack}**!` : '❌ Hehe... algo... deu errado, e eu buguei...'
   });
 }

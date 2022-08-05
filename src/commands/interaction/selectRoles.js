@@ -1,9 +1,8 @@
-import {SelectMenuInteraction} from 'discord.js';
 import {channels} from '../../util';
 export const data = {
   event: 'interactionCreate',
   name: 'Cargos por seletores',
-  description: 'Aquisição de cargos através de seletores.',
+  description: 'Aquisição de cargos através de seletores.'
 };
 
 export async function execute(interaction) {
@@ -16,7 +15,7 @@ export async function execute(interaction) {
       ephemeral: true,
       content: `Cargos atualizados para a sua sessão de ${interaction.component.placeholder}: ${interaction.values
         .map(role => '<@&' + role + '>')
-        .join(', ')}`,
+        .join(', ')}`
     });
   } else {
     const allSelectorRoles = interaction.message.components.flatMap(actionRow => {
@@ -27,7 +26,7 @@ export async function execute(interaction) {
     interaction.member.roles.remove(allSelectorRoles);
     interaction.reply({
       ephemeral: true,
-      content: 'Todos os seus cargos relacionados a estes seletores foram removidos.',
+      content: 'Todos os seus cargos relacionados a estes seletores foram removidos.'
     });
   }
 }

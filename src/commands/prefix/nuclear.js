@@ -4,7 +4,7 @@ export const data = {
   event: 'messageCreate',
   type: 'regular',
   name: '☢️ Bomba Nuclear',
-  description: 'ELE VAI DAR PURGE, ELE VAI DAR PURGE!',
+  description: 'ELE VAI DAR PURGE, ELE VAI DAR PURGE!'
 };
 /**
  * @param {Message} msg A mensagem que deu inicio ao comando
@@ -20,13 +20,13 @@ export async function execute(msg) {
     files: [
       {
         attachment: './src/resources/bomba.gif',
-        name: 'bomba.gif',
+        name: 'bomba.gif'
       },
       {
         attachment: './src/resources/bomba.mp3',
-        name: 'bomba.mp3',
-      },
-    ],
+        name: 'bomba.mp3'
+      }
+    ]
   });
   setTimeout(async () => {
     const pobresCoitadas = await (await msg.channel.fetch()).messages.fetch({limit: 100});

@@ -12,23 +12,23 @@ export const data = {
       choices: [
         {
           name: 'Off',
-          value: QueueRepeatMode.OFF,
+          value: QueueRepeatMode.OFF
         },
         {
           name: 'Musica',
-          value: QueueRepeatMode.TRACK,
+          value: QueueRepeatMode.TRACK
         },
         {
           name: 'Fila',
-          value: QueueRepeatMode.QUEUE,
+          value: QueueRepeatMode.QUEUE
         },
         {
           name: 'Autoplay',
-          value: QueueRepeatMode.AUTOPLAY,
-        },
-      ],
-    },
-  ],
+          value: QueueRepeatMode.AUTOPLAY
+        }
+      ]
+    }
+  ]
 };
 export async function execute(interaction, player) {
   try {
@@ -44,12 +44,12 @@ export async function execute(interaction, player) {
     const mode = loopMode === QueueRepeatMode.TRACK ? '🔂' : loopMode === QueueRepeatMode.QUEUE ? '🔁' : '▶';
 
     return void interaction.followUp({
-      content: success ? `${mode} | Updated loop mode!` : '❌ Não pude atualizar o modo de loop... buguei.',
+      content: success ? `${mode} | Updated loop mode!` : '❌ Não pude atualizar o modo de loop... buguei.'
     });
   } catch (error) {
     console.log(error);
     interaction.followUp({
-      content: 'Houve um erro no meu último comando... marca o dono? ' + error.message,
+      content: 'Houve um erro no meu último comando... marca o dono? ' + error.message
     });
   }
 }

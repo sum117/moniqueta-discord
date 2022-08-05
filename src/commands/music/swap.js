@@ -7,15 +7,15 @@ export const data = {
       name: 'track1',
       type: 4, // 'INTEGER' Type
       description: 'Essa',
-      required: true,
+      required: true
     },
     {
       name: 'track2',
       type: 4, // 'INTEGER' Type
       description: 'Por essa',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
@@ -30,7 +30,7 @@ export async function execute(interaction, player) {
   });
   if (queueNumbers[1] > queue.tracks.length) {
     return void interaction.followUp({
-      content: '❌ O número que você especificou é maior do que o tamanho da minha fila!',
+      content: '❌ O número que você especificou é maior do que o tamanho da minha fila!'
     });
   }
 
@@ -40,12 +40,12 @@ export async function execute(interaction, player) {
     queue.insert(track2, queueNumbers[0]); // Add track in lowest position first to avoid list order issues
     queue.insert(track1, queueNumbers[1]);
     return void interaction.followUp({
-      content: `✅ | Swapped **${track1}** & **${track2}**!`,
+      content: `✅ | Swapped **${track1}** & **${track2}**!`
     });
   } catch (error) {
     console.log(error);
     return void interaction.followUp({
-      content: '❌ Hehe... eu buguei!',
+      content: '❌ Hehe... eu buguei!'
     });
   }
 }

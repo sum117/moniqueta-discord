@@ -5,7 +5,7 @@ export const data = {
   event: 'messageCreate',
   type: 'regular',
   name: 'Imagem para Icone',
-  description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.',
+  description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.'
 };
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
@@ -37,7 +37,7 @@ export async function execute(msg, args) {
                     r="256"
                     fill="white"
                 />
-            </svg>`,
+            </svg>`
   );
   const border = Buffer.from(
     `<svg
@@ -55,25 +55,25 @@ export async function execute(msg, args) {
                     stroke-width="15"
                 />
             </svg>
-            `,
+            `
   );
   const output = await sharp(userInput)
     .resize(512, 512)
     .composite([
       {
         input: radius,
-        blend: 'dest-in',
+        blend: 'dest-in'
       },
       {
         input: border,
-        blend: 'atop',
-      },
+        blend: 'atop'
+      }
     ])
     .png()
     .toBuffer();
 
   msg.reply({
     content: 'Icone gerado com sucesso!',
-    files: [{name: 'icon.png', attachment: output}],
+    files: [{name: 'icon.png', attachment: output}]
   });
 }

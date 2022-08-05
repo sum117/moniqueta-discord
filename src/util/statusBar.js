@@ -1,7 +1,7 @@
-export function statusBar(current, total, fill, empty) {
+export function statusBar(current, total, fill, empty, width = 5) {
   const percentage = current / total;
-  const progress = Math.round(5 * percentage);
-  const emptyProgress = 5 - progress;
+  const progress = Math.round(width * percentage);
+  const emptyProgress = width - progress;
   const progressText = fill.repeat(progress);
   const emptyProgressText = empty.repeat(emptyProgress);
   const bar = progressText + emptyProgressText;
