@@ -72,6 +72,7 @@ export async function execute(interaction) {
       content: 'Mensagem removida com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'criar') {
+
     await interaction.showModal(
       createForm([
         [, 'persoNome', 'Nome do Personagem', 'SHORT', 'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"', 128],
