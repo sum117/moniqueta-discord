@@ -1,10 +1,10 @@
+import {codeBlock, userMention} from '@discordjs/builders';
 import {MessageEmbed} from 'discord.js';
-import {userMention, codeBlock} from '@discordjs/builders';
 export const data = {
   event: 'messageCreate',
   type: 'regular',
   name: 'Gerador de Embed',
-  description: 'Comando de moderador para gerar descrições de canais.',
+  description: 'Comando de moderador para gerar descrições de canais.'
 };
 
 export async function execute(msg, args) {
@@ -13,7 +13,7 @@ export async function execute(msg, args) {
   if (paragraphs.length < 2) {
     return msg.reply(
       '❌Você o que é preciso para a execução deste comando! Tente: ' +
-        codeBlock('$embed <Descrição do Canal>\n<Link de Imagem>'),
+        codeBlock('$embed <Descrição do Canal>\n<Link de Imagem>')
     );
   }
   /**
@@ -40,13 +40,13 @@ export async function execute(msg, args) {
     .setColor('RANDOM')
     .setAuthor({
       iconURL: msg.guild.iconURL({dynamic: true, size: 1024}),
-      name: msg.channel.parent.name.slice(1).replace(/\| RP/, ''),
+      name: msg.channel.parent.name.slice(1).replace(/\| RP/, '')
     })
     .setFooter({
-      text: '💡 Quer dar uma nova descrição ao canal? Contate os Admins!',
+      text: '💡 Quer dar uma nova descrição ao canal? Contate os Admins!'
     });
   msg.channel.send({
     content: 'Descrição atual produzida por ' + userMention(msg.author.id),
-    embeds: [embed],
+    embeds: [embed]
   });
 }

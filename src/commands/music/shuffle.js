@@ -1,7 +1,7 @@
 export const data = {
   name: 'shuffle',
   type: 'music',
-  description: 'Deixe tudo muito louco, aleatório, entende?!',
+  description: 'Deixe tudo muito louco, aleatório, entende?!'
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
@@ -18,15 +18,15 @@ export async function execute(interaction, player) {
           title: '💘 Agora tocando ~',
           description: trimString(
             `The Current song playing is 🎶 | **${queue.current.title}**! \n 🎶 | ${queue}! `,
-            4095,
-          ),
-        },
-      ],
+            4095
+          )
+        }
+      ]
     });
   } catch (error) {
     console.log(error);
     return void interaction.followUp({
-      content: '❌ Eu... buguei aí!',
+      content: '❌ Eu... buguei aí!'
     });
   }
 }

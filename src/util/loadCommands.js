@@ -2,7 +2,6 @@ import {prefix} from './misc.js';
 import {GuildMember} from 'discord.js';
 import * as slashCommands from '../commands/slash';
 import * as interactionCommands from '../commands/interaction';
-import * as prefixlessCommands from '../commands/prefixless';
 import * as prefixCommands from '../commands/prefix';
 import * as commandSystems from '../commands/systems';
 import * as musicCommands from '../commands/music';
@@ -10,7 +9,6 @@ const music = Object(musicCommands);
 
 const slash = Object(slashCommands);
 const interactions = Object(interactionCommands);
-const prefixless = Object(prefixlessCommands);
 const prefixed = Object(prefixCommands);
 const systems = Object(commandSystems);
 
@@ -27,9 +25,6 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
           await command.execute(msg, userArgs);
         } else msg.reply('❌ Não encontrei o comando que você tentou executar.');
       }
-      for (const [, command] of Object.entries(prefixless)) {
-        command.execute(moniqueta, msg);
-      }
       break;
     case 'interactionCreate':
       const interaction = args[0];
@@ -39,7 +34,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
           if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
             return void interaction.reply({
               content: '😡 Ei! Você não tá num canal de música, tá tentando me bugar?!',
-              ephemeral: true,
+              ephemeral: true
             });
           }
           if (
@@ -49,7 +44,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
             return void interaction.reply({
               content:
                 '😡 Eu sei que você quer ficar sozinho, mas se sou eu que vou tocar pra você, vai ter que ficar no mesmo canal que eu!',
-              ephemeral: true,
+              ephemeral: true
             });
           }
           await music[interaction.commandName].execute(interaction, musicPlayer);

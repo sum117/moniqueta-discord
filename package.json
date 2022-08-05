@@ -7,16 +7,8 @@
   "author": "sum117",
   "contributors": [
     {
-      "name": "K4L1B3",
-      "url": "https://github.com/K4L1B3"
-    },
-    {
       "name": "WillianBill1",
       "url": "https://github.com/WillianBill1"
-    },
-    {
-      "name": "CeCeloz",
-      "url": "https://github.com/CeCeloz"
     },
     {
       "name": "KaioHenrique21",
@@ -44,7 +36,9 @@
     "devMoniqueta": "nodemon ."
   },
   "devDependencies": {
-    "prettier": "^2.7.1"
+    "dotenv": "^16.0.1",
+    "prettier": "^2.7.1",
+    "yaml": "^2.1.1"
   },
   "repository": {
     "type": "git",

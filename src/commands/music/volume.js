@@ -7,16 +7,16 @@ export const data = {
       name: 'volume',
       type: 4, // 'INTEGER' Type
       description: 'Número entre 0 e 200',
-      required: true,
-    },
-  ],
+      required: true
+    }
+  ]
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
   const queue = player.getQueue(interaction.guildId);
   if (!queue || !queue.playing) {
     return void interaction.followUp({
-      content: '❌ | No music is being played!',
+      content: '❌ | No music is being played!'
     });
   }
 
@@ -26,6 +26,6 @@ export async function execute(interaction, player) {
   const success = queue.setVolume(volume);
 
   return void interaction.followUp({
-    content: success ? `🔊 Mudei o volume para ${volume}!` : '❌ Não deu, vai ficar surdo (Eu buguei)!',
+    content: success ? `🔊 Mudei o volume para ${volume}!` : '❌ Não deu, vai ficar surdo (Eu buguei)!'
   });
 }

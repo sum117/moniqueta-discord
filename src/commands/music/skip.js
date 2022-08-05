@@ -1,7 +1,7 @@
 export const data = {
   name: 'skip',
   type: 'music',
-  description: 'Passe uma música!',
+  description: 'Passe uma música!'
 };
 export async function execute(interaction, player) {
   await interaction.deferReply();
@@ -12,6 +12,6 @@ export async function execute(interaction, player) {
   const currentTrack = queue.current;
   const success = queue.skip();
   return void interaction.followUp({
-    content: success ? `✅ Passado é passado! **${currentTrack}**!` : '❌ Eu... buguei!',
+    content: success ? `✅ Passado é passado! **${currentTrack}**!` : '❌ Eu... buguei!'
   });
 }

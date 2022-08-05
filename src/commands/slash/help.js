@@ -34,17 +34,17 @@ export async function execute(interaction, client) {
             return true;
           })
           .map(([description], command) => inlineCode(moniqueta.prefix + command) + ' ' + bold(description))
-          .join('\n'),
+          .join('\n')
     )
     .setColor(12340060)
     .setTitle('Meus Comandos~')
     .setThumbnail(moniqueta.user.avatarURL({dynamic: true, size: 1024}))
     .setAuthor({
       name: 'sum117 <-- Meu criador 👀',
-      iconURL: owner.user.avatarURL({dynamic: true, size: 512}),
+      iconURL: owner.user.avatarURL({dynamic: true, size: 512})
     })
     .setFooter({
-      text: '💘 Eu estou em construção, tenha paciência!',
+      text: '💘 Eu estou em construção, tenha paciência!'
     });
   const embed2 = new MessageEmbed()
     .setTitle('🎶 Comandos de Música')
@@ -53,10 +53,10 @@ export async function execute(interaction, client) {
       commands
         .filter(([, type]) => type === 'music')
         .map(([description], command) => inlineCode('/' + command) + ' ' + bold(description))
-        .join('\n'),
+        .join('\n')
     );
   return interaction.reply({
     content: 'Todos os comandos atualmente disponíveis em mim: ',
-    embeds: [embed, embed2],
+    embeds: [embed, embed2]
   });
 }

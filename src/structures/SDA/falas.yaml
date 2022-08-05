@@ -1,0 +1,70 @@
+Combate:
+  perserata:
+    hp:
+      self:
+        - Sem ti, o mundo nunca ficará livre da Terra Fosca! És condenado a viver, não desista!
+        - Aceitarás tal humilhação, Perserata?! Mostre para este iniciante quem verdadeiramente conhece estas terras!
+        - Não é hora de grunhir, Perserata! Mantenha-se de pé, e divague fora da terra os seus pecados!
+        - Sidera te chama, mas não é tua hora! Lute, LUTE PERSERATA!
+      inimigo:
+        - Estão com o fio na navalha. Execute-os, em nome de Sidera!
+        - Está na hora, Perserata. Mostre-o que tu não és o único a pagar por pecados nestas terras!
+        - Tire-o da própria miséria, Perserata! Ele mesmo cedeu-se este destino!
+        - Não tenha misericórdia. Eles não teriam para contigo, profano Perserata!
+    vigor:
+      self:
+        - Tua energia está prestes a abandonar-te, Perserata. Permaneça de pé!
+        - Não fraqueje, Perserata, mostre para eles tua resiliência!
+        - Ainda consegues mostra-los que sem energia és tão forte quanto!
+        - Perserata! Enquanto riem de tua fadiga, entrega-os o inferno!
+      inimigo:
+        - Tu os vê cansados? Não são páreos para ti.
+        - O inimigo não suporta ficar de pé perante um verdadeiro filho do Profano!
+        - O inimigo está esgotado. Hora de removê-lo do plano de Imprévia!
+        - É tua chance. Acabe com ele agora, Perserata!
+  invidia:
+    hp:
+      self:
+        - Você é perfeito... inaceitável curvar-se diante um impuro. RECOMPONHA-SE E ASCENDA!
+        - Se for para morrer, leve dezenas consigo. Um Invidiano não morre em vão.
+        - Fraco... é assim que você quer ser visto? Levante-se e morra como um herói de verdade, ou morra como um lixo.
+        - Revide, estraçalhe... Destrua quem lhe causou tamanha dor.
+      inimigo:
+        - Você terá pena do seu inimigo? Seja impiedoso e o execute rapidamente, não há misericordia para inferiores.
+        - Diante de seu poder, os menores sucumbirão.
+        - Não ouse exitar... a justiça só poderá ser trazida através do sangue do seu inimigo.
+        - Não lamente por formigas, a brincadeira acabou.
+    vigor:
+      self:
+        - Seu éter está acabando... Não lamente, enquanto seu corpo estiver inteiro, a batalha não estará acabada.
+        - Com ou sem éter, o inimigo sucumbirá de um jeito ou de outro.
+        - Persista... não se abale. Escolhas difíceis requerem fortes determinações, um Invidiano não desiste.
+        - Recuar não é uma opção, essa batalha só se encerrará quando um chegar ao chão, e com certeza não será você.
+      inimigo:
+        - Ele está esgotado! Aproveite das desvantagens dele e o destrua, avante, Invidiano!
+        - Por quanto tempo pretende deixá-lo viver...? Esmague-o imediatamente.
+        - Menores lamentarão por não terem sido abençoados de nascerem com o éter.
+        - Uma sombra nunca será mais forte que uma luz... O extermine em seu momento de fraqueza.
+  oscuras:
+    hp:
+      self:
+        - Cortes, perfurações e queimaduras não são suficiente para te elimitar, Guerreiro.
+        - A essa altura o oponente já se mostrou digno de conhecer a tua verdadeira força. Mostre a ele sem exitar!
+        - Oscuro está olhando para seus esforços... Faça o oponente sentir o que você sente!
+        - Está na hora de fazer os céus e a terra tremerem, Guerreiro.
+      inimigo:
+        - A vitória não parece estar muito distante agora.
+        - Já decidiu se vai matá-lo ou deixá-lo viver, Soma?
+        - Pobre Soma, achou mesmo que teria o mínimo de chance contra os Oscuras.
+        - A lâmina imbuída por ira corta mais fundo...
+    vigor:
+      self:
+        - Agora não vai dar! Parece que teremos que voltar à antiguidade! Use somente a tua arma.
+        - Sua Energia Somática está baixa, mas o fogo que incendeia a tua alma não tem limites!
+        - O que Oscuro faria nessa situação? Hahah, com certeza avançaria sem parar!
+        - Ei! Vai com calma, Guerreiro! Sua Energia Somática não consegue acompanhar esse ritmo.
+      inimigo:
+        - Ele está no limite, mas mesmo assim, não baixe a guarda.
+        - Aparentemente seu oponente não treinou o suficiente. Ou é você quem treinou demais?
+        - É... parece que ele não vai durar muito.
+        - Ele está um passo de ceder, está na hora de por um fim nisso.

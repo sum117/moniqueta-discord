@@ -3,7 +3,7 @@ import {channels, msToTime, myGuild} from '../../util';
 export const data = {
   name: 'Invite Tracker',
   events: ['inviteCreate', 'guildMemberAdd', 'guildMemberRemove'],
-  description: 'Um sistema para monitorar os convites dos membros do servidor.',
+  description: 'Um sistema para monitorar os convites dos membros do servidor.'
 };
 
 export async function execute(event, client, ...args) {
@@ -27,7 +27,7 @@ export async function execute(event, client, ...args) {
         console.log('Cached', [...cachedInvites.keys()]);
         console.log(
           'New',
-          [...newInvites.values()].map(inv => inv.code),
+          [...newInvites.values()].map(inv => inv.code)
         );
         console.log('Used', usedInvite);
 
@@ -36,7 +36,7 @@ export async function execute(event, client, ...args) {
           .send(
             `🟩 O usuário ${userMention(member.user.id)} entrou através do código de convite \`${
               usedInvite.code
-            }\`, gerado por ${userMention(usedInvite.inviterId)}. Agora somos ${bold(memberCount)}.`,
+            }\`, gerado por ${userMention(usedInvite.inviterId)}. Agora somos ${bold(memberCount)}.`
           );
       } catch (err) {
         console.log(err);
@@ -51,8 +51,8 @@ export async function execute(event, client, ...args) {
         .get(channels.loginoutChannel)
         .send(
           `🟥 O usuário ${memberThatLeft.user.username}, de ID ${memberThatLeft.id} com \`${msToTime(
-            Date.now() - memberThatLeft.joinedTimestamp,
-          )}\` de servidor saiu.`,
+            Date.now() - memberThatLeft.joinedTimestamp
+          )}\` de servidor saiu.`
         );
       break;
   }
