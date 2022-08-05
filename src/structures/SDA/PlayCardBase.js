@@ -89,13 +89,17 @@ export class PlayCardBase {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({guild}, approvedChannelId, character = {}, user) {
-    const {name, gender, personality, appearance, avatar, sum, phantom, equipamentos} = character;
+  async create({message, guild, user}, approvedChannelId, character = {}) {
+    const {name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila} = character;
     const {members, channels} = guild;
 
-    const userId = user.id;
+    const userId = (() => {
+      const [userId] = message?.content.match(/\d{17,19}/) ?? [];
+      if (!userId) return user.id;
+      else return userId;
+    })();
     const id = await db.get(`${userId}.count`);
-    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom, equipamentos);
+    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila);
     if (!id) {
       await db.set(`${userId}`, {
         chosenChar: 1,
@@ -147,7 +151,7 @@ export class PlayCardBase {
     const {user, channel, guildId} = interaction;
 
     const data = await this.character(interaction, user);
-    const {name, avatar, sum} = data;
+    const {name, avatar, sum, dead, phantom} = data;
 
     switch (action) {
       case 'send':
@@ -180,7 +184,7 @@ export class PlayCardBase {
       const message = await channel.send({
         embeds: [
           {
-            title: name,
+            title: `${dead ? `${'☠️ Fantasma ' + title(phantom)} de ` : ''}${name}`,
             thumbnail: {
               url: avatar
             },
@@ -199,12 +203,12 @@ export class PlayCardBase {
                 name: 'ㅤ',
                 value: `💓 ${statusBar(
                   combate?.saude,
-                  data.skills.vitalidade * 10,
+                  100 + data.skills.vitalidade * 10,
                   '<:barLife:994630714312106125>',
                   '<:BarEmpty:994631056378564750>'
-                )}\n 💨 ${statusBar(
+                )}\n\n 💨 ${statusBar(
                   combate?.vigor,
-                  data.skills.vigor * 5,
+                  50 + data.skills.vigor * 5,
                   '<:barVigor:994630903181615215>',
                   '<:BarEmpty:994631056378564750>'
                 )}`
@@ -222,7 +226,8 @@ export class PlayCardBase {
           : [],
         components: [
           new MessageActionRow().addComponents(
-            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('SECONDARY')
+            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('PRIMARY'),
+            new MessageButton().setCustomId('inventario').setEmoji('🎒').setLabel('Inventário').setStyle('SUCCESS')
           )
         ]
       });
@@ -262,7 +267,7 @@ export class PlayCardBase {
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id, char]) => {
         return `${bold(id)} : ${assets.sum[char.sum].emoji} ${assets.phantom[char.phantom]} ${char.name} ${
-          toString(chosenCheck) === toString(id) ? ' ⭐' : ''
+          chosenCheck.toString() === id.toString() ? ' ⭐' : ''
         }`;
       })
       .join('\n');
@@ -286,18 +291,15 @@ export class PlayCardBase {
   }
   async choose(interaction, id) {
     const {user} = interaction;
-    const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id]) => {
         return id;
       })
       .join('\n');
-    if (toString(id) === toString(chosenCheck))
-      return interaction.reply('Você já escolheu esse personagem como seu personagem.');
     if (!list.includes(id)) return interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
-    const {avatar, name} = chosen;
+    const {avatar, name, sum} = chosen;
     return await interaction.reply({
       embeds: [
         {
@@ -318,7 +320,8 @@ function char(
   avatar,
   sum,
   phantom,
-  equipamentos = {cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {}}
+  equipamentos = {cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {}},
+  mochila = [{}]
 ) {
   const sumSkills = {
     oscuras: {
@@ -409,6 +412,17 @@ function char(
       primordio: 0,
       elemental: 3,
       profano: 4
+    },
+    invidia: {
+      vitalidade: 10,
+      vigor: 4,
+      destreza: 3,
+      mente: 2,
+      forca: 10,
+      resistencia: 2,
+      primordio: 5,
+      elemental: 0,
+      profano: 0
     }
   };
 
@@ -421,17 +435,8 @@ function char(
     sum: sum,
     phantom: phantom,
     skills: sumSkills[sum],
-    mochila: [{}],
-    equipamentos: equipamentos ?? {
-      cabeça: {},
-      pescoço: {},
-      ombros: {},
-      maos: {},
-      peitoral: {},
-      cintura: {},
-      pernas: {},
-      pes: {}
-    },
+    mochila: mochila,
+    equipamentos: equipamentos,
     armas: {
       armaPrimaria: {},
       armaSecundaria: {}

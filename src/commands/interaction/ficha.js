@@ -76,7 +76,9 @@ export async function execute(interaction) {
           function handleChoice() {
             const optionLabel = `${title(
               component.options.find(option => option.value === values[0]).label
-            )},${interaction.values
+            )},${component.options
+              .filter(option => values.includes(option.value))
+              .map(option => option.label)
               .slice(1)
               .map(value =>
                 value
@@ -181,14 +183,6 @@ export async function execute(interaction) {
             .setColor(sum[choices.get('soma')].color)
             .addField('Soma', sum[choices.get('soma')].emoji + ' ' + title(choices.get('soma')), true)
             .addField(
-              'Itens',
-              choices
-                .get('itens_inicias')
-                .map(item => assets.itens[item.slot] + ' ' + title(item.name))
-                .join('\n'),
-              true
-            )
-            .addField(
               'Genero',
               choices.get('genero') === 'masculino'
                 ? '♂️ Masculino'
@@ -224,9 +218,19 @@ export async function execute(interaction) {
         embeds: embedArray,
         components: [components]
       });
-      const itensIniciais = {};
       const char = sheet.get(user.id);
-      db.set(`${interaction.guild.id}.pending.${user.id}`, {
+      const serverItems = db.table('server_items');
+      const itens = char.get('item_inicial');
+      const mochila = {};
+      await itens.forEach(async item => {
+        const obj = await serverItems.get(item);
+        obj.quantia = 1;
+        delete obj.valor;
+        mochila[item] = obj;
+      });
+      console.log(mochila);
+
+      await db.set(`${interaction.guild.id}.pending.${user.id}`, {
         name: char.get('nome'),
         personality: char.get('personalidade'),
         appearance: char.get('fisico'),
@@ -234,18 +238,7 @@ export async function execute(interaction) {
         gender: char.get('genero'),
         phantom: char.get('purgatorio'),
         sum: char.get('soma'),
-        equipamentos: (() => {
-          const array = Object.entries(char.get('item_inicial'));
-          array
-            .filter(([, value]) => value.slot !== 'arma')
-            .map(([, value]) => {
-              return {
-                [value.slot]: {
-                  ...value
-                }
-              };
-            });
-        })()
+        mochila: mochila
       });
       break;
   }

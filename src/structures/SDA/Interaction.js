@@ -9,56 +9,29 @@ export class Interaction extends PlayCardBase {
    * @param {ButtonInteraction} interaction - O botão que iniciou o painel.
    * @param {GuildMember} target - O usuário alvo da interação.
    */
-  constructor(interaction) {
+  constructor(interaction, target) {
     super();
     this.interaction = interaction;
+    this.target = target;
   }
-  async handle() {
-    const {interaction} = this;
-    const messageToQuery = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
-    const fetchedTarget = await interaction.guild.members.fetch(messageToQuery);
-    this.target = fetchedTarget;
-    this.panel();
-  }
-  async panel() {
+  async panel(action) {
     // Quando o usuário clica no botão, um painel é aberto com as opções de interação.
     const {interaction, target} = this;
 
-    const reply = await interaction.reply({
-      fetchReply: true,
-      ephemeral: true,
-      content: 'Interagindo com o personagem de ' + target.user.username,
-      components: [
-        new MessageActionRow().addComponents(
-          target.id === interaction.user.id
-            ? new MessageButton().setCustomId('atributos').setLabel('Atributos').setEmoji('📈').setStyle('SECONDARY')
-            : undefined,
-          new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
-          new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
-          new MessageButton()
-            .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
-            .setLabel('Atacar')
-            .setEmoji('🗡️')
-            .setStyle('SECONDARY')
-        )
-      ]
-    });
-    const action = await reply.awaitMessageComponent();
-    await action.deferUpdate();
-    if (action.customId === 'profile') {
-      return action.editReply({
+    if (action === 'profile') {
+      return interaction.editReply({
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: []
       });
-    } else if (action.customId === 'comment') {
-      action.editReply({
+    } else if (action === 'comment') {
+      interaction.editReply({
         content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: []
       });
       return this.comment();
-    } else if (action.customId === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
-      return action.editReply({
+    } else if (action === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
+      return interaction.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
@@ -67,6 +40,29 @@ export class Interaction extends PlayCardBase {
               .setLabel('Ataque Físico')
               .setEmoji('⚔️')
               .setStyle('DANGER')
+          )
+        ]
+      });
+    } else {
+      await interaction.reply({
+        fetchReply: true,
+        ephemeral: true,
+        content: 'Interagindo com o personagem de ' + target.user.username,
+        components: [
+          new MessageActionRow().addComponents(
+            new MessageButton()
+              .setCustomId('atributos')
+              .setLabel('Atributos')
+              .setEmoji('📈')
+              .setStyle('SECONDARY')
+              .setDisabled(interaction.user.id === target.id ? false : true),
+            new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
+            new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
+            new MessageButton()
+              .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
+              .setLabel('Atacar')
+              .setEmoji('🗡️')
+              .setStyle('SECONDARY')
           )
         ]
       });
@@ -100,83 +96,52 @@ export class Interaction extends PlayCardBase {
           10
         )} ${level + 1}\n\n${bold('XP TOTAL:')} ${totalXp}`
       )
-      .addField(
-        'Atributos',
-        Object.entries(skills)
-          .map(([key, value]) => {
-            return `${assets.skills[key]} ${bold(
-              title(
-                (() => {
-                  switch (key) {
-                    case 'forca':
-                      return 'força';
-                    case 'resistencia':
-                      return 'resistência';
-                    default:
-                      return key;
-                  }
-                })()
-              )
-            )}: ${value}`;
-          })
-          .join('\n'),
-        true
-      )
-      .addField(
-        'Equipamentos',
-        Object.entries(equipamentos)
-          .map(
-            ([key, value]) =>
-              `${assets.itens[key] + ' ' + bold(title(key === 'pes' ? 'Pés' : key === 'maos' ? 'mãos' : key))}:${title(
-                `${
-                  typeof value === 'object'
-                    ? ` ${value.num ? value.num : ''} ${title(value.tipo ? value.tipo : '')}`
-                    : value !== undefined
-                    ? value
-                    : ''
-                }`
-              )}`
-          )
-          .join('\n'),
-        true
-      )
-      .addField(
-        'Armas',
-        Object.entries(armas)
-          .filter(([key]) => key !== 'equipado')
-          .map(
-            ([key, value]) =>
-              `${assets.itens[key]} ${bold(
+      .addFields(
+        {
+          name: 'Atributos',
+          value: Object.entries(skills)
+            .map(([key, value]) => {
+              return `${assets.skills[key]} ${bold(
                 title(
                   (() => {
                     switch (key) {
-                      case 'armaPrimaria':
-                        return 'Arma Primária';
-                      case 'armaSecundaria':
-                        return 'Arma Secundária';
+                      case 'forca':
+                        return 'força';
+                      case 'resistencia':
+                        return 'resistência';
                       default:
                         return key;
                     }
                   })()
                 )
-              )}: ${
-                typeof value === 'object'
-                  ? ` ${value.num ? value.num : ''} ${title(value.tipo ? value.tipo : '')}`
-                  : value !== undefined
-                  ? value
-                  : ''
-              }`
-          )
-          .join('\n'),
-        true
-      )
-      .addField(
-        'Genero',
-        gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
-        true
-      )
-      .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true)
-      .addField('Purgatório', assets.phantom[phantom] + ' ' + title(phantom), true);
+              )}: ${value}`;
+            })
+            .join('\n'),
+          inline: true
+        },
+        {
+          name: 'Equipamentos',
+          value: Object.entries(equipamentos)
+            .map(([key, value]) => assets.itens[key] + ' ' + bold(title(value.nome)))
+            .join('\n'),
+          inline: true
+        },
+        {
+          name: 'Armas',
+          value: Object.entries(armas)
+            .filter(([key]) => key !== 'equipado')
+            .map(([key]) => assets.itens[key])
+            .join('\n'),
+          inline: true
+        },
+        {
+          name: 'Genero',
+          value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+          inline: true
+        },
+        {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true},
+        {name: 'Purgatório', value: assets.phantom[phantom] + ' ' + title(phantom), inline: true}
+      );
   }
   async comment() {
     const {interaction, target} = this;

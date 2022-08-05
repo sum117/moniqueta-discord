@@ -35,12 +35,12 @@ export class Combat extends PlayCardBase {
         if (check === null) {
           await batalha.set(origem, {
             [origem]: {
-              saude: this.origem.skills.vitalidade * 10,
-              vigor: this.origem.skills.vigor * 5
+              saude: 100 + this.origem.skills.vitalidade * 10,
+              vigor: 50 + this.origem.skills.vigor * 5
             },
             [alvo]: {
-              saude: this.alvo.skills.vitalidade * 10,
-              vigor: this.alvo.skills.vigor * 5
+              saude: 100 + this.alvo.skills.vitalidade * 10,
+              vigor: 50 + this.alvo.skills.vigor * 5
             }
           });
           return {db: await batalha.get(origem), id: origem};
@@ -92,24 +92,24 @@ export class Combat extends PlayCardBase {
     } else {
       // Caso contrario, apenas subtraia a vida do alvo e envie uma mensagem ao canal com os dados do turno.
       const mensagem = (() => {
-        let msg;
+        let msg = '';
         if (resposta?.msg) return resposta.msg;
         else {
           if (resposta?.dano > 0)
-            msg += `${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!`;
-          else msg += `${bold(origem.name)} não causou dano em ${bold(alvo.name)}!`;
+            msg += `\n\n${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!`;
+          else msg += `\n\n${bold(origem.name)} não causou dano em ${bold(alvo.name)}!`;
           if (resposta?.defesa > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
               msg += `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`;
             else msg += `${bold(alvo.name)} não defendeu nenhum dano pois está cansado(a) demais!`;
           } else if (resposta?.esquiva > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
-              msg += `${bold(alvo.name)} ignorou ${resposta?.esquiva} do ataque!`;
-            else msg += `${bold(alvo.name)} não ignorou o ataque pois está cansado(a) demais!`;
+              msg += `\n\n${bold(alvo.name)} ignorou ${resposta?.esquiva} do ataque!`;
+            else msg += `\n\n${bold(alvo.name)} não ignorou o ataque pois está cansado(a) demais!`;
           }
 
           if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
-            msg += `${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
+            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
               origem.alvo
             }!`;
           return msg;
@@ -125,7 +125,7 @@ export class Combat extends PlayCardBase {
       this.setHealth(batalha, target.id, -resposta?.dano);
     } else this.setHealth(batalha, target.id, -resposta?.danoTotal);
 
-    if (resposta?.payback.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
+    if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
     else await setCombatToken(userId, true);
     await updateDb(interaction, batalha);
     // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
@@ -145,7 +145,7 @@ export class Combat extends PlayCardBase {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.followUp({
-        content: `🌟 ${userMention(target.id)} 🌟\n${
+        content: `🌟 ${userMention(userId)} 🌟\n${
           falas.hp.inimigo[Math.floor(Math.random() * falas.hp.inimigo.length)]
         }`
       });
@@ -261,7 +261,7 @@ export class Combat extends PlayCardBase {
     });
 
     // Finalizando turno de combate com o calculo de dano
-    return reacaoAlvo?.customId.split('_')[0] ?? 'defender';
+    return reacaoAlvo?.customId.split('_').slice(0, 2).join('_') ?? 'defender';
   }
 }
 // ------------------------------------------------ Database functions and helpers ------------------------------------------------
@@ -315,7 +315,7 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
             easterEggChance >= 90
               ? 'Parry Inacreditável!\nhttps://youtu.be/C4gntXWPrw4\n⚠️ Você pode atacar o inimigo agora, sem fazer posts, pois reflexões assim não gastam tokens de combate.'
               : 'Parry perfeito! PRIIIM!\n⚠️ Você pode atacar o inimigo agora, sem fazer posts, pois reflexões assim não gastam tokens de combate.',
-          payback: 'defesa_perfeito'
+          payback: 'defesa_perfeita'
         };
       else {
         const handleEscudo = alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
@@ -350,17 +350,17 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
         return {
           danoTotal: dano,
           dano:
-            Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+            Math.floor(dano - dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
               ? 0
-              : Math.floor(dano - dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+              : Math.floor(dano - dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa),
           esquiva:
-            Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+            Math.floor(dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
               ? 0
-              : Math.floor(dano * (0.25 + (0.6 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+              : Math.floor(dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa),
           custo: 5 * (esquivas ? esquivas : 1)
         };
 
-    case 'contra-ataque':
+    case 'contra_ataque':
       const danoAlvo = Object.values(alvo.armas)
         .filter(item => item.base)
         .map(item => itemComRng(alvo, item, dadoAlvo))
