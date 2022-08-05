@@ -105,6 +105,133 @@ moniqueta.on('ready', async () => {
       }
     });
   }, 5 * 60 * 1000);
+    await changeComponentOptions(
+    '977090435845603379',
+    '995391321713938432',
+    3,
+    'item_inicial',
+    'Escolha um Item Inicial',
+    [
+      {
+        label: 'Lâminas Gêmeas',
+        value: '6',
+        description: 'Uma arma com duas lâminas perfeitamente similares.',
+        emoji: '👀'
+      },
+      {
+        label: 'Grimório de Moonadom',
+        value: '15',
+        description: 'Um grimório feito à partir de sangue.',
+        emoji: '📕'
+      },
+      {
+        label: 'Tridente Quimera',
+        value: '7',
+        description: 'Uma arma forjada reutilizando partes de outras armas.',
+        emoji: '🔱'
+      },
+      {
+        label: 'Katana de Kojirou',
+        value: '8',
+        description: 'A arma mais leal existente no continente de Imprevia.',
+        emoji: '🗡️'
+      },
+      {
+        label: 'Grande Lâmina',
+        value: '9',
+        description: 'Um campeão que domina tal montante, consegue destruir qualquer coisa.',
+        emoji: '💀'
+      },
+      {
+        label: 'Faca Velha',
+        value: '12',
+        description: 'Uma faca de cozinha qualquer.',
+        emoji: '🔪'
+      },
+
+      {
+        label: 'Espada Quebrada',
+        value: '10',
+        description: 'O que antes provavelmente era uma nobre e gigante arma, agora já não é mais.',
+        emoji: '💥'
+      },
+
+      {
+        label: 'Messer',
+        value: '11',
+        description: 'Camponeses transformaram suas ferramentas do dia-a-dia em armas de auto-defesa, essa é a Messer.',
+        emoji: '🌾'
+      },
+
+      {
+        label: 'Cetro Meio-Reluzente',
+        value: '13',
+        description: 'Um grande cetro feito a partir de metais recliclados e uma boa porção de energia somática.',
+        emoji: '✨'
+      },
+
+      {
+        label: 'Machadinha',
+        value: '14',
+        description: 'Uma ferramenta usada para partir toras de lenha antes do inverno.',
+        emoji: '🪓'
+      },
+      {
+        label: 'Varinha de Iniciante',
+        value: '16',
+        description: 'Longe de um prestigioso cetro ou um grimório antigo, mas capaz de proteger novatos decentemente.',
+        emoji: '🌀'
+      },
+      {
+        label: 'Arco Simples',
+        value: '17',
+        description: 'Construído por caçadores que se aventuram em meio as florestas do Equador.',
+        emoji: '🏹'
+      },
+      {
+        label: 'Marreta de Guerra',
+        value: '18',
+        description: 'Uma arma encontrada em campos de batalhas sangrentos...',
+        emoji: '🔨'
+      }
+    ]
+  );
+
+  /**
+ *
+ * @param {string} channelId O id do canal
+ * @param {string} messageId O id da mensagem
+ * @param {number} actionRow A posição da linha que deve ser editada
+ * @param {string} customId O id do novo componente da actionRow
+ * @param {string} placeHolder O novo placeholder do componente
+ * @param {Array<object>} options As novas opções do componente
+ * @returns {Promise<Message>} A mensagem editada
+ */
+async function changeComponentOptions(
+  channelId = '',
+  messageId = '',
+  actionRow = 0,
+  customId = '',
+  placeHolder = '',
+  options = [{}]
+) {
+  /**
+   * @type {Message}
+   */
+  const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
+  const component = message.components[actionRow].setComponents(
+    new MessageSelectMenu()
+      .setCustomId(customId)
+      .setMaxValues(2)
+      .setMinValues(2)
+      .setPlaceholder(placeHolder)
+      .addOptions(options)
+  );
+  return message.edit({
+    content: message.content,
+    components: [...message.components.slice(-4, 3), component]
+  });
+}
 });
 
 process.on('unhandledRejection', e => {
