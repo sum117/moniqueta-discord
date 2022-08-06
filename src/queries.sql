@@ -1,0 +1,2 @@
+DELETE FROM JSON WHERE ID LIKE '%msgTop_%';
+DROP TABLE msgTop;

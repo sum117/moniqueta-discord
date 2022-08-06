@@ -120,7 +120,7 @@ moniqueta.on('ready', async () => {
       },
       {
         label: 'Grimório de Moonadom',
-        value: '15',
+        value: '14',
         description: 'Um grimório feito à partir de sangue.',
         emoji: '📕'
       },
@@ -172,32 +172,43 @@ moniqueta.on('ready', async () => {
 
       {
         label: 'Machadinha',
-        value: '14',
+        value: '18',
         description: 'Uma ferramenta usada para partir toras de lenha antes do inverno.',
         emoji: '🪓'
       },
       {
         label: 'Varinha de Iniciante',
-        value: '16',
+        value: '15',
         description: 'Longe de um prestigioso cetro ou um grimório antigo, mas capaz de proteger novatos decentemente.',
         emoji: '🌀'
       },
       {
         label: 'Arco Simples',
-        value: '17',
+        value: '16',
         description: 'Construído por caçadores que se aventuram em meio as florestas do Equador.',
         emoji: '🏹'
       },
       {
         label: 'Marreta de Guerra',
-        value: '18',
+        value: '17',
         description: 'Uma arma encontrada em campos de batalhas sangrentos...',
         emoji: '🔨'
       }
     ]
   );
 
-  /**
+
+});
+
+process.on('unhandledRejection', e => {
+  console.log(e);
+  moniqueta.channels.cache.get(channels.errorChannel).send({
+    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
+  });
+});
+
+moniqueta.login(token);
+/**
  *
  * @param {string} channelId O id do canal
  * @param {string} messageId O id da mensagem
@@ -232,13 +243,3 @@ async function changeComponentOptions(
     components: [...message.components.slice(-4, 3), component]
   });
 }
-});
-
-process.on('unhandledRejection', e => {
-  console.log(e);
-  moniqueta.channels.cache.get(channels.errorChannel).send({
-    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
-  });
-});
-
-moniqueta.login(token);

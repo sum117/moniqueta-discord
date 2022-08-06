@@ -1,5 +1,5 @@
 import {db} from '../../db.js';
-
+const msgTop = db.table('msgTop')
 export const data = {
   event: 'messageCreate',
   name: 'Contador de Mensagens',
@@ -8,6 +8,6 @@ export const data = {
 export async function execute(client, msg) {
   const moniqueta = client;
   moniqueta.memberCounter.set(msg.author.id, Date.now());
-  const currentValue = await db.get(`msgTop_${msg.author.id}`);
-  return db.set(`msgTop_${msg.author.id}`, currentValue + 1);
+  const currentValue = await msgTop.get(`${msg.author.id}`);
+  return msgTop.set(`${msg.author.id}`, currentValue + 1);
 }
