@@ -40,10 +40,10 @@ export async function execute(interaction) {
     const filter = m => m.author.id === interaction.user.id;
     const collector = interaction.channel.createMessageCollector({filter, time: 60000, max: 1});
     collector.on('collect', async m => {
-      await char.interact(interaction, 'edit', m);
-      interaction.editReply({
-        content: 'Playcard editado com sucesso!'
-      });
+      if (m) await char.interact(interaction, 'edit', m);
+      return interaction.editReply({
+        content: 'Playcard editado com sucesso.'
+      })
     });
     collector.on('end', async collected => {
       if (!collected.size) {
