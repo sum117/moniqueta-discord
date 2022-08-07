@@ -46,7 +46,7 @@ export const assets = {
     equinocio: {color: 562180, emoji: '<:Equinocio:982082685889564772>'},
     oscuras: {color: 3146828, emoji: '<:Oscuras:982082685835051078>'},
     ehrantos: {color: 15236108, emoji: '<:Ehrantos:982082685793087578>'},
-    melancus: {color: 0, emoji: '<:Melancus:982082685801472060>'},
+    melancus: {color: 328708, emoji: '<:Melancus:982082685801472060>'},
     observata: {
       color: 16777215,
       emoji: '<:Observata:982082685864378418>'
@@ -65,16 +65,13 @@ export class PlayCardBase {
   constructor() {
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
-      if (!chosenChar) {
-        throw (
-          (await interaction[interaction.deferred ? 'editReply' : 'reply']({
-            content: `Não há nenhum personagem criado ou selecionado para ${
-              user.id === interaction.user.id ? 'você' : user
-            }`
-          }),
-          new Error('Erro de personagem não criado ou selecionado acionado por: ' + user.id))
-        );
-      } else return await db.get(`${user.id}.chars.${chosenChar}`);
+      if (!chosenChar)
+        return await interaction[interaction.deferred ? 'editReply' : 'reply']({
+          content: `Não há nenhum personagem criado ou selecionado para ${
+            user.id === interaction.user.id ? 'você' : user
+          }`
+        });
+      else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
   }
   /**
@@ -148,8 +145,8 @@ export class PlayCardBase {
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
   async interact(interaction, action, content = '', attachment = null) {
-    const {user, channel, guildId} = interaction;
-
+    const {channel, guildId} = interaction;
+    const user = interaction?.author ?? interaction.user;
     const data = await this.character(interaction, user);
     const {name, avatar, sum, dead, phantom} = data;
 
@@ -236,8 +233,9 @@ export class PlayCardBase {
     }
     async function edit(msgId) {
       if (!msgId) throw new Error('Não foi possível encontrar a mensagem para ser editada');
-      const embed = (await channel.messages.fetch(msgId)).embeds[0];
-      embed.setDescription(content);
+      await (await channel.messages.fetch(msgId)).removeAttachments();
+      const msg = await channel.messages.fetch(msgId);
+      const embed = msg.embeds[0].setDescription(content);
       return await channel.messages.edit(msgId, {
         embeds: [embed]
       });

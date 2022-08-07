@@ -1,5 +1,6 @@
+import 'dotenv/config';
 export const [prefix, token] = await import('./config.json', {
-  assert: {type: 'json'},
+  assert: {type: 'json'}
 })
   .then(config => {
     console.log('Using config.json.');
@@ -14,6 +15,21 @@ export const [prefix, token] = await import('./config.json', {
 export const myGuild = '976870103125733388';
 export const categories = {
   arquivo: '977086756459511808',
+  rpCategories: [
+    '981349204792324118',
+    '981349346937282630',
+    '981351342880751647',
+    '981352508838518784',
+    '981352771171254272',
+    '996538254268584056',
+    '981351861837762561',
+    '981351960722698240',
+    '981351678290833460',
+    '981353923241738250',
+    '981354003726221335',
+    '994663834415550496',
+    '981348652918398986'
+  ]
 };
 export const channels = {
   rpRegistro: '977090435845603379', // where users will register their characters
@@ -26,10 +42,10 @@ export const channels = {
   memberCounter: '977082930402844692', // the channel where the bot will count the members.
   loginoutChannel: '977087066129174538', // the channel where the bot will log users in and out.
   errorChannel: '997289513850261554', // the channel where the bot will log errors.
+  postCounter: '977083043011506196' // the channel where the bot will count the posts.
 };
 export const roles = {
   entranceRole: '983190321334726666', // the role which will be given to the user when they join the guild.
   welcomeRole: '977087122345451530', // Role given to members that volunteered to cheer up newcomers.
   xpBoostRole: '1004817937078702101'
-
 };

@@ -1,5 +1,6 @@
 import {channelMention, userMention} from '@discordjs/builders';
 import {
+  Message,
   MessageActionRow,
   MessageButton,
   MessageEmbed,
@@ -103,8 +104,21 @@ export async function execute(interaction) {
           switch (action) {
             case 'aprovar':
               const char = await db.get(`${interaction.guildId}.pending.${trialUser.id}`);
-              new PlayCardBase().create(interaction, channels.rpFichas, char);
-              trialUser.send({
+              await new PlayCardBase().create(interaction, channels.rpFichas, char);
+              /**
+               * @type {Message}
+               */
+              const populacao = await updatePopulation(interaction);
+              populacao.msg.edit({
+                content:
+                  'POPULAÇÃO DE IMPREVIA (JOGADORES):\n\n' +
+                  Object.entries(populacao.populacao)
+                    .map(([soma, quantia]) => {
+                      return `${assets.sum[soma].emoji} ${title(soma)}: ${quantia}`;
+                    })
+                    .join('\n')
+              });
+              await trialUser.send({
                 content: '✅ Sua ficha foi aprovada!',
                 embeds: interaction.message.embeds
               });
@@ -125,9 +139,15 @@ export async function execute(interaction) {
               const ticket = await interaction.guild.channels.create(`disputa-${trialUser.user.username}`, {
                 type: 'text',
                 parent: categories.arquivo,
-                topic: 'Disputa de Ficha de Personagem'
+                topic: 'Disputa de Ficha de Personagem',
+                permissionOverwrites: [
+                  {
+                    id: trialUser.user.id,
+                    allow: ['SEND_MESSAGES', 'VIEW_CHANNEL']
+                  }
+                ]
               });
-              ticket.send({
+              await ticket.send({
                 content: `📩 Atenção, ${userMention(
                   trialUser.id
                 )}, uma disputa para a sua última ficha foi aberta por ${userMention(user.id)}!`
@@ -228,7 +248,6 @@ export async function execute(interaction) {
         delete obj.valor;
         mochila[item] = obj;
       });
-      console.log(mochila);
 
       await db.set(`${interaction.guild.id}.pending.${user.id}`, {
         name: char.get('nome'),
@@ -242,6 +261,32 @@ export async function execute(interaction) {
       });
       break;
   }
+}
+
+async function updatePopulation(interaction) {
+  const sheetCounterMsg = await interaction.guild.channels.cache
+    .get('977090435845603379')
+    .messages.fetch('1005607067878424677');
+  const populacao = {};
+  const jogadores = (await db.all())
+    .filter(({id}) => {
+      return !id.match(/\D+/) && interaction.guildId !== id;
+    })
+    .map(({value}) => {
+      return value.chars;
+    });
+
+  const somas = jogadores.map(jogador =>
+    Object.values(jogador)
+      .filter(char => !char.dead)
+      .map(char => char.sum)
+      .reduce(a => a)
+  );
+  somas.forEach(sum => {
+    populacao[sum] = populacao[sum] ? populacao[sum] + 1 : 1;
+  });
+
+  return {msg: sheetCounterMsg, populacao: populacao};
 }
 
 /**

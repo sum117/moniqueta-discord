@@ -13,6 +13,7 @@ export const moniqueta = new Client({
 export const player = new Player(moniqueta);
 moniqueta.commands = new Collection();
 moniqueta.memberCounter = new Collection();
+moniqueta.postCounter = new Collection();
 moniqueta.inviteCodeUses = new Collection();
 moniqueta.guildInvites = new Collection();
 moniqueta.prefix = await prefix;
@@ -105,7 +106,7 @@ moniqueta.on('ready', async () => {
       }
     });
   }, 5 * 60 * 1000);
-    await changeComponentOptions(
+  await changeComponentOptions(
     '977090435845603379',
     '995391321713938432',
     3,
@@ -198,40 +199,40 @@ moniqueta.on('ready', async () => {
   );
 
   /**
- *
- * @param {string} channelId O id do canal
- * @param {string} messageId O id da mensagem
- * @param {number} actionRow A posição da linha que deve ser editada
- * @param {string} customId O id do novo componente da actionRow
- * @param {string} placeHolder O novo placeholder do componente
- * @param {Array<object>} options As novas opções do componente
- * @returns {Promise<Message>} A mensagem editada
- */
-async function changeComponentOptions(
-  channelId = '',
-  messageId = '',
-  actionRow = 0,
-  customId = '',
-  placeHolder = '',
-  options = [{}]
-) {
-  /**
-   * @type {Message}
+   *
+   * @param {string} channelId O id do canal
+   * @param {string} messageId O id da mensagem
+   * @param {number} actionRow A posição da linha que deve ser editada
+   * @param {string} customId O id do novo componente da actionRow
+   * @param {string} placeHolder O novo placeholder do componente
+   * @param {Array<object>} options As novas opções do componente
+   * @returns {Promise<Message>} A mensagem editada
    */
-  const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
-  const component = message.components[actionRow].setComponents(
-    new MessageSelectMenu()
-      .setCustomId(customId)
-      .setMaxValues(2)
-      .setMinValues(2)
-      .setPlaceholder(placeHolder)
-      .addOptions(options)
-  );
-  return message.edit({
-    content: message.content,
-    components: [...message.components.slice(-4, 3), component]
-  });
-}
+  async function changeComponentOptions(
+    channelId = '',
+    messageId = '',
+    actionRow = 0,
+    customId = '',
+    placeHolder = '',
+    options = [{}]
+  ) {
+    /**
+     * @type {Message}
+     */
+    const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
+    const component = message.components[actionRow].setComponents(
+      new MessageSelectMenu()
+        .setCustomId(customId)
+        .setMaxValues(2)
+        .setMinValues(2)
+        .setPlaceholder(placeHolder)
+        .addOptions(options)
+    );
+    return message.edit({
+      content: message.content,
+      components: [...message.components.slice(-4, 3), component]
+    });
+  }
 });
 
 process.on('unhandledRejection', e => {

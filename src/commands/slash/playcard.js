@@ -6,28 +6,7 @@ import {Xp} from '../../structures/SDA/Xp.js';
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')
-  .addSubcommand(send =>
-    send
-      .setName('enviar')
-      .setDescription('Envia uma mensagem com o playcard.')
-      .addStringOption(option =>
-        option.setName('conteudo').setDescription('O conteúdo que será atribuído ao playcard').setRequired(true)
-      )
-      .addAttachmentOption(option =>
-        option.setName('anexo').setRequired(false).setDescription('Um anexo para servir de imagem para seu embed.')
-      )
-  )
-  .addSubcommand(edit =>
-    edit
-      .setName('editar')
-      .setDescription('Edita a última ação do seu personagem.')
-      .addStringOption(option =>
-        option
-          .setName('conteudo')
-          .setDescription('O conteúdo da mensagem que substituirá o do último playcard postado.')
-          .setRequired(true)
-      )
-  )
+  .addSubcommand(edit => edit.setName('editar').setDescription('Edita a última ação do seu personagem.'))
   .addSubcommand(remove =>
     remove
       .setName('remover')
@@ -56,10 +35,22 @@ export async function execute(interaction) {
   const char = new PlayCardBase();
   if (interaction.options.getSubcommand() === 'editar') {
     await interaction.deferReply({ephemeral: true});
-    const content = interaction.options.getString('conteudo');
-    await char.interact(interaction, 'edit', content);
-    interaction.editReply({
-      content: 'Playcard editado com sucesso!'
+    await interaction.followUp({content: 'Você tem um minuto para editar a mensagem.', ephemeral: true});
+
+    const filter = m => m.author.id === interaction.user.id;
+    const collector = interaction.channel.createMessageCollector({filter, time: 60000, max: 1});
+    collector.on('collect', async m => {
+      await char.interact(interaction, 'edit', m);
+      interaction.editReply({
+        content: 'Playcard editado com sucesso!'
+      });
+    });
+    collector.on('end', async collected => {
+      if (!collected.size) {
+        await interaction.editReply({
+          content: 'Você não editou a mensagem a tempo.'
+        });
+      }
     });
   } else if (interaction.options.getSubcommand() === 'remover') {
     await interaction.deferReply({ephemeral: true});
@@ -72,7 +63,6 @@ export async function execute(interaction) {
       content: 'Mensagem removida com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'criar') {
-
     await interaction.showModal(
       createForm([
         [, 'persoNome', 'Nome do Personagem', 'SHORT', 'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"', 128],
@@ -129,12 +119,5 @@ export async function execute(interaction) {
     char.list(interaction);
   } else if (interaction.options.getSubcommand() === 'escolher') {
     char.choose(interaction, interaction.options.getString('id'));
-  } else {
-    await interaction.deferReply();
-    const content = interaction.options.getString('conteudo');
-    const attachment = interaction.options.getAttachment('anexo');
-    await char.interact(interaction, 'send', content, attachment ? attachment : undefined);
-    await new Xp().passiveXp(interaction, content.length);
-    interaction.deleteReply();
   }
 }

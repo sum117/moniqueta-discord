@@ -24,74 +24,92 @@ export class Xp extends PlayCardBase {
   async xpPanel(interaction, action = interaction.customId ?? '') {
     const {user} = interaction;
     const character = await this.character(interaction, user);
-    const skillToEdit = interaction.message.embeds[0]?.footer.text.trim().split(':')[1] ?? '';
+    const skilltoEdit = () => interaction.message.embeds[0]?.footer.text.split(':')[1]?.trim() ?? '';
+    const pickedSkill = () => interaction.values[0];
+
     /**
      * @type {Interaction}
      */
-    const panel = {
-      title: `Painel de Atributos de ${character.name}`,
-      description: `Pontos disponiveis: ${character.attributePoints ?? 0}`,
-      color: assets.sum[character.sum].color,
-      fields: Object.entries(character.skills).map(([key, value]) => {
-        return {
-          name: key.toUpperCase(),
-          value: `${bold(value)} ${statusBar(
-            value,
-            117,
-            sortStatusBar(key),
-            '<:BarEmpty:994631056378564750>',
-            10
-          )} **117**`
-        };
-      }),
-      footer: {
-        icon_url: character.avatar,
-        text: 'Clique em um atributo para aumentar ou diminuir o valor...'
-      }
+    const panel = () => {
+      return {
+        title: `Painel de Atributos de ${character.name}`,
+        description: `Pontos disponiveis: ${character.attributePoints ?? 0}`,
+        color: assets.sum[character.sum].color,
+        fields: Object.entries(character.skills).map(([key, value]) => {
+          return {
+            name: key.toUpperCase(),
+            value: `${bold(value)} ${statusBar(
+              value,
+              117,
+              sortStatusBar(key),
+              '<:BarEmpty:994631056378564750>',
+              10
+            )} **117**`
+          };
+        }),
+        footer: {
+          icon_url: character.avatar,
+          text: 'Clique em um atributo para aumentar ou diminuir o valor...'
+        }
+      };
     };
+    const staticPanel = panel();
+    const skill = () => staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase());
+
     switch (action) {
       case 'pick_skill':
-        const pickedSkill = interaction.values[0];
-        if (character.skills[pickedSkill] === 117)
+        if (character.skills[pickedSkill()] === 117)
           return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
         else {
-          panel.footer.text = 'Editando o atributo de: ' + pickedSkill;
+          staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
           interaction.message.components[1].components.forEach(component => (component.disabled = false));
-          return await interaction.update({embeds: [panel], components: [...interaction.message.components]});
+          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
         }
 
       case 'increment_attribute':
         if (character.attributePoints > 0) {
-          const increasedLevel = character.skills[skillToEdit] + 1;
+          const increasedLevel = character.skills[skilltoEdit()] + 1;
 
           character.attributePoints--;
-          character.skills[skillToEdit]++;
-
-          panel.fields.find(field => field.name === skillToEdit.toUpperCase()).value = `${bold(
+          character.skills[skilltoEdit()]++;
+          staticPanel.footer.text = interaction.message.embeds[0].footer.text;
+          staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
             increasedLevel
-          )} ${statusBar(increasedLevel, 117, sortStatusBar(key), '<:BarEmpty:994631056378564750>', 10)} **117**`;
+          )} ${statusBar(
+            increasedLevel,
+            117,
+            sortStatusBar(skill().name.toLowerCase()),
+            '<:BarEmpty:994631056378564750>',
+            10
+          )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [panel]});
+          return await interaction.update({embeds: [staticPanel]});
         } else return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
 
       case 'decrement_attribute':
-        if (character.skills[skillToEdit] > 0) {
-          const decreasedLevel = character.skills[skillToEdit] - 1;
+        if (character.skills[skilltoEdit()] > 0) {
+          const decreasedLevel = character.skills[skilltoEdit()] - 1;
 
           character.attributePoints++;
-          character.skills[skillToEdit]--;
-
-          panel.fields.find(field => field.name === skillToEdit.toUpperCase()).value = `${bold(
+          character.skills[skilltoEdit()]--;
+          staticPanel.footer.text = interaction.message.embeds[0].footer.text;
+          staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
             decreasedLevel
-          )} ${statusBar(decreasedLevel, 117, sortStatusBar(key), '<:BarEmpty:994631056378564750>', 10)} **117**`;
+          )} ${statusBar(
+            decreasedLevel,
+            117,
+            sortStatusBar(skill().name.toLowerCase()),
+            '<:BarEmpty:994631056378564750>',
+            10
+          )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [panel]});
+          return await interaction.update({embeds: [staticPanel]});
         } else return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
       default:
         return await interaction.update({
           fetchReply: true,
           ephemeral: true,
-          embeds: [panel],
+          embeds: [panel()],
           components: [
             new MessageActionRow().addComponents(
               new MessageSelectMenu()
@@ -129,12 +147,14 @@ export class Xp extends PlayCardBase {
     }
   }
   async passiveXp(interaction, count) {
-    const {user} = interaction;
+    const user = interaction?.author ?? interaction.user;
     const character = await this.character(interaction, user);
     const totalXp = character?.xpCount;
     const level = character?.level;
     const sentLetters = character?.xpLog ?? 0;
+    const attributePoints = character?.attributePoints ?? 0;
 
+    if (!attributePoints) character.attributePoints = 0;
     if (!totalXp) character.xpCount = 0;
     if (!level) character.level = 1;
     if (!sentLetters) character.xpLog = 0;
