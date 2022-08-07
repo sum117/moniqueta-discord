@@ -33,7 +33,7 @@ export async function execute(client, msg) {
     });
     webhook.send({
       content: msg.content.slice(1),
-      files: msg.attachments
+      files: msg.attachments.size
         ? [
             {
               attachment: msg.attachments.first().attachment,
