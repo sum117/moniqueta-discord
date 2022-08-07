@@ -49,14 +49,14 @@ export async function execute(client, msg) {
           ]
         : undefined
     });
-    return msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:50'));
+    return msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:52'));
   }
 
   const char = new PlayCardBase();
   await char.interact(msg, 'send', msg.content, msg.attachments.first() ? msg.attachments.first() : undefined);
   const postCounter = client.postCounter.size ?? 0;
   client.postCounter.set(postCounter, Date.now());
-  await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:57'));
+  await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:59'));
   return await new Xp().passiveXp(msg, msg.content.length);
 }
 
