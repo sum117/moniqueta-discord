@@ -40,7 +40,7 @@ export async function execute(interaction) {
 
     const filter = m => m.author.id === interaction.user.id;
     const collector = interaction.channel.createMessageCollector({ filter, time: 60000, max: 1 });
-    await db.set(`${m.author.id}.isEditting`, true)
+    await db.set(`${interaction.user.id}.isEditting`, true)
     collector.on('collect', async m => {
       if (m) {
         await char.interact(interaction, 'edit', m.content);

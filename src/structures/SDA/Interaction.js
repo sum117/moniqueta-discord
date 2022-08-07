@@ -25,7 +25,7 @@ export class Interaction extends PlayCardBase {
         components: []
       });
     } else if (action === 'comment') {
-      await db.set(`${user.id}.isEditting`, true)
+      await db.set(`${interaction.user.id}.isEditting`, true)
       await interaction.editReply({
         content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: []
