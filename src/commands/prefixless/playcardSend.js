@@ -14,17 +14,16 @@ export const data = {
  * @param {Message} msg
  */
 export async function execute(client, msg) {
-  const checkIfThread = () => {
-    if (msg.channel.isThread) {
-      const canalPai = msg.channel.parent;
-      return canalPai.parentId
-    } else return msg.channel.parentId
-  }
-  if (!categories.rpCategories.includes(checkIfThread())) return;
+  const checkIfThread = (() => {
+    if (msg.channel.isThread()) return msg.channel.parent.parentId;
+    else return msg.channel.parentId
+  })()
+
+  if (!categories.rpCategories.includes(checkIfThread)) return;
   if (msg.author.bot) return;
   if (msg.content.match(/^(?:\/|\\|\(|\)|\[|\[|\])/))
     return setTimeout(
-      () => msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:21')),
+      () => msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:26')),
       3 * 60 * 1000
     );
 
@@ -48,14 +47,14 @@ export async function execute(client, msg) {
           ]
         : undefined
     });
-    return msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:45'));
+    return msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:50'));
   }
 
   const char = new PlayCardBase();
   await char.interact(msg, 'send', msg.content, msg.attachments.first() ? msg.attachments.first() : undefined);
   const postCounter = client.postCounter.size ?? 0;
   client.postCounter.set(postCounter, Date.now());
-  await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:53'));
+  await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:57'));
   return await new Xp().passiveXp(msg, msg.content.length);
 }
 
