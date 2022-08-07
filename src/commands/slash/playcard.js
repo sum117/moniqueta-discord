@@ -16,12 +16,7 @@ export const data = new SCB()
         option.setName('link').setDescription('Link ou id da mensagem a ser removida').setRequired(false)
       )
   )
-  .addSubcommand(create =>
-    create
-      .setName('criar')
-      .setDescription('Crie um personagem de teste para avaliar as funções da Moniqueta Alpha')
-      .addUserOption(option => option.setName('usuario').setRequired(false).setDescription('O usuário da ficha'))
-  )
+
   .addSubcommand(listar => listar.setName('listar').setDescription('Lista todos os seus personagens.'))
   .addSubcommand(escolher =>
     escolher
@@ -68,59 +63,6 @@ export async function execute(interaction) {
     interaction.editReply({
       content: 'Mensagem removida com sucesso!'
     });
-  } else if (interaction.options.getSubcommand() === 'criar') {
-    await interaction.showModal(
-      createForm([
-        [, 'persoNome', 'Nome do Personagem', 'SHORT', 'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"', 128],
-        [, 'persoSoma', 'Soma', 'SHORT', 'Escreva o nome da soma em MINÚSCULO. Se você errar, vai dar erro.', 128],
-        [, 'persoFisico', 'Características Físicas', 'PARAGRAPH', 'Peso, aparência geral, altura e etc...', 4000],
-        [
-          ,
-          'persoHabilidade',
-          'Habilidade',
-          'PARAGRAPH',
-          'A habilidade do personagem não irá interferir no combate.',
-          4000
-        ],
-        [, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500]
-      ])
-    );
-    interaction
-      .awaitModalSubmit({
-        filter: modal => modal.customId === 'ficha' && interaction.user.id === modal.user.id,
-        time: 10 * 60 * 1000
-      })
-      .then(submittedForm => {
-        const char = ((inputs = [['']]) => {
-          const map = new Map();
-          inputs.map(([mapKey, fieldCustomId]) =>
-            map.set(mapKey, submittedForm.fields.getTextInputValue(fieldCustomId))
-          );
-          return map;
-        })([
-          ['nome', 'persoNome'],
-          ['soma', 'persoSoma'],
-          ['fisico', 'persoFisico'],
-          ['habilidade', 'persoHabilidade'],
-          ['imagem', 'persoImagem']
-        ]);
-        const user = interaction.options.getUser('usuario') || interaction.user;
-        new PlayCardBase().create(
-          interaction,
-          interaction.channel.id,
-          {
-            name: char.get('nome'),
-            personality: 'Personalidade Indisponível para personagens de teste...',
-            appearance: char.get('fisico'),
-            avatar: char.get('imagem'),
-            gender: 'genderless',
-            phantom: 'vermelho',
-            sum: char.get('soma')
-          },
-          user
-        );
-        submittedForm.reply('Ficha criada.');
-      });
   } else if (interaction.options.getSubcommand() === 'listar') {
     char.list(interaction);
   } else if (interaction.options.getSubcommand() === 'escolher') {
