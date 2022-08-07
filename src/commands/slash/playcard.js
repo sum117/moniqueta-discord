@@ -3,6 +3,7 @@ import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {SlashCommandBuilder as SCB} from '@discordjs/builders';
 import {createForm} from '../interaction/ficha.js';
 import {Xp} from '../../structures/SDA/Xp.js';
+import { db } from '../../db.js';
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')
@@ -38,19 +39,24 @@ export async function execute(interaction) {
     await interaction.followUp({content: 'Você tem um minuto para editar a mensagem.', ephemeral: true});
 
     const filter = m => m.author.id === interaction.user.id;
-    const collector = interaction.channel.createMessageCollector({filter, time: 60000, max: 1});
+    const collector = interaction.channel.createMessageCollector({ filter, time: 60000, max: 1 });
+    await db.set(`${m.author.id}.isEditting`, true)
     collector.on('collect', async m => {
-      if (m) await char.interact(interaction, 'edit', m);
+      if (m) {
+        await char.interact(interaction, 'edit', m.content);
+        await db.set(`${m.author.id}.isEditting`, false)
+      }
       return interaction.editReply({
         content: 'Playcard editado com sucesso.'
       })
     });
     collector.on('end', async collected => {
       if (!collected.size) {
-        await interaction.editReply({
+        await db.set(`${m.author.id}.isEditting`, false)
+        return await interaction.editReply({
           content: 'Você não editou a mensagem a tempo.'
         });
-      }
+      } else return;
     });
   } else if (interaction.options.getSubcommand() === 'remover') {
     await interaction.deferReply({ephemeral: true});

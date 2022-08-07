@@ -2,7 +2,7 @@ import {Client, Message} from 'discord.js';
 import {categories} from '../../util';
 import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {Xp} from '../../structures/SDA/Xp.js';
-import {moniqueta} from '../..';
+import { db } from '../../db.js';
 export const data = {
   event: 'messageCreate',
   name: 'Enviar Playcard',
@@ -26,6 +26,8 @@ export async function execute(client, msg) {
       () => msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:26')),
       3 * 60 * 1000
     );
+  const editCheck = await db.get(`${msg.author.id}.isEditting`) ?? false
+  if (editCheck) return;
 
   if (msg.content.match(/^\!/) && msg.member.permissions.has('MANAGE_GUILD')) {
     const check = await handleWebhooks(msg);
@@ -36,7 +38,7 @@ export async function execute(client, msg) {
         ? msg.author.displayAvatarURL({dynamic: true, size: 512})
         : msg.author.avatarURL({dynamic: true, size: 512})
     });
-    webhook.send({
+    await webhook.send({
       content: msg.content.slice(1),
       files: msg.attachments.size
         ? [
