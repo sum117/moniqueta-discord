@@ -14,7 +14,13 @@ export const data = {
  * @param {Message} msg
  */
 export async function execute(client, msg) {
-  if (!categories.rpCategories.includes(msg.channel.parentId)) return;
+  const checkIfThread = () => {
+    if (msg.channel.isThread) {
+      const canalPai = msg.channel.parent;
+      return canalPai.parentId
+    } else return msg.channel.parentId
+  }
+  if (!categories.rpCategories.includes(checkIfThread())) return;
   if (msg.author.bot) return;
   if (msg.content.match(/^(?:\/|\\|\(|\)|\[|\[|\])/))
     return setTimeout(
