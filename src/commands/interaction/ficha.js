@@ -266,7 +266,7 @@ export async function execute(interaction) {
 async function updatePopulation(interaction) {
   const sheetCounterMsg = await interaction.guild.channels.cache
     .get('977090435845603379')
-    .messages.fetch('1005607067878424677');
+    .messages.fetch('995391433425043598');
   const populacao = {};
   const jogadores = (await db.all())
     .filter(({id}) => {
