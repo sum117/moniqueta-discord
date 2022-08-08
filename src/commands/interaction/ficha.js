@@ -175,12 +175,6 @@ export async function execute(interaction) {
         });
       }
       const choices = sheet.get(user.id);
-      if (!choices)
-        return interaction.reply({
-          content:
-            '❌ O bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.',
-          ephemeral: true
-        });
       const canalDeAdmin = interaction.guild.channels.cache.get(channels.adminFichaRegistro);
       const userInput = ((inputs = [['']]) => {
         const map = new Map();
@@ -193,6 +187,11 @@ export async function execute(interaction) {
         ['habilidade', 'persoHabilidade'],
         ['imagem', 'persoImagem']
       ]);
+      if (!choices)
+        return await interaction.channel.send({
+          content:
+            interaction.user + ', o bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.',
+        });
       sheet.set(user.id, new Map([...choices, ...userInput]));
       const embedArray = (() => {
         const array = [
