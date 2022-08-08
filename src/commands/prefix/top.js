@@ -13,15 +13,28 @@ export const data = {
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg) {
+  const { firstPlace, str } = await fetchList(msg);
+
+  const embed = new MessageEmbed()
+    .setTitle('🏆 MENSAGENS - TOP 10 🏆')
+    .setDescription(str)
+    .setColor('RANDOM')
+    .setTimestamp(Date.now())
+    .setThumbnail(firstPlace.user.avatarURL({dynamic: true, size:512}));
+  await msg.reply({embeds: [embed]});
+}
+
+async function fetchList(msg) {
   const msgTop = await db.table('msgTop').all();
   let firstPlace;
-  const str = await msgTop
-    .sort((entryBefore, entryAfter) => entryAfter.value - entryBefore.value)
-    .map(async (entry, index) => {
+  const str = msgTop
+    .filter(entry => !['987919485367369749', '432610292342587392'].includes(entry.id))
+    .sort( (entryBefore, entryAfter) => entryAfter.value - entryBefore.value)
+    .map((entry, index) => {
       switch (index) {
         case 0:
-          const fetchMember = async user => await msg?.guild.members.fetch({user: user.id});
-          firstPlace = await fetchMember(entry.id, msg);
+          const fetchMember = async (userId) => await msg.guild.members.fetch({ user: userId });
+          fetchMember(entry.id).then(member => firstPlace = member)
           return `👑 ${userMention(entry.id)} - ${entry.value}`;
         case 1:
           return `🥈 ${userMention(entry.id)} - ${entry.value}`;
@@ -33,12 +46,9 @@ export async function execute(msg) {
     })
     .splice(0, 15)
     .join('\n');
-
-  const embed = new MessageEmbed()
-    .setTitle('🏆 MENSAGENS - TOP 10 🏆')
-    .setDescription(str)
-    .setColor('RANDOM')
-    .setTimestamp(Date.now())
-    .setThumbnail(firstPlace.user.displayAvatarURL({dynamic: true, size: 512}));
-  await msg.reply({embeds: [embed]});
+  do {
+	  (await msg.reply('Carregando...')).delete()
+  } while (firstPlace === undefined)
+  return { firstPlace, str };
 }
+
