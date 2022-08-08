@@ -19,20 +19,20 @@ export class Interaction extends PlayCardBase {
     const {interaction, target} = this;
 
     if (action === 'profile') {
-      return await interaction.editReply({
+      return await interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: []
       });
     } else if (action === 'comment') {
       await db.set(`${interaction.user.id}.isEditting`, true);
-      await interaction.editReply({
+      await interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({
         content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: []
       });
       return this.comment();
     } else if (action === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
-      return await interaction.editReply({
+      return await interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(

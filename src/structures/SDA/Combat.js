@@ -77,7 +77,7 @@ export class Combat extends PlayCardBase {
       return await interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
-    await interaction.deferReply({fetchReply: true});
+    await interaction[interaction.replied || interaction.deferred ? 'followUp' : 'deferReply']({fetchReply: true});
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
     const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
 
@@ -114,7 +114,7 @@ export class Combat extends PlayCardBase {
           return msg;
         }
       })();
-      await interaction.editReply(mensagem);
+      await interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply'](mensagem);
     }
     // Administrando o dano causado no turno e os custos dos movimentos.
     if (resposta?.danoAlvo) this.setHealth(batalha, userId, -resposta.danoAlvo);
@@ -152,7 +152,7 @@ export class Combat extends PlayCardBase {
     }
   }
   async executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem) {
-    const painelFinal = await interaction.editReply({
+    const painelFinal = await interaction[interaction.replied || interaction.deferred ? 'editReply' : 'reply']({
       content: `${bold(origem.name)} derrubou ${bold(
         alvo.name
       )}!\nO destino dele(a) deverá ser decidido nos proximos dez minutos, ou morrerá de sangramento de qualquer forma!`,
