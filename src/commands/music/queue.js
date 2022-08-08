@@ -1,6 +1,6 @@
 export const data = {
   name: 'queue',
-  type: 'music',
+  kind: 'music',
   description: 'Veja a lista de sons que estão sendo tocados agora!'
 };
 
@@ -13,7 +13,7 @@ export async function execute(interaction, player) {
         {
           title: '💘 Agora tocando ~',
           description: trimString(
-            `A música que estou tocando agora é a 🎶 | **${queue.current.title}**! \n 🎶 | **${queue}**! `,
+            `A música que estou tocando agora é a 🎶 | ${queue.current.title}! \n 🎶 | **${queue}**! `,
             4095
           )
         }

@@ -1,8 +1,6 @@
 import {CommandInteraction} from 'discord.js';
 import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {SlashCommandBuilder as SCB} from '@discordjs/builders';
-import {createForm} from '../interaction/ficha.js';
-import {Xp} from '../../structures/SDA/Xp.js';
 import {db} from '../../db.js';
 export const data = new SCB()
   .setName('playcard')

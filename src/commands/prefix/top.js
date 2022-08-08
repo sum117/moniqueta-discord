@@ -4,7 +4,7 @@ import {userMention} from '@discordjs/builders';
 
 export const data = {
   name: 'Top de Mensagens',
-  type: 'regular',
+  kind: 'regular',
   description: 'Mostra o top de mensagens do servidor.'
 };
 

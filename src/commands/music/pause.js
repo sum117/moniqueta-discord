@@ -1,6 +1,6 @@
 export const data = {
   name: 'pause',
-  type: 'music',
+  kind: 'music',
   description: 'Pause a música!'
 };
 export async function execute(interaction, player) {

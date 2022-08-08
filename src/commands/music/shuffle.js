@@ -1,6 +1,6 @@
 export const data = {
   name: 'shuffle',
-  type: 'music',
+  kind: 'music',
   description: 'Deixe tudo muito louco, aleatório, entende?!'
 };
 export async function execute(interaction, player) {

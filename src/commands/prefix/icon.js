@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const data = {
   event: 'messageCreate',
-  type: 'regular',
+  kind: 'regular',
   name: 'Imagem para Icone',
   description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.'
 };

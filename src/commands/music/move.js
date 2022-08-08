@@ -1,6 +1,6 @@
 export const data = {
   name: 'move',
-  type: 'music',
+  kind: 'music',
   description: 'Mova uma música de posição na fila!',
   options: [
     {

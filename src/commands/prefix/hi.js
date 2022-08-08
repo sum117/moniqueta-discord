@@ -2,7 +2,7 @@ import {Message} from 'discord.js';
 
 export const data = {
   event: 'messageCreate',
-  type: 'regular',
+  kind: 'regular',
   name: 'Diga Olá',
   description: 'O bot dirá olá. Comando feito por razões de teste.'
 };

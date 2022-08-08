@@ -1,6 +1,6 @@
 export const data = {
   name: 'nowplaying',
-  type: 'music',
+  kind: 'music',
   description: 'Saiba o som que estou tocando no momento.'
 };
 export async function execute(interaction, player) {
@@ -18,7 +18,7 @@ export async function execute(interaction, player) {
     embeds: [
       {
         title: '💘 Agora tocando ~',
-        description: `🎶 | **${queue.current.title}**! (\`${perc.progress}%\`)`,
+        description: `🎶 | ${queue.current.title}! (\`${perc.progress}%\`)`,
         fields: [
           {
             name: '\u200b',

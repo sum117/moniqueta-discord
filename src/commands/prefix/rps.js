@@ -5,7 +5,7 @@ const {userMention} = Formatters;
 
 export const data = {
   event: 'messageCreate',
-  type: 'regular',
+  kind: 'regular',
   name: 'Pedra, Papel e Tesoura',
   description: 'Um jokenpô simples com botões, em javascript.'
   /** @param {Message} msg A mensagem que executou este comando*/

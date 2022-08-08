@@ -35,7 +35,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
       const interaction = args[0];
       if (interaction.isCommand()) {
         if (slash[interaction.commandName]) await slash[interaction.commandName].execute(interaction, moniqueta);
-        else if (music[interaction.commandName]) {
+        else if (music[interaction?.getSubcommand()]) {
           if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
             return void interaction.reply({
               content: '😡 Ei! Você não tá num canal de música, tá tentando me bugar?!',
@@ -52,7 +52,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
               ephemeral: true
             });
           }
-          await music[interaction.commandName].execute(interaction, musicPlayer);
+          await music[interaction.getSubcommand()].execute(interaction, musicPlayer);
         }
       } else {
         for (const command in interactions) {

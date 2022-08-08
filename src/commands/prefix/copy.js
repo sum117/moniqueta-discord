@@ -2,7 +2,7 @@ import {Message} from 'discord.js';
 
 export const data = {
   name: 'Copiar Mensagem',
-  type: 'regular',
+  kind: 'regular',
   description: 'Copia e cola as mensagens para serem usadas em outros canais ou por outros bots.'
 };
 /**

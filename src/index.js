@@ -95,7 +95,7 @@ moniqueta.on('ready', async () => {
   // Registrando comandos
   for (const commands of [slashCommands, prefixCommands, musicCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
-      moniqueta.commands.set(key, [command.data.description, command.data?.type]);
+      moniqueta.commands.set(key, [command.data.description, command.data?.kind]);
     });
   }
   setInterval(async () => {

@@ -1,6 +1,6 @@
 export const data = {
   name: 'remove',
-  type: 'music',
+  kind: 'music',
   description: 'Remova uma música da lista!',
   options: [
     {

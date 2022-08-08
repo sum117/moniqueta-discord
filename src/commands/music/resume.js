@@ -1,6 +1,6 @@
 export const data = {
   name: 'resume',
-  type: 'music',
+  kind: 'music',
   description: 'Continuemos a tocar o que paramos!'
 };
 export async function execute(interaction, player) {
