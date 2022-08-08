@@ -46,13 +46,14 @@ export const data = new SCB()
           .setRequired(true)
           .addChoices(
             {name: 'vitalidade', value: 'vitalidade'},
-            {name: 'força', value: 'força'},
-            {name: 'resistência', value: 'resistência'},
+            {name: 'forca', value: 'forca'},
+            {name: 'resistencia', value: 'resistencia'},
             {name: 'vigor', value: 'vigor'},
             {name: 'destreza', value: 'destreza'},
             {name: 'primordio', value: 'primordio'},
             {name: 'profano', value: 'profano'},
-            {name: 'elemental', value: 'elemental'}
+            { name: 'elemental', value: 'elemental' },
+            {name: 'mente', value: 'mente'}
           )
       )
       .addNumberOption(option =>

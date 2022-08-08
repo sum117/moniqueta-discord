@@ -77,7 +77,7 @@ export class Combat extends PlayCardBase {
       return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
-    interaction.deferReply({fetchReply: true});
+    await interaction.deferReply({fetchReply: true});
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
     const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
     await setCombatState(target, personagemAtualAlvo, true);
@@ -110,7 +110,7 @@ export class Combat extends PlayCardBase {
 
           if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
             msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
-              origem.alvo
+              origem.name
             }!`;
           return msg;
         }
@@ -124,7 +124,6 @@ export class Combat extends PlayCardBase {
       batalha.db[target.id].vigor = batalha.db[target.id].vigor - resposta?.custo;
       this.setHealth(batalha, target.id, -resposta?.dano);
     } else this.setHealth(batalha, target.id, -resposta?.danoTotal);
-
     if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
     else await setCombatToken(userId, true);
     await updateDb(interaction, batalha);
@@ -132,7 +131,7 @@ export class Combat extends PlayCardBase {
     await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
   }
   setHealth(batalha, targetId, value) {
-    batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0);
+    return batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0);
   }
 
   // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
@@ -260,8 +259,10 @@ export class Combat extends PlayCardBase {
       components: []
     });
 
-    // Finalizando turno de combate com o calculo de dano
-    return reacaoAlvo?.customId.split('_').slice(0, 2).join('_') ?? 'defender';
+    if (reacaoAlvo?.customId.startsWith('defender')) return 'defender';
+    else if (reacaoAlvo?.customId.startsWith('contra_ataque')) return 'contra_ataque';
+    else if (reacaoAlvo?.customId.startsWith('esquiva')) return 'esquiva';
+    else return 'defender';
   }
 }
 // ------------------------------------------------ Database functions and helpers ------------------------------------------------
@@ -300,12 +301,11 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
     .filter(item => item.base)
     .map(item => itemComRng(origem, item, dadoOrigem))
     .reduce((a, b) => a + b, 0);
-
-  const defesa = Object.values(alvo.equipamentos)
+  const preparacao = Object.values(alvo.equipamentos)
     .filter(item => item.base)
     .map(item => itemComRng(alvo, item, dadoAlvo))
     .reduce((a, b) => a + b, 0);
-
+  const defesa = preparacao ? preparacao:0
   const easterEggChance = Math.floor(Math.random() * 100) + 1;
   switch (actionAlvo) {
     case 'defender':
@@ -365,7 +365,6 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
         .filter(item => item.base)
         .map(item => itemComRng(alvo, item, dadoAlvo))
         .reduce((a, b) => a + b, 0);
-
       const defesaOrigem = Object.values(origem.equipamentos)
         .filter(item => item.base)
         .map(item => itemComRng(origem, item, dadoOrigem))
@@ -388,6 +387,6 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
       else if (dado >= 14) return 1.25;
       else return 1;
     };
-    return resultado * multiplicadorBase();
+    return Math.floor(resultado * multiplicadorBase());
   }
 }

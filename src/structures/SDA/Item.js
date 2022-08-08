@@ -96,10 +96,10 @@ export class Item extends Combat {
    */
   static async equipPanel(interaction, action, user) {
     const charDb = await getInventory(user);
-    const getEquipped = [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
+    const getEquipped = () => [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
       .map(([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `)
       .join('\n');
-    const getUnequipped = Object.entries(charDb.mochila)
+    const getUnequipped = () => Object.entries(charDb.mochila)
       .filter(([, item]) => !item.equipado)
       .map(([, item]) => `${item.nome} • ${item.quantia}`)
       .join('\n');
@@ -115,14 +115,14 @@ export class Item extends Combat {
             fields: [
               {
                 name: '📌 Equipados',
-                value: getEquipped
-                  ? getEquipped
+                value: getEquipped()
+                  ? getEquipped()
                   : 'Nenhum item equipado. Use os seletores para equipar um item em um slot.',
                 inline: true
               },
               {
                 name: '🎒 Não equipados:',
-                value: getUnequipped ? getUnequipped : 'Nenhum item não equipado.',
+                value: getUnequipped() ? getUnequipped() : 'Nenhum item não equipado.',
                 inline: true
               }
             ]
@@ -151,7 +151,7 @@ export class Item extends Combat {
     switch (action) {
       case 'selecionar_slot':
         const selector = interaction.message.components[2].components[0];
-        const options = Object.entries(charDb.mochila)
+        const options = () => Object.entries(charDb.mochila)
           .filter(([, item]) => !item.equipado && interaction.customId.match(item.slot))
           .map(([id, item]) => {
             if (!item) return;
@@ -163,7 +163,7 @@ export class Item extends Combat {
             };
           });
         selector.disabled = false;
-        const unequipOptions = [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
+        const unequipOptions = () => [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
           .filter(([key, item]) => item.equipado && interaction.customId === key)
           .map(([id, item]) => {
             if (!item) return;
@@ -171,14 +171,14 @@ export class Item extends Combat {
           });
         selector.setOptions(
           {
-            label: `${unequipOptions.length >= 1 ? unequipOptions[0].item.nome : 'Nada equipado'}`,
-            value: `desequipar_${unequipOptions[0]?.key ?? 'none'}_${unequipOptions[0]?.item.id ?? 'none'}`,
+            label: `${unequipOptions().length >= 1 ? unequipOptions()[0].item.nome : 'Nada equipado'}`,
+            value: `desequipar_${unequipOptions()[0]?.key ?? 'none'}_${unequipOptions()[0]?.item.id ?? 'none'}`,
             description: 'Desequipar item do slot selecionado',
             emoji: '❌'
           },
-          options.length >= 1
+          options().length >= 1
             ? (() => {
-                for (let each of options) {
+                for (let each of options()) {
                   return each;
                 }
               })()

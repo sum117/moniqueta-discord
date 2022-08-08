@@ -10,7 +10,7 @@ export const data = {
   name: 'Interagir com o PlayCard',
   description: 'Interage com o playCard ao pressionar um botão azul.'
 };
-let interactionPanel;
+let interactionPanel = new Map();
 let target;
 let user;
 /** @param {ButtonInteraction} interaction - O botão que inicializou este comando. */
@@ -20,18 +20,19 @@ export async function execute(interaction) {
       const id = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
       return await interaction.guild.members.fetch(id);
     })();
-    interactionPanel = new Interaction(interaction, target);
-    interactionPanel.panel(interaction.customId);
+    interactionPanel.set(target.id, new Interaction(interaction, target));
+    await interactionPanel.get(target.id).panel(interaction.customId);
   } else if (interaction.customId.match(/profile|comment|attack/)) {
-    await interactionPanel.panel(interaction.customId);
+    await interactionPanel.get(target.id).panel(interaction.customId);
   } else if (interaction.customId.startsWith('ataque_fisico_')) {
     target = await interaction.guild.members.fetch(interaction.customId.split('_')[2]);
     const staticUser = await interaction.guild.members.fetch(interaction.customId.split('_')[4]);
-    const combat = await new Combat(interaction, target).init(interaction, target, staticUser.id);
+
+    const combat = await new Combat().init(interaction, target, staticUser.id);
     return await combat.fisico();
   } else if (interaction.customId.match(/atributos|pick_skill|increment_attribute|decrement_attribute/)) {
     const XpManager = new Xp();
-    return XpManager.xpPanel(interaction, interaction.customId);
+    return await XpManager.xpPanel(interaction, interaction.customId);
   } else {
     const conditions = {
       equipar_item: interaction.customId === 'equipar_item',

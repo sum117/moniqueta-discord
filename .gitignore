@@ -5,3 +5,4 @@ node_modules
 .vscode
 .scannerwork
 .env
+dbManagement.js

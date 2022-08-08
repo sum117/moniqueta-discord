@@ -120,21 +120,7 @@ export class Interaction extends PlayCardBase {
             .join('\n'),
           inline: true
         },
-        {
-          name: 'Equipamentos',
-          value: Object.entries(equipamentos)
-            .map(([key, value]) => assets.itens[key] + ' ' + bold(title(value.nome)))
-            .join('\n'),
-          inline: true
-        },
-        {
-          name: 'Armas',
-          value: Object.entries(armas)
-            .filter(([key]) => key !== 'equipado')
-            .map(([key]) => assets.itens[key])
-            .join('\n'),
-          inline: true
-        },
+
         {
           name: 'Genero',
           value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
