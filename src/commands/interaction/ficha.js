@@ -190,7 +190,8 @@ export async function execute(interaction) {
       if (!choices)
         return await interaction.channel.send({
           content:
-            interaction.user + ', o bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.',
+            interaction.user +
+            ', o bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.'
         });
       sheet.set(user.id, new Map([...choices, ...userInput]));
       const embedArray = (() => {
@@ -229,7 +230,7 @@ export async function execute(interaction) {
             .setColor(sum[choices.get('soma')].color)
             .setDescription(value);
           if (key === 'imagem') embed.setImage(value).setTitle('').setDescription('');
-          const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`
+          const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
           embed.description = check(embed.description);
           array.push(embed);
         });

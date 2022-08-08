@@ -175,6 +175,7 @@ export class Xp extends PlayCardBase {
 
     character.xpCount += count;
     await updateDb(user.id, character);
+    await fixBrokenLevels();
   }
 }
 
@@ -192,4 +193,41 @@ function sortStatusBar(key) {
 async function updateDb(userId, char) {
   const currentCharacter = await db.get(userId + '.chosenChar');
   return await db.set(`${userId}.chars.${currentCharacter}`, char);
+}
+
+async function fixBrokenLevels() {
+  (await db.all())
+    .filter(entry => entry.id !== '976870103125733388')
+    .forEach(entry => {
+      const user = entry.id;
+      Object.entries(entry.value.chars)
+        .filter(([, char]) => {
+          if (char?.level) return char;
+          else return;
+        })
+        .forEach(([id, char]) => {
+          const getCorrectInfo = () =>
+            new Promise(resolve => {
+              Object.values(levels).reduce((a, b, i) => {
+                if (a > +char?.xpCount) {
+                  return resolve({
+                    lvlCorreto: i,
+                    xpCorreta: a - b
+                  });
+                }
+                return a + b;
+              }, 0);
+            });
+
+          getCorrectInfo().then(async ({lvlCorreto}) => {
+            char.level = lvlCorreto;
+            const total = lvlCorreto * 2 + 36;
+            const skills = Object.values(char?.skills).reduce((a, b) => a + b, 0);
+
+            if (total > skills) char.attributePoints = total - skills;
+
+            db.set(`${user}.chars.${id}`, char).then(char => console.log(char));
+          });
+        });
+    });
 }

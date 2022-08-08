@@ -1,8 +1,8 @@
 import {CommandInteraction, MessageEmbed} from 'discord.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
-import { SlashCommandBuilder as SCB, userMention, bold } from '@discordjs/builders';
-import { db } from '../../db.js';
-import { delay } from '../../util'
+import {SlashCommandBuilder as SCB, userMention, bold} from '@discordjs/builders';
+import {db} from '../../db.js';
+import {delay} from '../../util';
 import YAML from 'yaml';
 import fs from 'fs';
 export const data = new SCB()
@@ -24,8 +24,8 @@ export const data = new SCB()
       .setName('escolher')
       .setDescription('Escolhe um personagem para usar.')
       .addStringOption(option => option.setName('id').setRequired(true).setDescription('O id do personagem'))
-)
-  .addSubcommand(top => top.setName('top').setDescription('Mostra o top de xp do playcard'))
+  )
+  .addSubcommand(top => top.setName('top').setDescription('Mostra o top de xp do playcard'));
 
 /** @param {CommandInteraction} interaction A opção que executou este comando*/
 export async function execute(interaction) {
@@ -71,7 +71,7 @@ export async function execute(interaction) {
     char.choose(interaction, interaction.options.getString('id'));
   } else if (interaction.options.getSubcommand() === 'top') {
     let topChar;
-    const characters = await db.all()
+    const characters = await db.all();
     const updatedArray = characters
       .filter(entry => {
         return entry.id !== '976870103125733388' && !entry.id.startsWith('msgTop_');
@@ -80,13 +80,12 @@ export async function execute(interaction) {
         return Object.values(entry.value.chars)
           .filter(char => {
             if (char?.xpCount) return char;
-
           })
           .map(char => {
-            return { xp: char?.xpCount ?? 0, user: entry.id ?? 0, char: char ?? 0}
+            return {xp: char?.xpCount ?? 0, user: entry.id ?? 0, char: char ?? 0};
           })
           .sort((entryAfter, entryBefore) => entryBefore.xp - entryAfter.xp)
-          .shift()
+          .shift();
       })
       .sort((entryAfter, entryBefore) => entryBefore.xp - entryAfter.xp)
       .splice(0, 15)
@@ -94,10 +93,12 @@ export async function execute(interaction) {
         if (entry?.char === 0) return;
         if (entry?.user === 0) return;
         if (entry?.xp === 0) return;
-        let msg = `${assets.sum[entry?.char.sum].emoji} ${entry?.char?.level ?? 1} ${entry?.char.name} (${userMention(entry?.user)}):  ${entry?.xp}`;
+        let msg = `${assets.sum[entry?.char.sum].emoji} ${entry?.char?.level ?? 1} ${entry?.char.name} (${userMention(
+          entry?.user
+        )}):  ${entry?.xp}`;
         switch (index) {
           case 0:
-            const { Combate } = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
+            const {Combate} = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
             topChar = {
               avatar: entry?.char.avatar,
               name: entry?.char.name,
@@ -105,18 +106,19 @@ export async function execute(interaction) {
               frases: Combate[entry?.char.sum].hp.inimigo,
               emoji: assets.sum[entry?.char.sum].emoji
             };
-            return msg = '';
+            return (msg = '');
           case 1:
-            return msg = '🥈 **•**' + msg;
+            return (msg = '🥈 **•**' + msg);
           case 2:
-            return msg = '🥉 **•**' + msg + '\n\n------------------------------------------------------------\n';
+            return (msg = '🥉 **•**' + msg + '\n\n------------------------------------------------------------\n');
           default:
-            return msg = bold((index + 1) + ' • ') + msg;
+            return (msg = bold(index + 1 + ' • ') + msg);
         }
-      }).join('\n');
+      })
+      .join('\n');
     await interaction.deferReply();
     do {
-      await delay(1)
+      await delay(1);
     } while (topChar === undefined);
 
     await interaction.editReply({
@@ -127,10 +129,15 @@ export async function execute(interaction) {
             iconURL: interaction.guild.iconURL({dynamic: true, size: 512})
           })
           .setTitle(`👑 ${topChar.name} 👑`)
-          .setDescription(updatedArray + '\n\n\n' + topChar.emoji + bold(topChar.frases[Math.floor(Math.random() * topChar.frases.length)]))
+          .setDescription(
+            updatedArray +
+              '\n\n\n' +
+              topChar.emoji +
+              bold(topChar.frases[Math.floor(Math.random() * topChar.frases.length)])
+          )
           .setColor(topChar.color)
           .setImage(topChar.avatar)
-    ]})
+      ]
+    });
   }
 }
-
