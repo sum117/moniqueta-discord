@@ -42,7 +42,7 @@ export async function execute(msg) {
   } while (firstPlace === undefined);
 
   const embed = new MessageEmbed()
-    .setTitle('🏆 MENSAGENS - TOP 10 🏆')
+    .setTitle('🏆 MENSAGENS - TOP 15 🏆')
     .setDescription(str)
     .setColor('RANDOM')
     .setTimestamp(Date.now())

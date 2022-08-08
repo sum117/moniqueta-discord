@@ -8,3 +8,4 @@ export * from './statusBar.js';
 export * from './title.js';
 export * from './updateMemberCounter.js';
 export * from './embedComponent.js';
+export * from './delay.js';
