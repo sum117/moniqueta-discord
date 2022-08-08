@@ -24,7 +24,7 @@ export async function execute(interaction) {
         .flatMap(selectMenu => selectMenu.options.map(option => option.value));
     });
     interaction.member.roles.remove(allSelectorRoles);
-    interaction.reply({
+    await interaction.reply({
       ephemeral: true,
       content: 'Todos os seus cargos relacionados a estes seletores foram removidos.'
     });

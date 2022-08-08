@@ -37,20 +37,20 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
         if (slash[interaction.commandName]) await slash[interaction.commandName].execute(interaction, moniqueta);
         else if (music[interaction?.options.getSubcommand()]) {
           if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-            return void interaction.reply({
+            return void (await interaction.reply({
               content: '😡 Ei! Você não tá num canal de música, tá tentando me bugar?!',
               ephemeral: true
-            });
+            }));
           }
           if (
             interaction.guild.me.voice.channelId &&
             interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
           ) {
-            return void interaction.reply({
+            return void (await interaction.reply({
               content:
                 '😡 Eu sei que você quer ficar sozinho, mas se sou eu que vou tocar pra você, vai ter que ficar no mesmo canal que eu!',
               ephemeral: true
-            });
+            }));
           }
           await music[interaction.options.getSubcommand()].execute(interaction, musicPlayer);
         }

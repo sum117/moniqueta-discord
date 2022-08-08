@@ -159,7 +159,7 @@ export async function execute(interaction) {
                   return array;
                 })()
               });
-              interaction.reply(
+              await interaction.reply(
                 `📩 Disputa aberta para ${trialUser.user.username} no canal ${channelMention(ticket.id)}`
               );
               break;

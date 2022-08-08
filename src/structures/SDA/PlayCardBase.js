@@ -294,7 +294,7 @@ export class PlayCardBase {
         return id;
       })
       .join('\n');
-    if (!list.includes(id)) return interaction.reply('Esse personagem não existe.');
+    if (!list.includes(id)) return await interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
     const {avatar, name, sum} = chosen;

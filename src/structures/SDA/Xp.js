@@ -226,7 +226,7 @@ async function fixBrokenLevels() {
 
             if (total > skills) char.attributePoints = total - skills;
 
-            db.set(`${user}.chars.${id}`, char).then(char => console.log(char));
+            db.set(`${user}.chars.${id}`, char);
           });
         });
     });

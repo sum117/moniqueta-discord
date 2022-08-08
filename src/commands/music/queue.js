@@ -8,7 +8,7 @@ export async function execute(interaction, player) {
   const queue = player.getQueue(interaction.guildId);
   if (typeof queue != 'undefined') {
     const trimString = (str, max) => (str.length > max ? `${str.slice(0, max - 3)}...` : str);
-    return void interaction.reply({
+    return void (await interaction.reply({
       embeds: [
         {
           title: '💘 Agora tocando ~',
@@ -18,10 +18,10 @@ export async function execute(interaction, player) {
           )
         }
       ]
-    });
+    }));
   } else {
-    return void interaction.reply({
+    return void (await interaction.reply({
       content: '❌ Não tô tocando nada, mas eu posso começar... é só pedir!'
-    });
+    }));
   }
 }

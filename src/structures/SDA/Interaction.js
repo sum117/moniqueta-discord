@@ -56,9 +56,7 @@ export class Interaction extends PlayCardBase {
               .setLabel('Atributos')
               .setEmoji('📈')
               .setStyle('SECONDARY')
-              .setDisabled(
-                interaction.memberPermissions.has('MANAGE_GUILD') || interaction.user.id === target.id ? false : true
-              ),
+              .setDisabled(interaction.user.id === target.id ? false : true),
             new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
             new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
             new MessageButton()

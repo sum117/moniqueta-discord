@@ -98,7 +98,7 @@ export async function execute(interaction) {
   switch (command) {
     case 'criar':
       if (!interaction.memberPermissions.has('MANAGE_GUILD'))
-        return interaction.reply('❌ Você não tem permissão para criar itens.');
+        return await interaction.reply('❌ Você não tem permissão para criar itens.');
       const slot = interaction.options.getString('slot');
       const nome = interaction.options.getString('nome');
       const desc = interaction.options.getString('desc');

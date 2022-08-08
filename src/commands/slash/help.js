@@ -55,7 +55,7 @@ export async function execute(interaction, client) {
         .map(([description], command) => inlineCode('/' + command) + ' ' + bold(description))
         .join('\n')
     );
-  return interaction.reply({
+  return await interaction.reply({
     content: 'Todos os comandos atualmente disponíveis em mim: ',
     embeds: [embed, embed2]
   });

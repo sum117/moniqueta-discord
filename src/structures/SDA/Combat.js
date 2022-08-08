@@ -63,7 +63,7 @@ export class Combat extends PlayCardBase {
 
     // ------------------------------------------------ Erros de validação ------------------------------------------------
     if (!(ultimoPost?.channelId === interaction.channelId && ultimoPost.time > Date.now() - 1000 * 60 * 45))
-      return interaction.reply({
+      return await interaction.reply({
         content:
           '❌ Você não pode atacar ninguém se o seu personagem não enviou um post no canal do alvo nos últimos 45 minutos.',
         ephemeral: true
@@ -71,25 +71,24 @@ export class Combat extends PlayCardBase {
     if (!interaction.customId.startsWith('ataque_fisico'))
       throw new Error('Você usou o método de ataque físico em uma interação incongruente.');
 
-    if (!charMessagesDb) return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
+    if (!charMessagesDb) return await interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
 
     if (ultimoPost.token)
-      return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
+      return await interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
     await interaction.deferReply({fetchReply: true});
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
     const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
-    await setCombatState(target, personagemAtualAlvo, true);
-    await setCombatState(userId, personagemAtualOrigem, true);
-
-    // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-    this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'warned');
 
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
     if (resposta?.dano > batalha.db[target.id].saude) {
       await this.executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem);
     } else {
+      await setCombatState(target.id, personagemAtualAlvo, true);
+      await setCombatState(userId, personagemAtualOrigem, true);
+      // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
+      await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'warned');
       // Caso contrario, apenas subtraia a vida do alvo e envie uma mensagem ao canal com os dados do turno.
       const mensagem = (() => {
         let msg = '';
@@ -144,8 +143,10 @@ export class Combat extends PlayCardBase {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.channel.send({
-        content: `🌟 ${userMention(userId)} 🌟\n${
-          falas.hp.inimigo[Math.floor(Math.random() * falas.hp.inimigo.length)]
+        content: `🌟 ${userMention(state === 'warned' ? target.id : userId)} 🌟\n${
+          falas.hp[state === 'warned' ? target.id : userId][
+            Math.floor(Math.random() * falas.hp[state === 'warned' ? target.id : userId].length)
+          ]
         }`
       });
     }
@@ -186,10 +187,12 @@ export class Combat extends PlayCardBase {
           )}, que decidiu poupar o(a) opositor(a)!`
         });
       }
+      const targetId = button.customId.split('_')[1];
+      const originUser = button.customId.split('_')[2];
+      await setCombatState(targetId, personagemAtualAlvo, false);
+      await setCombatState(originUser, personagemAtualOrigem, false);
       await deleteDb(interaction, target.id);
       await deleteDb(interaction, userId);
-      await setCombatState(target.id, personagemAtualAlvo, false);
-      await setCombatState(userId, personagemAtualOrigem, false);
     });
     coletorOrigem.on('end', collected => {
       if (!collected) return handleExecutar();
@@ -280,6 +283,8 @@ async function setCombatToken(userId, bool) {
  * @param {boolean} bool O estado de combate do personagem
  */
 async function setCombatState(target, personagemAtual, bool) {
+  console.log(target);
+  console.log(personagemAtual);
   await db.set(`${target.id}.chars.${personagemAtual}.inCombat`, bool);
 }
 
