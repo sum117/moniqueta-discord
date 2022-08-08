@@ -2,7 +2,7 @@ import {Client, Message} from 'discord.js';
 import {categories} from '../../util';
 import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {Xp} from '../../structures/SDA/Xp.js';
-import { db } from '../../db.js';
+import {db} from '../../db.js';
 export const data = {
   event: 'messageCreate',
   name: 'Enviar Playcard',
@@ -16,8 +16,8 @@ export const data = {
 export async function execute(client, msg) {
   const checkIfThread = (() => {
     if (msg.channel.isThread()) return msg.channel.parent.parentId;
-    else return msg.channel.parentId
-  })()
+    else return msg.channel.parentId;
+  })();
 
   if (!categories.rpCategories.includes(checkIfThread)) return;
   if (msg.author.bot) return;
@@ -26,7 +26,7 @@ export async function execute(client, msg) {
       () => msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:26')),
       3 * 60 * 1000
     );
-  const editCheck = await db.get(`${msg.author.id}.isEditting`) ?? false
+  const editCheck = (await db.get(`${msg.author.id}.isEditting`)) ?? false;
   if (editCheck) return;
 
   if (msg.content.match(/^\!/) && msg.member.permissions.has('MANAGE_GUILD')) {

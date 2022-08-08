@@ -6,7 +6,7 @@ import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token,
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import * as musicCommands from './commands/music';
-import { db } from './db.js';
+import {db} from './db.js';
 
 export const moniqueta = new Client({
   intents: 32767
@@ -20,11 +20,11 @@ moniqueta.guildInvites = new Collection();
 moniqueta.prefix = await prefix;
 moniqueta.on('ready', async () => {
   console.log('Moniqueta pronta.');
-  (await db.all()).filter((value) =>
-    value.value.isEditting
-  ).map(async (value) => {
-    await db.set(`${value.id}.isEditting`, false)
-  })
+  (await db.all())
+    .filter(value => value.value.isEditting)
+    .map(async value => {
+      await db.set(`${value.id}.isEditting`, false);
+    });
   registerSlashCommands(moniqueta, myGuild);
   const musicPlayerEvents = new Map([
     [

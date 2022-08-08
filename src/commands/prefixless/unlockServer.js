@@ -4,8 +4,7 @@ import {Message} from 'discord.js';
 export const data = {
   event: 'messageCreate',
   name: 'Script de entrada do servidor.',
-  description:
-    'Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.',
+  description: 'Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.'
 };
 /** @param {Message} msg */
 export async function execute(client, msg) {
@@ -15,19 +14,19 @@ export async function execute(client, msg) {
       if (!msg.member.roles.cache.has(roles.entranceRole)) {
         msg.member.roles.add(roles.entranceRole);
         response = await msg.reply({
-          content: 'Bem vindo ao Somas do Amanhã, ' + msg.author.username + '.',
+          content: 'Bem vindo ao Somas do Amanhã, ' + msg.author.username + '.'
         });
         msg.guild.channels.cache
           .get(channels.generalChannel)
           .send(
             `${userMention(msg.author.id)} ganhou acesso à comunidade, ${roleMention(
-              roles.welcomeRole,
-            )}! Falem com ele!`,
+              roles.welcomeRole
+            )}! Falem com ele!`
           );
       }
     } else {
       response = await msg.reply({
-        content: 'Você colocou o resultado incorreto. Se acha que isso é um erro, contate um administrador.',
+        content: 'Você colocou o resultado incorreto. Se acha que isso é um erro, contate um administrador.'
       });
     }
     setTimeout(
@@ -36,7 +35,7 @@ export async function execute(client, msg) {
           console.log(err + ' A mensagem não existe.');
           if (response) response.delete();
         }),
-      5 * 1000,
+      5 * 1000
     );
   }
 }

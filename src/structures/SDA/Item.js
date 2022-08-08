@@ -96,13 +96,15 @@ export class Item extends Combat {
    */
   static async equipPanel(interaction, action, user) {
     const charDb = await getInventory(user);
-    const getEquipped = () => [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
-      .map(([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `)
-      .join('\n');
-    const getUnequipped = () => Object.entries(charDb.mochila)
-      .filter(([, item]) => !item.equipado)
-      .map(([, item]) => `${item.nome} • ${item.quantia}`)
-      .join('\n');
+    const getEquipped = () =>
+      [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
+        .map(([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `)
+        .join('\n');
+    const getUnequipped = () =>
+      Object.entries(charDb.mochila)
+        .filter(([, item]) => !item.equipado)
+        .map(([, item]) => `${item.nome} • ${item.quantia}`)
+        .join('\n');
     const msgObj = () => {
       return {
         fetchReply: true,
@@ -151,44 +153,43 @@ export class Item extends Combat {
     switch (action) {
       case 'selecionar_slot':
         const selector = interaction.message.components[2].components[0];
-        const options = () => Object.entries(charDb.mochila)
-          .filter(([, item]) => !item.equipado && interaction.customId.match(item.slot))
-          .map(([id, item]) => {
-            if (!item) return;
-            return {
-              label: title(item.nome),
-              value: `${id}`,
-              emoji: assets.itens[item.slot],
-              description: `Quantia: ${item.quantia}`
-            };
-          });
+        const options = () =>
+          Object.entries(charDb.mochila)
+            .filter(([, item]) => !item.equipado && interaction.customId.match(item.slot))
+            .map(([id, item]) => {
+              if (!item) return;
+              return {
+                label: title(item.nome),
+                value: `${id}`,
+                emoji: assets.itens[item.slot],
+                description: `Quantia: ${item.quantia}`
+              };
+            });
         selector.disabled = false;
-        const unequipOptions = () => [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
-          .filter(([key, item]) => item.equipado && interaction.customId === key)
-          .map(([id, item]) => {
-            if (!item) return;
-            return {key: id, item: item};
-          });
-        selector.setOptions(
+        const unequipOptions = () =>
+          [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
+            .filter(([key, item]) => item.equipado && interaction.customId === key)
+            .map(([id, item]) => {
+              if (!item) return;
+              return {key: id, item: item};
+            });
+        let newOptions = [
           {
             label: `${unequipOptions().length >= 1 ? unequipOptions()[0].item.nome : 'Nada equipado'}`,
             value: `desequipar_${unequipOptions()[0]?.key ?? 'none'}_${unequipOptions()[0]?.item.id ?? 'none'}`,
             description: 'Desequipar item do slot selecionado',
             emoji: '❌'
-          },
-          options().length >= 1
-            ? (() => {
-                for (let each of options()) {
-                  return each;
-                }
-              })()
-            : {
-                label: 'Nada aqui',
-                value: 'nenhum_item',
-                description: 'Apenas nós e o galinheiro...',
-                emoji: '🐓'
-              }
-        );
+          }
+        ];
+        if (options().length >= 1) newOptions.push(...options());
+        else
+          newOptions.push({
+            label: 'Nada aqui',
+            value: 'nenhum_item',
+            description: 'Apenas nós e o galinheiro...',
+            emoji: '🐓'
+          });
+        selector.setOptions(newOptions);
         selector.placeholder = title(interaction.customId);
         staticEmbed.components.splice(2, 1, new MessageActionRow().addComponents(selector));
         return await interaction.update({

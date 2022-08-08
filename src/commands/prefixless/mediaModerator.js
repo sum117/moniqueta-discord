@@ -4,7 +4,7 @@ import {MessageAttachment} from 'discord.js';
 export const data = {
   event: 'messageCreate',
   name: 'Media Moderator',
-  description: 'Um comando automático do servidor que coloca as mensagens em seus devidos lugares.',
+  description: 'Um comando automático do servidor que coloca as mensagens em seus devidos lugares.'
 };
 export function execute(client, msg) {
   if (msg.channelId === channels.generalChannel && (msg.attachments.size >= 1 || msg.content.match(/https?/g))) {
@@ -17,7 +17,7 @@ export function execute(client, msg) {
             .get(channels.mediaChannel)
             .send({
               content: `Imagem enviada em ${channelMention(channels.generalChannel)} por ${userMention(msg.author.id)}`,
-              files: [media],
+              files: [media]
             })
             .then(mediaMsg => {
               bulkEmoji(mediaMsg, ['✅', '❌']);
@@ -31,8 +31,8 @@ export function execute(client, msg) {
           .get(channels.mediaChannel)
           .send({
             content: `Link(s) enviado(s) em ${channelMention(channels.generalChannel)} por ${userMention(
-              msg.author.id,
-            )}:\n${msg.content.match(/https?.*/g)}`,
+              msg.author.id
+            )}:\n${msg.content.match(/https?.*/g)}`
           })
           .then(mediaMsg => {
             bulkEmoji(mediaMsg, ['✅', '❌']);

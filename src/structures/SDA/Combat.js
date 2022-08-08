@@ -131,7 +131,7 @@ export class Combat extends PlayCardBase {
     await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
   }
   setHealth(batalha, targetId, value) {
-    return batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0);
+    return (batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0));
   }
 
   // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
@@ -305,7 +305,7 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
     .filter(item => item.base)
     .map(item => itemComRng(alvo, item, dadoAlvo))
     .reduce((a, b) => a + b, 0);
-  const defesa = preparacao ? preparacao:0
+  const defesa = preparacao ? preparacao : 0;
   const easterEggChance = Math.floor(Math.random() * 100) + 1;
   switch (actionAlvo) {
     case 'defender':

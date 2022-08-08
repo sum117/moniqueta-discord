@@ -52,7 +52,7 @@ export const data = new SCB()
             {name: 'destreza', value: 'destreza'},
             {name: 'primordio', value: 'primordio'},
             {name: 'profano', value: 'profano'},
-            { name: 'elemental', value: 'elemental' },
+            {name: 'elemental', value: 'elemental'},
             {name: 'mente', value: 'mente'}
           )
       )
