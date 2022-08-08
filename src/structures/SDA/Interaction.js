@@ -19,7 +19,7 @@ export class Interaction extends PlayCardBase {
     const {interaction, target} = this;
 
     if (action === 'profile') {
-      return interaction.editReply({
+      return await interaction.editReply({
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: []
@@ -32,7 +32,7 @@ export class Interaction extends PlayCardBase {
       });
       return this.comment();
     } else if (action === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
-      return interaction.editReply({
+      return await interaction.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
@@ -45,7 +45,7 @@ export class Interaction extends PlayCardBase {
         ]
       });
     } else {
-      await interaction.reply({
+      await interaction[interaction.replied || interaction.deferred ? 'followUp' : 'reply']({
         fetchReply: true,
         ephemeral: true,
         content: 'Interagindo com o personagem de ' + target.user.username,
