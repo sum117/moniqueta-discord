@@ -17,7 +17,7 @@ export async function execute(interaction, player) {
         {
           title: '💘 Agora tocando ~',
           description: trimString(
-            `The Current song playing is 🎶 | **${queue.current.title}**! \n 🎶 | ${queue}! `,
+            `A música tocando agora é a 🎶 | **${queue.current.title}**! \n 🎶 | ${queue}! `,
             4095
           )
         }

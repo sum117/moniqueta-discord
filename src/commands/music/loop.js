@@ -11,19 +11,19 @@ export const data = {
       required: true,
       choices: [
         {
-          name: 'Off',
+          name: 'off',
           value: QueueRepeatMode.OFF
         },
         {
-          name: 'Musica',
+          name: 'musica',
           value: QueueRepeatMode.TRACK
         },
         {
-          name: 'Fila',
+          name: 'fila',
           value: QueueRepeatMode.QUEUE
         },
         {
-          name: 'Autoplay',
+          name: 'autoplay',
           value: QueueRepeatMode.AUTOPLAY
         }
       ]
@@ -44,7 +44,7 @@ export async function execute(interaction, player) {
     const mode = loopMode === QueueRepeatMode.TRACK ? '🔂' : loopMode === QueueRepeatMode.QUEUE ? '🔁' : '▶';
 
     return void interaction.followUp({
-      content: success ? `${mode} | Updated loop mode!` : '❌ Não pude atualizar o modo de loop... buguei.'
+      content: success ? `${mode} | Atualizei o modo de repetição!` : '❌ Não pude atualizar o modo de loop... buguei.'
     });
   } catch (error) {
     console.log(error);

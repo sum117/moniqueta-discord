@@ -40,7 +40,7 @@ export async function execute(interaction, player) {
   } catch (error) {
     console.log(error);
     return void interaction.followUp({
-      content: 'Me desculpa, eu... eu dei erro!'
+      content: 'Me desculpa, eu... eu buguei!'
     });
   }
 }
