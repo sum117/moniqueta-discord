@@ -68,3 +68,95 @@ Combate:
         - Aparentemente seu oponente não treinou o suficiente. Ou é você quem treinou demais?
         - É... parece que ele não vai durar muito.
         - Ele está um passo de ceder, está na hora de por um fim nisso.
+  ehrantos:
+    hp:
+      self:
+        - Consegue escutar o som do ponteiro? Seu badalar final está chegando, não deixe isso tornar a luta entediante! !
+        - Avante, eterno, avante em direção a eles... a fé o guiará até o final de sua vida.
+        - O paraiso, os céus infinitos que se entrelaçam... Não é hora de vê-lo.
+        - Mostre a eles que os Deuses escolheram as pessoas certas para aniquilar infieis...
+      inimigo:
+        - Tolos... desperdiçaram sua última vantagem. Domine-os, heresia não será tolerada!!!
+        - O próprio sangue nas próprias mãos, e mesmo assim continua sob controle. Não o subestime, mate-o rápido.
+        - Mais um será enviado para o paraiso... ou retornará a vida, como uma mera e transparente alma penada. Garanta sua salvação!
+        - Castigue até os últimos suspiros, sua pontífice está olhando seus esforços contados pelos Deuses...
+    vigor:
+      self:
+        - Deusa maldita! Primeiro rouba nossos precursores e terras, e agora rouba nossas energias! Mate-com as próprias mãos!
+        - Paciência, eterno, paciência! Seu chamado pelos deuses há de vir, mate-o enquanto eles assistem!
+        - Mostre como a fé não limita o homem, mas o fortifica como nunca. Com ou sem energia, castigue.
+        -  Não é a hora de recuar, morra lutando e com fé até em seus últimos momentos! Mostre a vontade de Deus!
+      inimigo:
+        - O INFERNO TEM UM NOVO PRETENDENTE!!!
+        - O som do relógio deles abaixou, o badalar está fraco. Estão ficando fracos, mate todos eles.
+        - São imperfeitos, medíocres. Seguidores pagãs de uma assassina sem escrúpulos. Acabe com eles, antes que se recuperem.
+        - Você foi escolhido, filho eterno, para salvar a todos. Todos desse chão um dia verde, banhado por sangue profano de uma deusa caida. Não desperdice a chance, mande-o para o caminho dos precursores.
+  melancus:
+    hp:
+      self:
+        - Enquanto você respirar ainda há esperança. Ceife, Melancus!
+        - As coisas estão ficando cada vez mais divertidas... você não acha?
+        - Adiante, não envergonhe o nome de Zho!
+        - Se levante! É Por Cadunt, é por Sidera!
+      inimigo:
+        - Sua hora está chegando, herege.
+        - Você está diante da coisa mais poderosa que o mundo tem a oferecer...
+        - Você não será poupado!
+        - Seu sangue alimenta essa lâmina e enche nossas almas de determinação.
+    vigor:
+      self:
+        - Zho está te iluminando! Adiante!.
+        - Não vai ser isso que vai impedir você de ceifar!
+        - É por Zho e pelo povo, não se renda.
+        - Não é a exaustão que vai te parar, adiante!
+      inimigo:
+        - Vou te por pra dormir pela eternidade.
+        - Zho, essa alma logo será tua.
+        - Zho está prestes a devorar essa alma pobre...
+        - Suas visceras expostas são a minha diversão!
+  equinocio:
+    hp:
+      self:
+        - Uma besta encurralada...
+        - Você sente os instintos tomando conta.
+        - Sem descanso para os amaldiçoados.
+        - Engula seu ego.
+      inimigo:
+        - Sua vingança está próxima!
+        - Empurre a vantagem!
+        - Termine isso agora!
+        - A batalha está acabando.
+    vigor:
+      self:
+        - Sem munição!
+        - Recarregue!
+        - Click, click!
+        - Seu Hex acabou
+      inimigo:
+        - Hah, irônico.
+        - Me pergunto como eles se sentem.
+        - Parece que o jogo virou.
+        - Não podem reagir, está acabado!
+  observata:
+    hp:
+      self:
+        - Não tenha medo, Observata. Trindade te espera. Lute até a última gota de tua essência!
+        - O teu fim está próximo. Leve-os contigo, faça a sua parte, Observata!
+        - Não irás cair. Não podes! Observata, Trindade assiste-te!
+        - Perdura! O que será do Talismã sem tua força?! Teus aliados dependem de ti!
+      inimigo:
+        - Entrega-o, Observata, a misericórdia de Trindade!
+        - O fim chegou para os teus irmãos defeituosos. Livra-te deles!
+        - O bárbaro fraqueja, o Observata permanece intacto. Nenhuma novidade, Soldado de Trindade!
+        - Não os deixa fugir. Covardes são piores do que mortos-vivos!
+    vigor:
+      self:
+        - Observata, fique de pé, não envergonhe nossa senhora!
+        - Irás sucumbir perante uma Soma Fosca?! Foste criado indigno?!
+        - Permanece em solo, Observata! Sem ti, o que será de Delusia?!
+        - Não te tornes a vergonha das Chamas Brancas! Lute, Observata!
+      inimigo:
+        - Como esperado! Ele não aguentará por muito tempo. Acabe com ele, Observata!
+        - Permitirás que ele descanse? Entrega-o a fúria de Delusia!
+        - Este não serve nem para lavar chão! Limpe Imprévia da presença dele!
+        - Ele está prestes a cair. É o destino dos como ele! Ajude-o a concretizá-lo
