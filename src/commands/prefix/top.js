@@ -13,28 +13,18 @@ export const data = {
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg) {
-  const { firstPlace, str } = await fetchList(msg);
+  const members = (await msg.guild.members.fetch()).filter(member => !member.user.bot);
 
-  const embed = new MessageEmbed()
-    .setTitle('🏆 MENSAGENS - TOP 10 🏆')
-    .setDescription(str)
-    .setColor('RANDOM')
-    .setTimestamp(Date.now())
-    .setThumbnail(firstPlace.user.avatarURL({dynamic: true, size:512}));
-  await msg.reply({embeds: [embed]});
-}
-
-async function fetchList(msg) {
   const msgTop = await db.table('msgTop').all();
   let firstPlace;
   const str = msgTop
-    .filter(entry => !['987919485367369749', '432610292342587392'].includes(entry.id))
-    .sort( (entryBefore, entryAfter) => entryAfter.value - entryBefore.value)
+    .filter(entry => members.map(member => member.id).includes(entry.id))
+    .sort((entryBefore, entryAfter) => entryAfter.value - entryBefore.value)
     .map((entry, index) => {
       switch (index) {
         case 0:
-          const fetchMember = async (userId) => await msg.guild.members.fetch({ user: userId });
-          fetchMember(entry.id).then(member => firstPlace = member)
+          const getMember = userId => members.find(member => member.id === userId);
+          firstPlace = getMember(entry.id);
           return `👑 ${userMention(entry.id)} - ${entry.value}`;
         case 1:
           return `🥈 ${userMention(entry.id)} - ${entry.value}`;
@@ -46,9 +36,17 @@ async function fetchList(msg) {
     })
     .splice(0, 15)
     .join('\n');
-  do {
-	  (await msg.reply('Carregando...')).delete()
-  } while (firstPlace === undefined)
-  return { firstPlace, str };
-}
 
+  do {
+    (await msg.reply('Carregando...')).delete();
+  } while (firstPlace === undefined);
+
+  const embed = new MessageEmbed()
+    .setTitle('🏆 MENSAGENS - TOP 10 🏆')
+    .setDescription(str)
+    .setColor('RANDOM')
+    .setTimestamp(Date.now())
+    .setThumbnail(firstPlace.user.avatarURL({dynamic: true, size: 512}));
+
+  await msg.reply({embeds: [embed]});
+}
