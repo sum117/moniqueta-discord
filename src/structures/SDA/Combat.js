@@ -1,8 +1,8 @@
-import {ButtonInteraction, MessageActionRow, MessageButton} from 'discord.js';
-import {bold, userMention} from '@discordjs/builders';
-import {db} from '../../db.js';
-import {PlayCardBase} from './PlayCardBase.js';
-import {title} from '../../util';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { bold, userMention } from '@discordjs/builders';
+import { db } from '../../db.js';
+import { PlayCardBase } from './PlayCardBase.js';
+import { title } from '../../util';
 import YAML from 'yaml';
 import fs from 'fs';
 
@@ -15,7 +15,7 @@ export class Combat extends PlayCardBase {
     super();
   }
   async init(interaction, target, userId) {
-    const {Combate} = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
+    const { Combate } = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
     // Usuário brutos
     this.userId = userId;
     this.target = await interaction.guild.members.fetch(target);
@@ -31,7 +31,7 @@ export class Combat extends PlayCardBase {
       const emCurso = await (async (origem, alvo) => {
         const dbOrigem = await batalha.get(origem);
         const dbAlvo = await batalha.get(alvo);
-        const check = dbOrigem ? {db: dbOrigem, id: origem} : dbAlvo ? {db: dbAlvo, id: alvo} : null;
+        const check = dbOrigem ? { db: dbOrigem, id: origem } : dbAlvo ? { db: dbAlvo, id: alvo } : null;
         if (check === null) {
           await batalha.set(origem, {
             [origem]: {
@@ -43,7 +43,7 @@ export class Combat extends PlayCardBase {
               vigor: 50 + this.alvo.skills.vigor * 5
             }
           });
-          return {db: await batalha.get(origem), id: origem};
+          return { db: await batalha.get(origem), id: origem };
         } else return check;
       })(this.userId, this.target.id);
 
@@ -53,7 +53,7 @@ export class Combat extends PlayCardBase {
   }
 
   async fisico() {
-    const {alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
+    const { alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo } = this;
     const ultimoPost = await db.get(`${userId}.latestMessage`);
     const charMessagesDb = await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`);
     const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
@@ -77,14 +77,14 @@ export class Combat extends PlayCardBase {
       return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
-    await interaction.deferReply({fetchReply: true});
+    await interaction.deferReply({ fetchReply: true });
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
     const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
     await setCombatState(target, personagemAtualAlvo, true);
     await setCombatState(userId, personagemAtualOrigem, true);
 
     // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-    this.handleEffectPhrase(batalha, target, alvo, target.id, interaction, falasAlvo, 'warned');
+    this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'warned');
 
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
     if (resposta?.dano > batalha.db[target.id].saude) {
@@ -100,8 +100,8 @@ export class Combat extends PlayCardBase {
           else msg += `\n\n${bold(origem.name)} não causou dano em ${bold(alvo.name)}!`;
           if (resposta?.defesa > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
-              msg += `${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`;
-            else msg += `${bold(alvo.name)} não defendeu nenhum dano pois está cansado(a) demais!`;
+              msg += `\n\n${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`;
+            else msg += `\n\n${bold(alvo.name)} não defendeu nenhum dano pois está cansado(a) demais!`;
           } else if (resposta?.esquiva > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
               msg += `\n\n${bold(alvo.name)} ignorou ${resposta?.esquiva} do ataque!`;
@@ -109,9 +109,8 @@ export class Combat extends PlayCardBase {
           }
 
           if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
-            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
-              origem.name
-            }!`;
+            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${origem.name
+              }!`;
           return msg;
         }
       })();
@@ -143,10 +142,9 @@ export class Combat extends PlayCardBase {
     if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[userId]?.[state]) {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
-      await interaction.followUp({
-        content: `🌟 ${userMention(userId)} 🌟\n${
-          falas.hp.inimigo[Math.floor(Math.random() * falas.hp.inimigo.length)]
-        }`
+      await interaction.channel.send({
+        content: `🌟 ${userMention(userId)} 🌟\n${falas.hp.inimigo[Math.floor(Math.random() * falas.hp.inimigo.length)]
+          }`
       });
     }
   }
@@ -179,7 +177,7 @@ export class Combat extends PlayCardBase {
     coletorOrigem.on('collect', async button => {
       if (button.customId === 'executar_' + target.id + `_${userId}`) await handleExecutar(button);
       else {
-        button.message.edit({content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: []});
+        await button.message.edit({ content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: [] });
         await button.channel.send({
           content: `A batalha entre ${bold(origem.name)} e ${bold(alvo.name)} acabou. O vencedor é ${bold(
             origem.name
@@ -188,7 +186,7 @@ export class Combat extends PlayCardBase {
       }
       await deleteDb(interaction, target.id);
       await deleteDb(interaction, userId);
-      await setCombatState(target, personagemAtualAlvo, false);
+      await setCombatState(target.id, personagemAtualAlvo, false);
       await setCombatState(userId, personagemAtualOrigem, false);
     });
     coletorOrigem.on('end', collected => {
@@ -212,15 +210,14 @@ export class Combat extends PlayCardBase {
 
   async responsePanel(interaction, origem, target, alvo, userId) {
     const painel = await interaction.channel.send({
-      content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${
-        !origem.inCombat
-          ? `\n💀 ${bold(
-              alvo.name
-            )} entrou em modo de combate. Tenha cuidado, e escolha com cautela seus próximos passos. Boa sorte, ${bold(
-              title(alvo.sum)
-            )}!`
-          : ''
-      }`,
+      content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${!origem.inCombat
+        ? `\n💀 ${bold(
+          alvo.name
+        )} entrou em modo de combate. Tenha cuidado, e escolha com cautela seus próximos passos. Boa sorte, ${bold(
+          title(alvo.sum)
+        )}!`
+        : ''
+        }`,
       components: [
         new MessageActionRow().addComponents(
           new MessageButton()
@@ -243,26 +240,28 @@ export class Combat extends PlayCardBase {
     });
     const reacaoAlvo = await painel.awaitMessageComponent({
       filter: i => i.user.id === target.id,
-      time: 60 * 10 * 1000
-    });
+      time: 60 * 10 * 1000,
+      max: 1,
+    }).then(async reacaoAlvo => {
+      await painel.edit({
+        content: `${userMention(target.id)} escolheu ${bold(title(reacaoAlvo.component.label))}!`,
+        components: []
+      });
 
-    if (!reacaoAlvo)
-      return await painel.edit({
+      if (reacaoAlvo?.customId.startsWith('defender')) return 'defender';
+      else if (reacaoAlvo?.customId.startsWith('contra_ataque')) return 'contra_ataque';
+      else if (reacaoAlvo?.customId.startsWith('esquiva')) return 'esquiva';
+    }).catch(async () => {
+      await painel.edit({
         content: `${userMention(
           target.id
         )} não respondeu ao seu ataque no tempo estipulado. O personagem tentará defender automaticamente!`,
         components: []
       });
+      return 'defender';
+    })
+    return reacaoAlvo;
 
-    await painel.edit({
-      content: `${userMention(target.id)} escolheu ${bold(title(reacaoAlvo.component.label))}!`,
-      components: []
-    });
-
-    if (reacaoAlvo?.customId.startsWith('defender')) return 'defender';
-    else if (reacaoAlvo?.customId.startsWith('contra_ataque')) return 'contra_ataque';
-    else if (reacaoAlvo?.customId.startsWith('esquiva')) return 'esquiva';
-    else return 'defender';
   }
 }
 // ------------------------------------------------ Database functions and helpers ------------------------------------------------
