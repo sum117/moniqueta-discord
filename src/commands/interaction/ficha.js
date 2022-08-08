@@ -230,6 +230,8 @@ export async function execute(interaction) {
             .setColor(sum[choices.get('soma')].color)
             .setDescription(value);
           if (key === 'imagem') embed.setImage(value).setTitle('').setDescription('');
+          const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`
+          embed.description = check(embed.description);
           array.push(embed);
         });
         return array;
