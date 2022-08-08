@@ -186,7 +186,7 @@ export class Combat extends PlayCardBase {
           )}, que decidiu poupar o(a) opositor(a)!`
         });
       }
-      await deleteDb(interaction, target);
+      await deleteDb(interaction, target.id);
       await deleteDb(interaction, userId);
       await setCombatState(target, personagemAtualAlvo, false);
       await setCombatState(userId, personagemAtualOrigem, false);
@@ -280,7 +280,7 @@ async function setCombatState(target, personagemAtual, bool) {
 }
 
 async function deleteDb(interaction, target) {
-  await db.table('batalha_' + interaction.channelId).delete(target.id);
+  await db.table('batalha_' + interaction.channelId).delete(target);
 }
 
 async function updateDb(interaction, batalha) {
