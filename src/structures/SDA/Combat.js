@@ -1,8 +1,8 @@
-import {ButtonInteraction, MessageActionRow, MessageButton} from 'discord.js';
-import {bold, userMention} from '@discordjs/builders';
-import {db} from '../../db.js';
-import {PlayCardBase} from './PlayCardBase.js';
-import {title} from '../../util';
+import { ButtonInteraction, MessageActionRow, MessageButton } from 'discord.js';
+import { bold, userMention } from '@discordjs/builders';
+import { db } from '../../db.js';
+import { PlayCardBase } from './PlayCardBase.js';
+import { title } from '../../util';
 import YAML from 'yaml';
 import fs from 'fs';
 
@@ -15,7 +15,7 @@ export class Combat extends PlayCardBase {
     super();
   }
   async init(interaction, target, userId) {
-    const {Combate} = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
+    const { Combate } = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
     // Usuário brutos
     this.userId = userId;
     this.target = await interaction.guild.members.fetch(target);
@@ -31,7 +31,7 @@ export class Combat extends PlayCardBase {
       const emCurso = await (async (origem, alvo) => {
         const dbOrigem = await batalha.get(origem);
         const dbAlvo = await batalha.get(alvo);
-        const check = dbOrigem ? {db: dbOrigem, id: origem} : dbAlvo ? {db: dbAlvo, id: alvo} : null;
+        const check = dbOrigem ? { db: dbOrigem, id: origem } : dbAlvo ? { db: dbAlvo, id: alvo } : null;
         if (check === null) {
           await batalha.set(origem, {
             [origem]: {
@@ -43,7 +43,7 @@ export class Combat extends PlayCardBase {
               vigor: 50 + this.alvo.skills.vigor * 5
             }
           });
-          return {db: await batalha.get(origem), id: origem};
+          return { db: await batalha.get(origem), id: origem };
         } else return check;
       })(this.userId, this.target.id);
 
@@ -53,7 +53,7 @@ export class Combat extends PlayCardBase {
   }
 
   async fisico() {
-    const {alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
+    const { alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo } = this;
     const ultimoPost = await db.get(`${userId}.latestMessage`);
     const charMessagesDb = await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`);
     const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
@@ -77,7 +77,7 @@ export class Combat extends PlayCardBase {
       return await interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
-    await interaction.deferReply({fetchReply: true});
+    await interaction.deferReply({ fetchReply: true });
     const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
     const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
 
@@ -108,9 +108,8 @@ export class Combat extends PlayCardBase {
           }
 
           if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
-            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
-              origem.name
-            }!`;
+            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${origem.name
+              }!`;
           return msg;
         }
       })();
@@ -143,11 +142,10 @@ export class Combat extends PlayCardBase {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.channel.send({
-        content: `🌟 ${userMention(state === 'warned' ? target.id : userId)} 🌟\n${
-          falas.hp[state === 'warned' ? 'self' : 'inimigo'][
-            Math.floor(Math.random() * falas.hp[state === 'warned' ? 'self' : 'inimigo'].length)
-          ]
-        }`
+        content: `🌟 ${userMention(state === 'warned' ? target.id : userId)} 🌟\n${falas.hp[state === 'warned' ? 'self' : 'inimigo'][
+          Math.floor(Math.random() * falas.hp[state === 'warned' ? 'self' : 'inimigo'].length)
+        ]
+          }`
       });
     }
   }
@@ -178,23 +176,29 @@ export class Combat extends PlayCardBase {
     });
 
     coletorOrigem.on('collect', async button => {
-      if (button.customId === 'executar_' + target.id + `_${userId}`) await handleExecutar(button);
-      else {
-        await button.message.edit({content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: []});
+      const targetId = button.customId.split('_')[1];
+      const originUser = button.customId.split('_')[2];
+      if (button.customId === 'executar_' + target.id + `_${userId}`) {
+        await handleExecutar(button);
+        await setCombatState(targetId, personagemAtualAlvo, false);
+        await setCombatState(originUser, personagemAtualOrigem, false);
+      } else {
+        await setCombatState(targetId, personagemAtualAlvo, false);
+        await setCombatState(originUser, personagemAtualOrigem, false);
+        await button.message.edit({ content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: [] });
         await button.channel.send({
           content: `A batalha entre ${bold(origem.name)} e ${bold(alvo.name)} acabou. O vencedor é ${bold(
             origem.name
           )}, que decidiu poupar o(a) opositor(a)!`
         });
       }
-      const targetId = button.customId.split('_')[1];
-      const originUser = button.customId.split('_')[2];
-      await setCombatState(targetId, personagemAtualAlvo, false);
-      await setCombatState(originUser, personagemAtualOrigem, false);
-      await deleteDb(interaction, target.id);
-      await deleteDb(interaction, userId);
+
+      await deleteDb(interaction, targetId);
+      await deleteDb(interaction, originUser);
     });
-    coletorOrigem.on('end', collected => {
+    coletorOrigem.on('end', async collected => {
+      await setCombatState(target.id, personagemAtualAlvo, false);
+      await setCombatState(userId, personagemAtualOrigem, false);
       if (!collected) return handleExecutar();
     });
     async function handleExecutar(btn) {
@@ -215,15 +219,14 @@ export class Combat extends PlayCardBase {
 
   async responsePanel(interaction, origem, target, alvo, userId) {
     const painel = await interaction.channel.send({
-      content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${
-        !origem.inCombat
-          ? `\n💀 ${bold(
-              alvo.name
-            )} entrou em modo de combate. Tenha cuidado, e escolha com cautela seus próximos passos. Boa sorte, ${bold(
-              title(alvo.sum)
-            )}!`
-          : ''
-      }`,
+      content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${!origem.inCombat
+        ? `\n💀 ${bold(
+          alvo.name
+        )} entrou em modo de combate. Tenha cuidado, e escolha com cautela seus próximos passos. Boa sorte, ${bold(
+          title(alvo.sum)
+        )}!`
+        : ''
+        }`,
       components: [
         new MessageActionRow().addComponents(
           new MessageButton()
@@ -283,9 +286,7 @@ async function setCombatToken(userId, bool) {
  * @param {boolean} bool O estado de combate do personagem
  */
 async function setCombatState(target, personagemAtual, bool) {
-  console.log(target);
-  console.log(personagemAtual);
-  await db.set(`${target.id}.chars.${personagemAtual}.inCombat`, bool);
+  await db.set(`${target}.chars.${personagemAtual}.inCombat`, bool);
 }
 
 async function deleteDb(interaction, target) {
