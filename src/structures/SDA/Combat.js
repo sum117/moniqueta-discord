@@ -144,8 +144,8 @@ export class Combat extends PlayCardBase {
       await updateDb(interaction, batalha);
       await interaction.channel.send({
         content: `🌟 ${userMention(state === 'warned' ? target.id : userId)} 🌟\n${
-          falas.hp[state === 'warned' ? target.id : userId][
-            Math.floor(Math.random() * falas.hp[state === 'warned' ? target.id : userId].length)
+          falas.hp[state === 'warned' ? 'self' : 'inimigo'][
+            Math.floor(Math.random() * falas.hp[state === 'warned' ? 'self' : 'inimigo'].length)
           ]
         }`
       });
