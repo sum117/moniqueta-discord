@@ -170,10 +170,15 @@ export class PlayCardBase {
       if (combat)
         combate = await (async () => {
           const batalha = await db.table('batalha_' + interaction.channelId).all();
+          if (!batalha.size) {
+            const chosen = await db.get(`${user.id}.chosenChar`);
+            console.log(chosen);
+            return await db.set(`${user.id}.chars.${chosen}.inCombat`, false), false;
+          }
           const status = batalha
             .map(obj => {
               const status = obj.value[user.id];
-              return {saude: status.saude, vigor: status.vigor};
+              return {saude: status?.saude, vigor: status?.vigor};
             })
             .shift();
           return status;
@@ -195,7 +200,7 @@ export class PlayCardBase {
                 size: 512
               })
             },
-            [combat ? 'fields' : undefined]: [
+            [combate ? 'fields' : undefined]: [
               {
                 name: 'ㅤ',
                 value: `💓 ${statusBar(

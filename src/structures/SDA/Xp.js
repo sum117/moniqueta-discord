@@ -163,7 +163,7 @@ export class Xp extends PlayCardBase {
 
     if (sentLetters >= xp) {
       character.level++;
-      character.xpLog = character.xpLog - xp;
+      character.xpLog = sentLetters - xp;
       character.attributePoints = character.attributePoints + 2;
       const msg = await interaction.channel.send(
         `🎊 ${bold(character.name.toUpperCase())} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${
@@ -171,7 +171,7 @@ export class Xp extends PlayCardBase {
         }\nXP Total: ${totalXp}\nXP para o próximo nível: ${levels[character.level]}`
       );
       setTimeout(() => msg.delete().catch(err => console.log(`A mensagem de nível já foi deletada: ${err}`)), 10000);
-    }
+    } else character.xpLog = sentLetters;
 
     await updateDb(user.id, character);
     await fixBrokenLevels();
