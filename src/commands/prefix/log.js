@@ -31,7 +31,7 @@ export async function execute(msg, args) {
         return msg.reply(`O usuário não tem um personagem.`)
 
     // Código autorizado
-    personagem.user = `${msg.author.id}`
+    personagem.user = `${comando.replace(/(\<|\>|\@|\!)/, '')}`
     newLog(personagem)
     delay(1)
     return msg.reply(codeBlock('yaml', getLog()))
