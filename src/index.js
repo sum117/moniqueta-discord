@@ -199,6 +199,18 @@ moniqueta.on('ready', async () => {
         value: '17',
         description: 'Uma arma encontrada em campos de batalhas sangrentos...',
         emoji: '🔨'
+      },
+      {
+        label: 'Violão Sideriano',
+        value: '19',
+        description: 'A cada corda que se toca sente-se um calafrio...',
+        emoji: '🎸'
+      },
+      {
+        label: 'Harpa de Darandur',
+        value: '23',
+        description: 'Uma réplica de uma harpa muito, muito importante.',
+        emoji: '<:Harpa:1006667192034656256>'
       }
     ]
   );
