@@ -6,11 +6,11 @@ import {
   MessageSelectMenu,
   SelectMenuInteraction
 } from 'discord.js';
-import { assets, PlayCardBase } from './PlayCardBase.js';
-import { statusBar, title } from '../../util';
-import { bold } from '@discordjs/builders';
-import { levels } from './levels';
-import { db } from '../../db.js';
+import {assets, PlayCardBase} from './PlayCardBase.js';
+import {statusBar, title} from '../../util';
+import {bold} from '@discordjs/builders';
+import {levels} from './levels';
+import {db} from '../../db.js';
 export class Xp extends PlayCardBase {
   constructor() {
     super();
@@ -22,7 +22,7 @@ export class Xp extends PlayCardBase {
    * @returns
    */
   async xpPanel(interaction, action = interaction.customId ?? '') {
-    const { user } = interaction;
+    const {user} = interaction;
     const character = await this.character(interaction, user);
     const skilltoEdit = () => interaction.message.embeds[0]?.footer.text.split(':')[1]?.trim() ?? '';
     const pickedSkill = () => interaction.values[0];
@@ -59,11 +59,11 @@ export class Xp extends PlayCardBase {
     switch (action) {
       case 'pick_skill':
         if (character.skills[pickedSkill()] === 117)
-          return await interaction.update({ content: 'Você já possui o nível máximo nesta habilidade.' });
+          return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
         else {
           staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
           interaction.message.components[1].components.forEach(component => (component.disabled = false));
-          return await interaction.update({ embeds: [staticPanel], components: [...interaction.message.components] });
+          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
         }
 
       case 'increment_attribute':
@@ -83,8 +83,8 @@ export class Xp extends PlayCardBase {
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({ embeds: [staticPanel] });
-        } else return await interaction.update({ content: '❌ Você não possui pontos para aumentar os atributos.' });
+          return await interaction.update({embeds: [staticPanel]});
+        } else return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
 
       case 'decrement_attribute':
         if (character.skills[skilltoEdit()] > 0) {
@@ -103,8 +103,8 @@ export class Xp extends PlayCardBase {
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({ embeds: [staticPanel] });
-        } else return await interaction.update({ content: '❌ Você não possui niveis nos atributos para diminuir.' });
+          return await interaction.update({embeds: [staticPanel]});
+        } else return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
       default:
         return await interaction.update({
           fetchReply: true,
@@ -167,7 +167,8 @@ export class Xp extends PlayCardBase {
       character.xpCount += count;
       character.attributePoints = character.attributePoints + 2;
       const msg = await interaction.channel.send(
-        `🎊 ${bold(character.name.toUpperCase())} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${character.level
+        `🎊 ${bold(character.name.toUpperCase())} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${
+          character.level
         }\nXP Total: ${totalXp}\nXP para o próximo nível: ${levels[character.level]}`
       );
       setTimeout(() => msg.delete().catch(err => console.log(`A mensagem de nível já foi deletada: ${err}`)), 10000);
@@ -221,7 +222,7 @@ export async function fixBrokenLevels() {
               }, 0);
             });
 
-          getCorrectInfo().then(async ({ lvlCorreto }) => {
+          getCorrectInfo().then(async ({lvlCorreto}) => {
             char.level = lvlCorreto;
             const total = lvlCorreto * 2 + 36;
             const skills = Object.values(char?.skills).reduce((a, b) => a + b, 0);

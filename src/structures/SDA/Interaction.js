@@ -139,6 +139,7 @@ export class Interaction extends PlayCardBase {
       max: 1
     });
     return collector.on('end', async m => {
+      if (!m) return;
       const [[, msg]] = m;
       const threadChannel = interaction.message.hasThread
         ? interaction.message.thread
