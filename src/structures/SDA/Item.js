@@ -192,7 +192,7 @@ export class Item extends Combat {
         selector.setOptions(newOptions);
         selector.placeholder = title(interaction.customId);
         staticEmbed.components.splice(2, 1, new MessageActionRow().addComponents(selector));
-        return await interaction.update({
+        return await interaction?.update({
           embeds: msgObj().embeds,
           components: staticEmbed.components
         });
