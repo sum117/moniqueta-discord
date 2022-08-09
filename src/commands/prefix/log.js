@@ -34,9 +34,8 @@ export async function execute(msg, args) {
 
   // Código autorizado
   personagem.user = parsed;
-  const log = newLog(personagem);
-  const username = (await msg.guild.members.fetch({user: parsed})).user.username;
-  delay(1);
+  const log = await newLog(personagem);
+  await delay(1);
   return msg.reply(codeBlock('yaml', log));
 }
 
@@ -44,9 +43,9 @@ function getLog() {
   const file = fs.readFileSync(path, 'utf-8');
   return yaml.parse(file);
 }
-function newLog({user, name, xpLog, level, xpCount}) {
+async function newLog({user, name, xpLog, level, xpCount}) {
   const log = getLog() ?? {[user]: {}};
-  const info = getCorrectInfo(xpCount);
+  const info = await getCorrectInfo(xpCount);
   const newObj = {
     PERSONAGEM: name,
     'XP CACHE': xpLog,
@@ -61,14 +60,16 @@ function newLog({user, name, xpLog, level, xpCount}) {
   fs.writeFileSync(path, fileToSave);
   return yaml.stringify(newObj);
 }
-function getCorrectInfo(xpCount) {
-  return Object.values(levels).reduce((a, b, i) => {
-    if (a > xpCount) {
-      return {
-        lvlCorreto: i,
-        xpCorreta: a - b
-      };
-    }
-    return a + b;
-  }, 0);
+async function getCorrectInfo(xpCount) {
+  return new Promise(resolve => {
+    Object.values(levels).reduce((a, b, i) => {
+      if (a > xpCount) {
+        return resolve({
+          lvlCorreto: i,
+          xpCorreta: a - b
+        });
+      }
+      return a + b;
+    }, 0);
+  });
 }
