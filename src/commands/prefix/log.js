@@ -37,7 +37,7 @@ export async function execute(msg, args) {
   const log = newLog(personagem);
   const username = (await msg.guild.members.fetch({user: parsed})).user.username;
   delay(1);
-  return msg.reply(codeBlock('yaml', log.replace(/\d{17,20}/g, `${username}`)));
+  return msg.reply(codeBlock('yaml', log));
 }
 
 function getLog() {
