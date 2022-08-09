@@ -151,7 +151,7 @@ export class Xp extends PlayCardBase {
     const character = await this.character(interaction, user);
     const totalXp = character?.xpCount;
     const level = character?.level;
-    const sentLetters = character?.xpLog ?? 0;
+    const sentLetters = count + (character?.xpLog ?? 0);
     const attributePoints = character?.attributePoints ?? 0;
 
     if (!attributePoints) character.attributePoints = 0;
@@ -171,9 +171,8 @@ export class Xp extends PlayCardBase {
         }\nXP Total: ${totalXp}\nXP para o próximo nível: ${levels[character.level]}`
       );
       setTimeout(() => msg.delete().catch(err => console.log(`A mensagem de nível já foi deletada: ${err}`)), 10000);
-    } else character.xpLog += count;
+    }
 
-    character.xpCount += count;
     await updateDb(user.id, character);
     await fixBrokenLevels();
   }
