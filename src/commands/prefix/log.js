@@ -19,7 +19,7 @@ export async function execute(msg, args) {
   const comando = args?.[0] ? (args?.[0].match(/\d{17,20}/) ? args?.[0] : undefined) : undefined;
   if (!comando)
     return msg.reply(
-      `Você não ofereceu uma marcação válida.\nUso correto: ${inlineCode('$' + data.name + '<menção>')}`
+      `Você não ofereceu uma marcação válida.\nUso correto: ${inlineCode('$' + data.name + ' <menção>')}`
     );
   const dados = await db.get(`${comando}`);
   if (!dados) return msg.reply(`O usuário não tem um personagem.`);
