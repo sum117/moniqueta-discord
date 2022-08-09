@@ -26,7 +26,6 @@ export async function execute(msg, args) {
     );
   const parsed = `${comando.replace(/\<|\>|\@|\!/g, '')}`.trim();
   const dados = await db.get(`${parsed}`);
-  console.log(parsed);
   if (!dados) return msg.reply(`O usuário não tem um personagem.`);
 
   const escolhido = dados?.chosenChar;
