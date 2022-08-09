@@ -59,7 +59,7 @@ function newLog({user, name, xpLog, level, xpCount}) {
   log[user] = newObj;
   const fileToSave = yaml.stringify(log);
   fs.writeFileSync(path, fileToSave);
-  return fileToSave;
+  return yaml.stringify(newObj);
 }
 function getCorrectInfo(xpCount) {
   return Object.values(levels).reduce((a, b, i) => {
