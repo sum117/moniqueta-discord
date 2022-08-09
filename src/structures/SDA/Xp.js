@@ -163,7 +163,7 @@ export class Xp extends PlayCardBase {
 
     if (sentLetters >= xp) {
       character.level++;
-      character.xpLog = 0;
+      character.xpLog = character.xpLog - xp;
       character.attributePoints = character.attributePoints + 2;
       const msg = await interaction.channel.send(
         `🎊 ${bold(character.name.toUpperCase())} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${
