@@ -368,13 +368,13 @@ function char(
       profano: 0
     },
     austera: {
-      vitalidade: 10,
+      vitalidade: 20,
       vigor: 2,
       destreza: 2,
       mente: 4,
       forca: 0,
       resistencia: 3,
-      primordio: 13,
+      primordio: 5,
       elemental: 0,
       profano: 0
     },

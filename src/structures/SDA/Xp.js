@@ -194,7 +194,7 @@ async function updateDb(userId, char) {
   return await db.set(`${userId}.chars.${currentCharacter}`, char);
 }
 
-async function fixBrokenLevels() {
+export async function fixBrokenLevels() {
   (await db.all())
     .filter(entry => entry.id !== '976870103125733388')
     .forEach(entry => {
