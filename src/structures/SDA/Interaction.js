@@ -77,7 +77,7 @@ export class Interaction extends PlayCardBase {
     const xpLog = db?.xpLog ?? 1;
     const totalXp = db?.xpCount ?? 0;
     const level = db?.level ?? 1;
-    const nextLevelXp = levels[level + 1] === 0 ? 4089 : levels[level + 1];
+    const nextLevelXp = levels[level] === 0 ? 4089 : levels[level];
     return new MessageEmbed()
       .setTitle(name)
       .setThumbnail(avatar)
