@@ -8,4 +8,4 @@ node_modules
 dbManagement.js
 queries.sql
 dbLog.yaml
-detached/*
+detached_zone/*
