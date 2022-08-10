@@ -69,7 +69,7 @@ export async function execute(client, msg) {
   client.postCounter.set(postCounter, Date.now());
   await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
   const {name, xpCount: xp, attributePoints: ap, xpLog: cache, level} = await char.character(msg, msg.author);
-  sent.content = `Mensagem enviada por ${msg.author} em ${msg.channel}.`;
+  sent.content = `Mensagem enviada por ${msg.author.username} em ${msg.channel}.`;
   await msg.guild.channels.cache.get('977090634466857030').send({content: sent.content, embeds: [sent.embeds?.[0]]});
   await msg.guild.channels.cache
     .get('977098576075321374')
