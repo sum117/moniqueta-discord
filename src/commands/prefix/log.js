@@ -43,7 +43,7 @@ function getLog() {
   const file = fs.readFileSync(path, 'utf-8');
   return yaml.parse(file);
 }
-async function newLog({user, name, xpLog, level, xpCount}) {
+async function newLog({user, name, xpLog, level, xpCount, attributePoints: ap, skills}) {
   const log = getLog() ?? {[user]: {}};
   const info = await getCorrectInfo(xpCount);
   const newObj = {
@@ -53,7 +53,9 @@ async function newLog({user, name, xpLog, level, xpCount}) {
     'XP TOTAL': xpCount,
     'XP CORRETO PARA O NIVEL': info.xpCorreta,
     LEVEL: level,
-    'LEVEL CORRETO': info.lvlCorreto
+    'LEVEL CORRETO': info.lvlCorreto,
+    'PONTOS DE ATRIBUTOS DISPONIVEIS': ap,
+    'SKILLS DIFF - ESSE NUMERO DEVE SER ZERO': Object.values(skills).reduce((a, b) => a + b, 0) - 36 - level * 2
   };
   log[user] = newObj;
   const fileToSave = yaml.stringify(log);
