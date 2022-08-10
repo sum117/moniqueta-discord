@@ -77,6 +77,8 @@ export async function execute(interaction) {
         return entry.id !== '976870103125733388' && !entry.id.startsWith('msgTop_');
       })
       .map(entry => {
+        const perso = entry?.value?.chars;
+        if (!perso) return;
         return Object.values(entry.value.chars)
           .filter(char => {
             if (char?.xpCount) return char;
