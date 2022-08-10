@@ -74,7 +74,7 @@ export async function execute(client, msg) {
   await msg.guild.channels.cache
     .get('977098576075321374')
     .send(
-      `${bold(name)} de ${msg.author} enviou um post com ${bold(msg.content.length)} caracteres em ${
+      `${bold(name)} de ${msg.author.username} enviou um post com ${bold(msg.content.length)} caracteres em ${
         msg.channel
       }\n${quote('Pontos de Atributos: ' + ap)}\n${quote('Cache de XP: ' + cache)}\n${quote(
         'Level do Personagem: ' + level
