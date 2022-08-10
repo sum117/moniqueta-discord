@@ -160,3 +160,26 @@ Combate:
         - Permitirás que ele descanse? Entrega-o a fúria de Delusia!
         - Este não serve nem para lavar chão! Limpe Imprévia da presença dele!
         - Ele está prestes a cair. É o destino dos como ele! Ajude-o a concretizá-lo
+  austera:
+    hp:
+      self:
+        - Até o último suspiro, Austero! Fostes criado para este destino inevitável!
+        - Mesmo em derrota, mostra a honra e a força de um Austero! Que eles jamais desejem enfrentar outro como tu!
+        - Pela grande ordem, levanta-te! Sem ti, eles transformarão o mundo em cinzas!
+        - Só descansarás em Sidera! Pelo que é lícito, pelo que é justo, vai até o fim, Austero!
+      inimigo:
+        - Ele fraqueja perante a ti! Coloca-o no lugar dele, em nome de Austera!
+        - Teu inimigo está prestes a cair! Tenha misericórdia se for justo, ou execute-o se for lícito!
+        - Em tuas mãos a vida dessa soma que te enfrenta está! Entrega-a o julgamento de Austera!
+        - A batalha está chegando ao fim, Austero! Afasta-os do pecado original!
+    vigor:
+      self:
+        - Austero! Não há tempo para descansar agora! Suporta teu próprio peso!
+        - Teu corpo está te abandonando, mas a ordem dourada está do teu lado. Luta, Austero!
+        - Mostra a eles do que ainda eres capaz sem fôlego, Austero de Inferna!
+        - O Talismã te assiste em teus tempos difíceis! Agora no cansaço, o dê orgulho!
+      inimigo:
+        - Teu inimigo está sem fôlego. Se te convém, deixa-o respirar e derrota-o em igualdade!
+        - O opositor não é mais capaz de manter-se de pé sozinho! Dá-lhe a chance de render-se.
+        - Quem duela contigo não aguenta mais. Mostra-te impenetrável, Austero!
+        - O fim se aproxima para teu rival. Mostrá-o as consequências de lutar contra um Austero!

@@ -89,6 +89,7 @@ export class Combat extends PlayCardBase {
       await setCombatState(userId, personagemAtualOrigem, true);
       // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
       await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'warned');
+      await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'vwarned');
       // Caso contrario, apenas subtraia a vida do alvo e envie uma mensagem ao canal com os dados do turno.
       const mensagem = (() => {
         let msg = '';
@@ -126,8 +127,9 @@ export class Combat extends PlayCardBase {
     if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
     else await setCombatToken(userId, true);
     await updateDb(interaction, batalha);
-    // Se o alvo estiver perto da morte, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
+    // Se o alvo estiver perto da morte, ou sem energia, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
     await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
+    await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'vencouraged');
   }
   setHealth(batalha, targetId, value) {
     return (batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0));
@@ -138,14 +140,40 @@ export class Combat extends PlayCardBase {
     if (!interaction.customId === 'ataque_de_poder')
       throw new Error('Você usou o método de ataque poderoso em uma interação incongruente.');
   }
-  async handleEffectPhrase(batalha, target, alvo, userId, interaction, falas, state = 'encouraged' || 'warned') {
-    if (batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 && !batalha.db[userId]?.[state]) {
+  async handleEffectPhrase(
+    batalha,
+    target,
+    alvo,
+    userId,
+    interaction,
+    falas,
+    state = 'encouraged' || 'warned' || 'vwarned' || 'vencouraged'
+  ) {
+    if (
+      ['encouraged', 'warned'].includes(state) &&
+      batalha.db[target.id].saude < alvo.skills.vitalidade * 10 * 0.4 &&
+      !batalha.db[userId]?.[state]
+    ) {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.channel.send({
         content: `🌟 ${userMention(state === 'warned' ? target.id : userId)} 🌟\n${
           falas.hp[state === 'warned' ? 'self' : 'inimigo'][
             Math.floor(Math.random() * falas.hp[state === 'warned' ? 'self' : 'inimigo'].length)
+          ]
+        }`
+      });
+    } else if (
+      ['vencouraged', 'vwarned'].includes(state) &&
+      batalha.db[target.id].vigor < alvo.skills.vigor * 5 * 0.4 &&
+      !batalha.db[userId]?.[state]
+    ) {
+      batalha.db[userId][state] = true;
+      await updateDb(interaction, batalha);
+      await interaction.channel.send({
+        content: `🌟 ${userMention(state === 'vwarned' ? target.id : userId)} 🌟\n${
+          falas.vigor[state === 'vwarned' ? 'self' : 'inimigo'][
+            Math.floor(Math.random() * falas.vigor[state === 'vwarned' ? 'self' : 'inimigo'].length)
           ]
         }`
       });
