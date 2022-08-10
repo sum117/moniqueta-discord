@@ -9,10 +9,10 @@ import {
   MessageButton,
   MessageEmbed
 } from 'discord.js';
-import { db } from '../../db.js';
-import { statusBar, title } from '../../util';
-import { bold } from '@discordjs/builders';
-const { userMention } = Formatters;
+import {db} from '../../db.js';
+import {statusBar, title} from '../../util';
+import {bold} from '@discordjs/builders';
+const {userMention} = Formatters;
 
 export const assets = {
   skills: {
@@ -40,18 +40,18 @@ export const assets = {
     armaSecundaria: '<:battleshield:1004131103063412856>'
   },
   sum: {
-    austera: { color: 10517508, emoji: '<:Austeros:982077481702027344>' },
-    perserata: { color: 550020, emoji: '<:Perserata:982078451513184306>' },
-    insanata: { color: 11535364, emoji: '<:Insanata:982078436166221874>' },
-    equinocio: { color: 562180, emoji: '<:Equinocio:982082685889564772>' },
-    oscuras: { color: 3146828, emoji: '<:Oscuras:982082685835051078>' },
-    ehrantos: { color: 15236108, emoji: '<:Ehrantos:982082685793087578>' },
-    melancus: { color: 328708, emoji: '<:Melancus:982082685801472060>' },
+    austera: {color: 10517508, emoji: '<:Austeros:982077481702027344>'},
+    perserata: {color: 550020, emoji: '<:Perserata:982078451513184306>'},
+    insanata: {color: 11535364, emoji: '<:Insanata:982078436166221874>'},
+    equinocio: {color: 562180, emoji: '<:Equinocio:982082685889564772>'},
+    oscuras: {color: 3146828, emoji: '<:Oscuras:982082685835051078>'},
+    ehrantos: {color: 15236108, emoji: '<:Ehrantos:982082685793087578>'},
+    melancus: {color: 328708, emoji: '<:Melancus:982082685801472060>'},
     observata: {
       color: 16777215,
       emoji: '<:Observata:982082685864378418>'
     },
-    invidia: { color: 547996, emoji: '<:Invidia:982082685503696967>' }
+    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'}
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
@@ -67,8 +67,9 @@ export class PlayCardBase {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar)
         return await interaction[interaction.deferred ? 'editReply' : 'reply']({
-          content: `Não há nenhum personagem criado ou selecionado para ${user.id === interaction.user.id ? 'você' : user
-            }`
+          content: `Não há nenhum personagem criado ou selecionado para ${
+            user.id === interaction.user.id ? 'você' : user
+          }`
         });
       else return await db.get(`${user.id}.chars.${chosenChar}`);
     };
@@ -85,9 +86,9 @@ export class PlayCardBase {
    * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
-  async create({ message, guild, user }, approvedChannelId, character = {}) {
-    const { name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila } = character;
-    const { members, channels } = guild;
+  async create({message, guild, user}, approvedChannelId, character = {}) {
+    const {name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila} = character;
+    const {members, channels} = guild;
 
     const userId = (() => {
       const [userId] = message?.content.match(/\d{17,19}/) ?? [];
@@ -144,10 +145,10 @@ export class PlayCardBase {
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
   async interact(interaction, action, content = '', attachment = null) {
-    const { channel, guildId } = interaction;
+    const {channel, guildId} = interaction;
     const user = interaction?.author ?? interaction.user;
     const data = await this.character(interaction, user);
-    const { name, avatar, sum, dead, phantom } = data;
+    const {name, avatar, sum, dead, phantom} = data;
 
     switch (action) {
       case 'send':
@@ -169,7 +170,7 @@ export class PlayCardBase {
       if (combat)
         combate = await (async () => {
           const batalha = await db.table('batalha_' + interaction.channelId).all();
-          console.log(batalha ?? 'null')
+          console.log(batalha ?? 'null');
           if (!batalha.length) {
             const chosen = await db.get(`${user.id}.chosenChar`);
             await db.set(`${user.id}.chars.${chosen}.inCombat`, false), false;
@@ -178,7 +179,7 @@ export class PlayCardBase {
           const status = batalha
             .map(obj => {
               const status = obj.value[user.id];
-              return { saude: status?.saude, vigor: status?.vigor };
+              return {saude: status?.saude, vigor: status?.vigor};
             })
             .shift();
           return status;
@@ -190,7 +191,7 @@ export class PlayCardBase {
             thumbnail: {
               url: avatar
             },
-            image: attachment ? { url: `attachment://${attachment.name}` } : undefined,
+            image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
             color: assets.sum[sum].color,
             description: content,
             footer: {
@@ -220,11 +221,11 @@ export class PlayCardBase {
         ],
         files: attachment
           ? [
-            {
-              attachment: attachment.attachment,
-              name: attachment.name
-            }
-          ]
+              {
+                attachment: attachment.attachment,
+                name: attachment.name
+              }
+            ]
           : [],
         components: [
           new MessageActionRow().addComponents(
@@ -262,15 +263,16 @@ export class PlayCardBase {
     }
   }
   async list(interaction) {
-    const { user } = interaction;
+    const {user} = interaction;
     const data = await this.character(interaction, user);
-    const { avatar, sum } = data;
+    const {avatar, sum} = data;
 
     const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id, char]) => {
-        return `${bold(id)} : ${assets.sum[char.sum].emoji} ${assets.phantom[char.phantom]} ${char.name} ${chosenCheck.toString() === id.toString() ? ' ⭐' : ''
-          }`;
+        return `${bold(id)} : ${assets.sum[char.sum].emoji} ${assets.phantom[char.phantom]} ${char.name} ${
+          chosenCheck.toString() === id.toString() ? ' ⭐' : ''
+        }`;
       })
       .join('\n');
     return await interaction.reply({
@@ -278,7 +280,7 @@ export class PlayCardBase {
       embeds: [
         {
           description: list,
-          thumbnail: { url: avatar },
+          thumbnail: {url: avatar},
           color: assets.sum[sum].color,
           footer: {
             text: 'Use o comando /playcard escolher <id> para escolher um personagem.',
@@ -292,7 +294,7 @@ export class PlayCardBase {
     });
   }
   async choose(interaction, id) {
-    const { user } = interaction;
+    const {user} = interaction;
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id]) => {
         return id;
@@ -301,13 +303,13 @@ export class PlayCardBase {
     if (!list.includes(id)) return await interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
-    const { avatar, name, sum } = chosen;
+    const {avatar, name, sum} = chosen;
     return await interaction.reply({
       embeds: [
         {
           title: name,
           description: 'Você escolheu o personagem ' + name + '!',
-          thumbnail: { url: avatar },
+          thumbnail: {url: avatar},
           color: assets.sum[sum].color
         }
       ]
@@ -322,7 +324,7 @@ function char(
   avatar,
   sum,
   phantom,
-  equipamentos = { cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {} },
+  equipamentos = {cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {}},
   mochila = [{}]
 ) {
   const sumSkills = {
