@@ -140,7 +140,7 @@ export class PlayCardBase {
 
   /**
    *
-   * @param {CommandInteraction} interaction | A mensagem ou comando que iniciou o comando
+   * @param {Message} interaction | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
@@ -186,6 +186,9 @@ export class PlayCardBase {
           return status;
         })();
       const message = await channel.send({
+        [interaction.mentions.users.size >= 1 ? 'content' : undefined]: interaction.mentions.users
+          .map(user => user)
+          .join(','),
         embeds: [
           {
             title: `${dead ? `${'☠️ Fantasma ' + title(phantom)} de ` : ''}${name}`,
@@ -194,7 +197,7 @@ export class PlayCardBase {
             },
             image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
             color: assets.sum[sum].color,
-            description: content,
+            description: content.replace(/\<@!?\d{17,20}\>/g, ''),
             footer: {
               text: user.username,
               icon_url: user.avatarURL({
