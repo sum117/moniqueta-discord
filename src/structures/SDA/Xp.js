@@ -203,7 +203,9 @@ export async function fixBrokenLevels() {
     .filter(entry => entry.id !== '976870103125733388')
     .forEach(entry => {
       const user = entry.id;
-      Object.entries(entry.value.chars)
+      const perso = entry?.value?.chars;
+      if (!perso) return;
+      Object.entries(perso)
         .filter(([, char]) => {
           if (char?.level) return char;
           else return;
