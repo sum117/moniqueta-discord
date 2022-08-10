@@ -153,12 +153,13 @@ export class PlayCardBase {
     switch (action) {
       case 'send':
         const msg = await send(data?.inCombat);
-        return await db.set(user.id + '.latestMessage', {
+        await db.set(user.id + '.latestMessage', {
           id: `${msg.id}`,
           channelId: `${msg.channelId}`,
           time: Date.now(),
           token: false
         });
+        return msg;
       case 'edit':
         return edit(await db.get(user.id + '.latestMessage.id'));
       case 'remove':
