@@ -291,6 +291,7 @@ async function updatePopulation(interaction) {
       .reduce(a => a)
   );
   somas.forEach(sum => {
+    if (sum === undefined) return;
     populacao[sum] = populacao[sum] ? populacao[sum] + 1 : 1;
   });
 
