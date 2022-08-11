@@ -1,3 +1,4 @@
+import {bold} from '@discordjs/builders';
 import {
   ButtonInteraction,
   Interaction,
@@ -6,11 +7,10 @@ import {
   MessageSelectMenu,
   SelectMenuInteraction
 } from 'discord.js';
-import {assets, PlayCardBase} from './PlayCardBase.js';
-import {statusBar, title} from '../../util';
-import {bold} from '@discordjs/builders';
-import {levels} from './levels';
 import {db} from '../../db.js';
+import {statusBar, title} from '../../util';
+import {levels} from './levels';
+import {assets, PlayCardBase} from './PlayCardBase.js';
 export class Xp extends PlayCardBase {
   constructor() {
     super();
@@ -24,7 +24,13 @@ export class Xp extends PlayCardBase {
   async xpPanel(interaction, action = interaction.customId ?? '') {
     const {user} = interaction;
     const character = await this.character(interaction, user);
-    const skilltoEdit = () => interaction.message.embeds[0]?.footer.text.split(':')[1]?.trim() ?? '';
+
+    function skilltoEdit() {
+      const text = interaction.message.embeds[0]?.footer.text;
+      const emojiOut = text?.split(':')[1]?.trim();
+      return emojiOut;
+    }
+
     const pickedSkill = () => interaction.values[0];
 
     /**
@@ -37,7 +43,7 @@ export class Xp extends PlayCardBase {
         color: assets.sum[character.sum].color,
         fields: Object.entries(character.skills).map(([key, value]) => {
           return {
-            name: key.toUpperCase(),
+            name: friendlyDisplay(key),
             value: `${bold(value)} ${statusBar(
               value,
               117,
@@ -54,61 +60,57 @@ export class Xp extends PlayCardBase {
       };
     };
     const staticPanel = panel();
-    const skill = () => staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase());
-
+    let editField = staticPanel.fields.find(field => friendlyDisplay(skilltoEdit()) === field.name);
+    let option = interaction.message.components[0].components[0].options?.find(
+      option => option.value === skilltoEdit()
+    );
     switch (action) {
       case 'pick_skill':
         if (character.skills[pickedSkill()] === 117)
           return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
-        else {
-          staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
-          interaction.message.components[1].components.forEach(component => (component.disabled = false));
-          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
-        }
+
+        staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
+        interaction.message.components[1].components.forEach(component => (component.disabled = false));
+        return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
 
       case 'increment_attribute':
         if (character.attributePoints > 0) {
-          const increasedLevel = character.skills[skilltoEdit()] + 1;
-
           character.attributePoints--;
           character.skills[skilltoEdit()]++;
-
+          option.description = 'Nivel Atual: ' + character.skills[skilltoEdit()];
           staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
-          staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
-            increasedLevel
-          )} ${statusBar(
-            increasedLevel,
+          editField.value = `${bold(character.skills[skilltoEdit()])} ${statusBar(
+            character.skills[skilltoEdit()],
             117,
-            sortStatusBar(skill().name.toLowerCase()),
+            sortStatusBar(editField.name.split(' ')[1].trim().toLowerCase()),
             '<:BarEmpty:994631056378564750>',
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [staticPanel]});
-        } else return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
+          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
+        }
+
+        return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
 
       case 'decrement_attribute':
         if (character.skills[skilltoEdit()] > 0) {
-          const decreasedLevel = character.skills[skilltoEdit()] - 1;
-
           character.attributePoints++;
           character.skills[skilltoEdit()]--;
-
+          option.description = 'Nivel Atual: ' + character.skills[skilltoEdit()];
           staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
-          staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
-            decreasedLevel
-          )} ${statusBar(
-            decreasedLevel,
+          editField.value = `${bold(character.skills[skilltoEdit()])} ${statusBar(
+            character.skills[skilltoEdit()],
             117,
-            sortStatusBar(skill().name.toLowerCase()),
+            sortStatusBar(editField.name.split(' ')[1].trim().toLowerCase()),
             '<:BarEmpty:994631056378564750>',
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [staticPanel]});
-        } else return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
+          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
+        }
+        return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
       default:
         return await interaction.update({
           fetchReply: true,
@@ -124,7 +126,7 @@ export class Xp extends PlayCardBase {
                 .setOptions(
                   Object.entries(character.skills).map(([key, value]) => {
                     return {
-                      label: title(key),
+                      label: friendlyDisplay(key).split(' ')[1],
                       value: key,
                       emoji: assets.skills[key],
                       description: 'Nivel Atual: ' + value
@@ -183,6 +185,18 @@ export class Xp extends PlayCardBase {
 
     await updateDb(user.id, character);
     await fixBrokenLevels();
+  }
+}
+
+function friendlyDisplay(key) {
+  if (!key) return;
+  switch (key) {
+    case 'resistencia':
+      return '🛡️ RESISTÊNCIA';
+    case 'forca':
+      return '💪 FORÇA';
+    default:
+      return `${assets.skills[key]} ${key.toUpperCase()}`;
   }
 }
 
