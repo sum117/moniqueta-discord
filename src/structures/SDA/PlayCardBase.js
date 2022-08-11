@@ -1,6 +1,5 @@
 import {
   ButtonInteraction,
-  CommandInteraction,
   Formatters,
   Interaction,
   Message,

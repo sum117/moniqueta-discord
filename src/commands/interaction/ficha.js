@@ -144,6 +144,10 @@ export async function execute(interaction) {
                   {
                     id: trialUser.user.id,
                     allow: ['SEND_MESSAGES', 'VIEW_CHANNEL']
+                  },
+                  {
+                    id: interaction.guild.roles.everyone.id,
+                    deny: ['VIEW_CHANNEL']
                   }
                 ]
               });
