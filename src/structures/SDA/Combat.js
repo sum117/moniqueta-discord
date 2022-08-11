@@ -38,19 +38,21 @@ export class Combat extends PlayCardBase {
           none: !dbOrigem && !dbAlvo
         };
         if (conditions.both) return {db: await batalha.get(`${interaction.channelId}`)};
-        else if (conditions.origem) {
+        if (conditions.origem) {
           await batalha.set(`${interaction.channelId}.${alvo}`, {
             saude: 100 + this.alvo.skills.vitalidade * 10,
             vigor: 50 + this.alvo.skills.vigor * 5
           });
           return {db: await batalha.get(`${interaction.channelId}`)};
-        } else if (conditions.alvo) {
+        }
+        if (conditions.alvo) {
           await batalha.set(`${interaction.channelId}.${origem}`, {
             saude: 100 + this.origem.skills.vitalidade * 10,
             vigor: 50 + this.origem.skills.vigor * 5
           });
           return {db: await batalha.get(`${interaction.channelId}`)};
-        } else if (conditions.none) {
+        }
+        if (conditions.none) {
           await batalha.set(`${interaction.channelId}.${alvo}`, {
             saude: 100 + this.alvo.skills.vitalidade * 10,
             vigor: 50 + this.alvo.skills.vigor * 5
