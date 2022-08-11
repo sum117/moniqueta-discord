@@ -211,10 +211,28 @@ moniqueta.on('ready', async () => {
         value: '23',
         description: 'Uma réplica de uma harpa muito, muito importante.',
         emoji: '<:Harpa:1006667192034656256>'
+      },
+      {
+        label: 'Foice de Ceifador',
+        value: '24',
+        description: 'Uma foice que parece ser capaz de cortar através da morte.',
+        emoji: '<:foice:1007375203870974053>'
       }
     ]
   );
 
+  /**
+   * @type {Message}
+   */
+  let msg = await moniqueta.channels.cache.get('977090435845603379').messages.fetch('995391321713938432');
+  let selector = msg.components[2].components[0];
+  selector.addOptions({
+    label: 'Ceifador de Imprévia',
+    value: 'ceifador',
+    description: 'Uma entidade que se absteu de ter soma para um bem maior.',
+    emoji: '<:ceifador:1007356733812903986>'
+  });
+  msg.edit({components: msg.components});
   /**
    *
    * @param {string} channelId O id do canal
