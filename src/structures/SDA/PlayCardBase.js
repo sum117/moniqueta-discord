@@ -303,7 +303,7 @@ export class PlayCardBase {
     const chosen = await this.character(interaction, user);
     const {avatar, name, sum} = chosen;
     return await interaction.reply({
-      ephemeral:true,
+      ephemeral: true,
       embeds: [
         {
           title: name,

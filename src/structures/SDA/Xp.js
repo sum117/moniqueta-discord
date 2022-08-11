@@ -73,7 +73,7 @@ export class Xp extends PlayCardBase {
           character.attributePoints--;
           character.skills[skilltoEdit()]++;
 
-	  staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
+          staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
           staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
             increasedLevel
@@ -95,7 +95,7 @@ export class Xp extends PlayCardBase {
           character.attributePoints++;
           character.skills[skilltoEdit()]--;
 
-	  staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
+          staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
           staticPanel.fields.find(field => field.name === skilltoEdit().toUpperCase()).value = `${bold(
             decreasedLevel
