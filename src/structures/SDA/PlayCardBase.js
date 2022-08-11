@@ -12,6 +12,10 @@ import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
 import {bold} from '@discordjs/builders';
 const {userMention} = Formatters;
+import sharp from 'sharp';
+import axios from 'axios';
+import {reaperIcon} from './icons';
+import imgur from 'imgur';
 
 export const assets = {
   skills: {
@@ -71,7 +75,33 @@ export class PlayCardBase {
             user.id === interaction.user.id ? 'você' : user
           }`
         });
-      else return await db.get(`${user.id}.chars.${chosenChar}`);
+      else {
+        const char = await db.get(`${user.id}.chars.${chosenChar}`);
+        if (char?.phantom === 'ceifador' && !char?.avatar.match('https://i.imgur.com/')) {
+          const getBase64 = data => Buffer.from(data, 'binary').toString('base64');
+          const {ImgurClient} = imgur;
+          const imgClient = new ImgurClient({
+            clientId: process.env.IMGUR_CLIENT_ID,
+            clientSecret: process.env.IMGUR_CLIENT_SECRET
+          });
+          const rawAvatar = await (await axios({url: char?.avatar, responseType: 'arraybuffer'})).data;
+          const firstBuffer = (await sharp(rawAvatar).png().toBuffer()).buffer;
+
+          const composition = Buffer.from(reaperIcon(getBase64(firstBuffer)));
+
+          const attachment = await sharp(composition).png().toBuffer();
+          const link = (
+            await imgClient.upload({
+              image: attachment,
+              title: 'icon_ceifador_' + char?.name.replace(/ /g, '_'),
+              description: 'Icone do ceifador de ' + char?.name
+            })
+          ).data.link;
+          char.avatar = link;
+          return char;
+        }
+        return char;
+      }
     };
   }
   /**
@@ -270,7 +300,7 @@ export class PlayCardBase {
   async list(interaction) {
     const {user} = interaction;
     const data = await this.character(interaction, user);
-    const {avatar, sum} = data;
+    const {avatar, sum, phantom} = data;
 
     const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
@@ -286,7 +316,7 @@ export class PlayCardBase {
         {
           description: list,
           thumbnail: {url: avatar},
-          color: assets.sum[sum].color,
+          color: phantom === 'ceifador' ? 5592405 : assets.sum[sum].color,
           footer: {
             text: 'Use o comando /playcard escolher <id> para escolher um personagem.',
             icon_url: user.avatarURL({
@@ -308,7 +338,7 @@ export class PlayCardBase {
     if (!list.includes(id)) return await interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
-    const {avatar, name, sum} = chosen;
+    const {avatar, name, sum, phantom} = chosen;
     return await interaction.reply({
       ephemeral: true,
       embeds: [
@@ -316,7 +346,7 @@ export class PlayCardBase {
           title: name,
           description: 'Você escolheu o personagem ' + name + '!',
           thumbnail: {url: avatar},
-          color: assets.sum[sum].color
+          color: phantom === 'ceifador' ? 5592405 : assets.sum[sum].color
         }
       ]
     });
