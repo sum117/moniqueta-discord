@@ -50,7 +50,7 @@ export async function execute(interaction) {
     });
     collector.on('end', async collected => {
       if (!collected.size) {
-        await db.set(`${m.author.id}.isEditting`, false);
+        await db.set(`${interaction.user.id}.isEditting`, false);
         return await interaction.editReply({
           content: 'Você não editou a mensagem a tempo.'
         });
