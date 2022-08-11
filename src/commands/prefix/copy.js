@@ -22,7 +22,7 @@ export async function execute(msg, args) {
     const message = await channel.messages.fetch(matches.groups.msg);
     if (!message) return msg.reply('❌ Não encontrei a mensagem: ' + messageToCopy);
     await msg.channel.send({
-      content: message.content,
+      content: message?.content ?? `Mensagem enviada em ${channel}`,
       embeds: message.embeds,
       components: message.components
     });
