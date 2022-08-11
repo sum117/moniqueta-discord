@@ -55,7 +55,8 @@ export const assets = {
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
     vermelho: '<:fantasmaVermelho:982092065989074994>',
-    branco: '<:fantasmaBranco:982092065599029268>'
+    branco: '<:fantasmaBranco:982092065599029268>',
+    ceifador: '<:ceifador:1007356733812903986>'
   }
 };
 
@@ -82,7 +83,7 @@ export class PlayCardBase {
    * @param {String} character.appearance - Aparencia do personagem
    * @param {String} character.avatar - Avatar do personagem
    * @param {('austera'|'perserata'|'insanata'|'equinocio'|'oscuras'|'ehrantos'|'melancus'|'observata'|'invidia')} character.sum - O nome da soma do personagem
-   * @param {('azul'|'vermelho'|'branco')} character.phantom - O purgatório do personagem
+   * @param {('azul'|'vermelho'|'branco'|'ceifador')} character.phantom - O purgatório do personagem
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
   async create({message, guild, user}, approvedChannelId, character = {}) {
@@ -117,7 +118,7 @@ export class PlayCardBase {
         new MessageEmbed()
           .setTitle(name)
           .setThumbnail(avatar)
-          .setColor(assets.sum[sum].color)
+          .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
           .setDescription(appearance)
           .setAuthor({
             name: membro.user.username,
@@ -185,12 +186,18 @@ export class PlayCardBase {
           .join(','),
         embeds: [
           {
-            title: `${dead ? `${'☠️ Fantasma ' + title(phantom)} de ` : ''}${name}`,
+            [phantom === 'ceifador' ? 'author' : undefined]: {
+              name: 'Ceifador de Imprévia',
+              icon_url: 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
+            },
+            title: `${
+              phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
+            }${phantom === 'ceifador' ? 'Padre ' + name : name}`,
             thumbnail: {
               url: avatar
             },
             image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
-            color: assets.sum[sum].color,
+            color: phantom === 'ceifador' ? 5592405 : assets.sum[sum].color,
             description: content.replace(/\<@!?\d{17,20}\>/g, ''),
             footer: {
               text: user.username,
