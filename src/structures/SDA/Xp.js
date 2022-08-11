@@ -40,7 +40,7 @@ export class Xp extends PlayCardBase {
       return {
         title: `Painel de Atributos de ${character.name}`,
         description: `Pontos disponiveis: ${character?.attributePoints ?? 0}`,
-        color: assets.sum[character.sum].color,
+        color: character.phantom === 'ceifador' ? 5592405 : assets.sum[character.sum].color,
         fields: Object.entries(character.skills).map(([key, value]) => {
           return {
             name: friendlyDisplay(key),

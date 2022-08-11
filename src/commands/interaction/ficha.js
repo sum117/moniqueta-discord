@@ -31,16 +31,47 @@ export async function execute(interaction) {
     case 'MESSAGE_COMPONENT':
       switch (channelId) {
         case channels.rpRegistro:
+          let pass = true;
           if (!interaction.customId.match(/soma|genero|purgatorio|item_inicial/)) return;
           if (!sheet.get(user.id)) {
             const choices = new Map([[customId, customId !== 'item_inicial' ? values[0] : values]]);
             sheet.set(user.id, choices);
             return handleChoice();
           } else {
+            /**
+             * @type {Map}
+             */
             const choices = sheet.get(user.id);
             choices.set(customId, customId !== 'item_inicial' ? values[0] : values);
             sheet.set(user.id, choices);
-            if (choices.size === 4) {
+            const conditions = {
+              notReaper:
+                (choices.get('item_inicial')?.includes('24') ?? choices.get('item_inicial')?.[0] === '24') &&
+                !(choices.get('purgatorio') === 'ceifador') &&
+                choices.size === 4,
+              notScythe:
+                (!choices.get('item_inicial')?.includes('24') ?? !choices.get('item_inicial')?.[0] === '24') &&
+                choices.get('purgatorio') === 'ceifador' &&
+                choices.size === 4
+            };
+            if (conditions.notScythe) {
+              pass = false;
+              choices.clear();
+              return interaction.reply({
+                content: '❌ Você não pode escolher o Ceifador de Imprévia se não escolher a Foice de Ceifador.',
+                ephemeral: true
+              });
+            }
+            if (conditions.notReaper) {
+              pass = false;
+              choices.clear();
+              return interaction.reply({
+                ephemeral: true,
+                content: '❌ Você não pode escolher a Foice de Ceifador se não escolher o Ceifador de Imprévia.'
+              });
+            }
+
+            if (pass && choices.size === 4) {
               return interaction.showModal(
                 createForm([
                   [
@@ -210,8 +241,18 @@ export async function execute(interaction) {
             })
             .setTitle(userInput.get('nome'))
             .setThumbnail(userInput.get('imagem'))
-            .setColor(sum[choices.get('soma')].color)
-            .addField('Soma', sum[choices.get('soma')].emoji + ' ' + title(choices.get('soma')), true)
+            .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
+            .addField(
+              'Soma',
+              sum[choices.get('soma')].emoji +
+                ' ' +
+                title(
+                  choices.get('purgatorio') === 'ceifador'
+                    ? 'Antigo ' + choices.get('soma').charAt(0).toUpperCase() + choices.get('soma').slice(1)
+                    : choices.get('soma')
+                ),
+              true
+            )
             .addField(
               'Genero',
               choices.get('genero') === 'masculino'
@@ -231,7 +272,7 @@ export async function execute(interaction) {
         userInput.forEach((value, key) => {
           const embed = new MessageEmbed()
             .setTitle(title(key))
-            .setColor(sum[choices.get('soma')].color)
+            .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
             .setDescription(value);
           if (key === 'imagem') embed.setImage(value).setTitle('').setDescription('');
           const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
