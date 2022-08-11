@@ -26,6 +26,7 @@
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^5.0.2",
     "fluent-ffmpeg": "^2.1.2",
+    "imgur": "^2.2.0",
     "quick.db": "^9.0.5",
     "sharp": "^0.30.7",
     "ytdl-core": "^4.11.0"
@@ -33,7 +34,8 @@
   "scripts": {
     "prettier": "prettier --write \"./**/*.{ts,js,jsx,json}\"",
     "moniqueta": "node --experimental-specifier-resolution=node src/index.js",
-    "devMoniqueta": "nodemon ."
+    "devMoniqueta": "nodemon .",
+    "db": "node ./detached_zone/dbManagement.js"
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
