@@ -259,7 +259,7 @@ moniqueta.on('ready', async () => {
       new MessageSelectMenu()
         .setCustomId(customId)
         .setMaxValues(2)
-        .setMinValues(2)
+        .setMinValues(1)
         .setPlaceholder(placeHolder)
         .addOptions(options)
     );
