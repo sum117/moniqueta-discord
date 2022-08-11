@@ -290,8 +290,11 @@ async function updatePopulation(interaction) {
 
   const somas = jogadores.map(jogador =>
     Object.values(jogador)
-      .filter(char => !char.dead)
-      .map(char => char.sum)
+      .filter(char => !char?.dead)
+      .map(char => {
+        if (char?.sum) return char.sum;
+        return;
+      })
       .reduce(a => a)
   );
   somas.forEach(sum => {
