@@ -27,24 +27,40 @@ export class Combat extends PlayCardBase {
     this.falasOrigem = Combate[this.origem.sum];
     this.interaction = interaction;
     this.batalha = await (async () => {
-      const batalha = db.table('batalha_' + interaction.channelId);
+      const batalha = db.table('batalha');
       const emCurso = await (async (origem, alvo) => {
-        const dbOrigem = await batalha.get(origem);
-        const dbAlvo = await batalha.get(alvo);
-        const check = dbOrigem ? {db: dbOrigem, id: origem} : dbAlvo ? {db: dbAlvo, id: alvo} : null;
-        if (check === null) {
-          await batalha.set(origem, {
-            [origem]: {
-              saude: 100 + this.origem.skills.vitalidade * 10,
-              vigor: 50 + this.origem.skills.vigor * 5
-            },
-            [alvo]: {
-              saude: 100 + this.alvo.skills.vitalidade * 10,
-              vigor: 50 + this.alvo.skills.vigor * 5
-            }
+        const dbOrigem = await batalha.get(`${interaction.channelId}.${origem}`);
+        const dbAlvo = await batalha.get(`${interaction.channelId}.${alvo}`);
+        const conditions = {
+          both: dbOrigem && dbAlvo,
+          origem: dbOrigem && !dbAlvo,
+          alvo: !dbOrigem && dbAlvo,
+          none: !dbOrigem && !dbAlvo
+        };
+        if (conditions.both) return {db: await batalha.get(`${interaction.channelId}`)};
+        else if (conditions.origem) {
+          await batalha.set(`${interaction.channelId}.${alvo}`, {
+            saude: 100 + this.alvo.skills.vitalidade * 10,
+            vigor: 50 + this.alvo.skills.vigor * 5
           });
-          return {db: await batalha.get(origem), id: origem};
-        } else return check;
+          return {db: await batalha.get(`${interaction.channelId}`)};
+        } else if (conditions.alvo) {
+          await batalha.set(`${interaction.channelId}.${origem}`, {
+            saude: 100 + this.origem.skills.vitalidade * 10,
+            vigor: 50 + this.origem.skills.vigor * 5
+          });
+          return {db: await batalha.get(`${interaction.channelId}`)};
+        } else if (conditions.none) {
+          await batalha.set(`${interaction.channelId}.${alvo}`, {
+            saude: 100 + this.alvo.skills.vitalidade * 10,
+            vigor: 50 + this.alvo.skills.vigor * 5
+          });
+          await batalha.set(`${interaction.channelId}.${origem}`, {
+            saude: 100 + this.origem.skills.vitalidade * 10,
+            vigor: 50 + this.origem.skills.vigor * 5
+          });
+          return {db: await batalha.get(`${interaction.channelId}`)};
+        }
       })(this.userId, this.target.id);
 
       return emCurso;
@@ -87,9 +103,6 @@ export class Combat extends PlayCardBase {
     } else {
       await setCombatState(target.id, personagemAtualAlvo, true);
       await setCombatState(userId, personagemAtualOrigem, true);
-      // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-      await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'warned');
-      await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasAlvo, 'vwarned');
       // Caso contrario, apenas subtraia a vida do alvo e envie uma mensagem ao canal com os dados do turno.
       const mensagem = (() => {
         let msg = '';
@@ -117,6 +130,7 @@ export class Combat extends PlayCardBase {
       })();
       await interaction.editReply(mensagem);
     }
+
     // Administrando o dano causado no turno e os custos dos movimentos.
     if (resposta?.danoAlvo) this.setHealth(batalha, userId, -resposta.danoAlvo);
     if (batalha.db[target.id].vigor > resposta?.custo) {
@@ -124,12 +138,20 @@ export class Combat extends PlayCardBase {
       batalha.db[target.id].vigor = batalha.db[target.id].vigor - resposta?.custo;
       this.setHealth(batalha, target.id, -resposta?.dano);
     } else this.setHealth(batalha, target.id, -resposta?.danoTotal);
-    if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(userId, false);
+    if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(target.id, false);
     else await setCombatToken(userId, true);
+
     await updateDb(interaction, batalha);
+    const updatedBattle = async id => {
+      return {db: await db.table('batalha').get(id)};
+    };
+    const updatedData = await updatedBattle(interaction.channelId);
+    // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
+    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasAlvo, 'warned');
+    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasAlvo, 'vwarned');
     // Se o alvo estiver perto da morte, ou sem energia, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
-    await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'encouraged');
-    await this.handleEffectPhrase(batalha, target, alvo, userId, interaction, falasOrigem, 'vencouraged');
+    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasOrigem, 'encouraged');
+    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasOrigem, 'vencouraged');
   }
   setHealth(batalha, targetId, value) {
     return (batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0));
@@ -321,11 +343,12 @@ async function setCombatState(target, personagemAtual, bool) {
 }
 
 async function deleteDb(interaction, target) {
-  await db.table('batalha_' + interaction.channelId).delete(target);
+  await db.table('batalha').delete(`${interaction.channelId}.${target}`);
 }
 
 async function updateDb(interaction, batalha) {
-  await db.table('batalha_' + interaction.channelId).set(batalha.id, batalha.db);
+  batalha.db;
+  await db.table('batalha').set(`${interaction.channelId}`, batalha.db);
 }
 /**
  * Uma função que retorna um calculo de dano baseado no ataque do personagem e na defesa do oponente

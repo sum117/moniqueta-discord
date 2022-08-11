@@ -64,6 +64,7 @@ export class Interaction extends PlayCardBase {
               .setLabel('Atacar')
               .setEmoji('🗡️')
               .setStyle('SECONDARY')
+              .setDisabled(interaction.user.id === target.user.id ? true : false)
           )
         ]
       });

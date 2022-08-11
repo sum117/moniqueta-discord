@@ -170,19 +170,14 @@ export class PlayCardBase {
       let combate;
       if (combat)
         combate = await (async () => {
-          const batalha = await db.table('batalha_' + interaction.channelId).all();
+          const batalha = await db.table('batalha').get(`${interaction.channelId}.${user.id}`);
           console.log(batalha ?? 'null');
-          if (!batalha.length) {
+          if (!batalha) {
             const chosen = await db.get(`${user.id}.chosenChar`);
             await db.set(`${user.id}.chars.${chosen}.inCombat`, false), false;
             return undefined;
           }
-          const status = batalha
-            .map(obj => {
-              const status = obj.value[user.id];
-              return {saude: status?.saude, vigor: status?.vigor};
-            })
-            .shift();
+          const status = {saude: batalha?.saude, vigor: batalha?.vigor};
           return status;
         })();
       const message = await channel.send({
