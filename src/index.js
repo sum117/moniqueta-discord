@@ -7,7 +7,7 @@ import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import * as musicCommands from './commands/music';
 import {db} from './db.js';
-
+// Almost done for first release!
 export const moniqueta = new Client({
   intents: 32767
 });
