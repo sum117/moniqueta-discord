@@ -1,5 +1,5 @@
 import {db} from '../../db.js';
-import {MessageEmbed, Message} from 'discord.js';
+import {MessageEmbed} from 'discord.js';
 import {userMention} from '@discordjs/builders';
 
 export const data = {

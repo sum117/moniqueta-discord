@@ -1,4 +1,4 @@
-import {ButtonInteraction, MessageActionRow, MessageButton} from 'discord.js';
+import {MessageActionRow, MessageButton} from 'discord.js';
 import {bold, userMention} from '@discordjs/builders';
 import {db} from '../../db.js';
 import {PlayCardBase} from './PlayCardBase.js';
@@ -28,7 +28,7 @@ export class Combat extends PlayCardBase {
     this.interaction = interaction;
     this.batalha = await (async () => {
       const batalha = db.table('batalha');
-      const emCurso = await (async (origem, alvo) => {
+      return (async (origem, alvo) => {
         const dbOrigem = await batalha.get(`${interaction.channelId}.${origem}`);
         const dbAlvo = await batalha.get(`${interaction.channelId}.${alvo}`);
         const conditions = {
@@ -64,8 +64,6 @@ export class Combat extends PlayCardBase {
           return {db: await batalha.get(`${interaction.channelId}`)};
         }
       })(this.userId, this.target.id);
-
-      return emCurso;
     })();
     return this;
   }
@@ -81,7 +79,7 @@ export class Combat extends PlayCardBase {
 
     // ------------------------------------------------ Erros de validação ------------------------------------------------
     if (!(ultimoPost?.channelId === interaction.channelId && ultimoPost.time > Date.now() - 1000 * 60 * 45))
-      return await interaction.reply({
+      return interaction.reply({
         content:
           '❌ Você não pode atacar ninguém se o seu personagem não enviou um post no canal do alvo nos últimos 45 minutos.',
         ephemeral: true
@@ -89,10 +87,10 @@ export class Combat extends PlayCardBase {
     if (!interaction.customId.startsWith('ataque_fisico'))
       throw new Error('Você usou o método de ataque físico em uma interação incongruente.');
 
-    if (!charMessagesDb) return await interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
+    if (!charMessagesDb) return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
 
     if (ultimoPost.token)
-      return await interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
+      return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
     await interaction.deferReply({fetchReply: true});
@@ -159,11 +157,6 @@ export class Combat extends PlayCardBase {
     return (batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0));
   }
 
-  // TODO: Fazer uma checagem da escolha da origem e do alvo. Se por acaso a origem utilizar um poder, usar o objeto dos poderes ao invés das armas. O mesmo para o alvo, só que adiciona ao invés de remover.
-  async poder() {
-    if (!interaction.customId === 'ataque_de_poder')
-      throw new Error('Você usou o método de ataque poderoso em uma interação incongruente.');
-  }
   async handleEffectPhrase(
     batalha,
     target,
@@ -302,7 +295,7 @@ export class Combat extends PlayCardBase {
         )
       ]
     });
-    const reacaoAlvo = await painel
+    return painel
       .awaitMessageComponent({
         filter: i => i.user.id === target.id,
         time: 60 * 10 * 1000,
@@ -327,7 +320,6 @@ export class Combat extends PlayCardBase {
         });
         return 'defender';
       });
-    return reacaoAlvo;
   }
 }
 // ------------------------------------------------ Database functions and helpers ------------------------------------------------
@@ -349,7 +341,6 @@ async function deleteDb(interaction, target) {
 }
 
 async function updateDb(interaction, batalha) {
-  batalha.db;
   await db.table('batalha').set(`${interaction.channelId}`, batalha.db);
 }
 /**
