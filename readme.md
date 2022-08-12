@@ -9,7 +9,7 @@
     </div>
 </div>
 
-# ❤️ Moniqueta (X-Platform Roleplaying Tool)
+# ❤️ Moniqueta (X-Platform Roleplaying Tool) - Perto do lançamento!
 
 ## 📖 Sumário
 
