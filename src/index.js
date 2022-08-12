@@ -1,5 +1,5 @@
-import {Client, Collection, Message, MessageSelectMenu} from 'discord.js';
-import {channelMention} from '@discordjs/builders';
+import {Client, Collection, MessageSelectMenu} from 'discord.js';
+
 import {Player} from 'discord-player';
 import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles} from './util';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
@@ -30,19 +30,19 @@ moniqueta.on('ready', async () => {
     [
       'error',
       (queue, error) => {
-        new Error(`${queue.guild.name} Erro emitido da lista: ${error.message}`);
+        throw new Error(`${queue.guild.name} Erro emitido da lista: ${error.message}`);
       }
     ],
     [
       'connectionError',
       (queue, error) => {
-        new Error(`[${queue.guild.name}] Erro emitido da conexão: ${error.message}`);
+        throw new Error(`[${queue.guild.name}] Erro emitido da conexão: ${error.message}`);
       }
     ],
     [
       'trackStart',
       (queue, track) => {
-        new Error(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
+        throw new Error(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
       }
     ],
     [
