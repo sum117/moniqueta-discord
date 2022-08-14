@@ -4,10 +4,9 @@
     justify-content: center;
     flex-wrap: wrap;
     flex-direction: row;
-    align-content: center;
-    margin: 2rem;
+    align-content: start;
     gap: 0.5rem;
-
+    margin: 2rem;
 }
 .InputBoxes textarea {
     width: 50%;
