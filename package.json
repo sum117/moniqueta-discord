@@ -1,6 +1,6 @@
 {
   "name": "moniqueta-front",
-  "private": true,
+  "private": false,
   "homepage": "https://sum117.github.io/moniqueta-discordjs",
   "version": "0.0.0",
   "type": "module",
