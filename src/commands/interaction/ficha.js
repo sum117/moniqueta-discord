@@ -1,14 +1,5 @@
 import {channelMention, userMention} from '@discordjs/builders';
-import {
-  Message,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
-  Modal,
-  ModalSubmitInteraction,
-  SelectMenuInteraction,
-  TextInputComponent
-} from 'discord.js';
+import {MessageActionRow, MessageButton, MessageEmbed, Modal, TextInputComponent} from 'discord.js';
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
@@ -31,60 +22,57 @@ export async function execute(interaction) {
     case 'MESSAGE_COMPONENT':
       switch (channelId) {
         case channels.rpRegistro:
-          let pass = true;
           if (!interaction.customId.match(/soma|genero|purgatorio|item_inicial/)) return;
           if (!sheet.get(user.id)) {
-            const choices = new Map([[customId, customId !== 'item_inicial' ? values[0] : values]]);
-            sheet.set(user.id, choices);
+            const newChoices = new Map([[customId, customId !== 'item_inicial' ? values[0] : values]]);
+            sheet.set(user.id, newChoices);
             return handleChoice();
           } else {
             /**
              * @type {Map}
              */
-            const choices = sheet.get(user.id);
-            choices.set(customId, customId !== 'item_inicial' ? values[0] : values);
-            sheet.set(user.id, choices);
+            const existingChoices = sheet.get(user.id);
+            existingChoices.set(customId, customId !== 'item_inicial' ? values[0] : values);
+            sheet.set(user.id, existingChoices);
             const conditions = {
               notReaper:
-                (choices.get('item_inicial')?.includes('24') ?? choices.get('item_inicial')?.[0] === '24') &&
-                !(choices.get('purgatorio') === 'ceifador') &&
-                choices.size === 4,
+                existingChoices.get('item_inicial')?.includes('24') &&
+                existingChoices.get('purgatorio') !== 'ceifador' &&
+                existingChoices.size === 4,
               notScythe:
-                (!choices.get('item_inicial')?.includes('24') ?? !choices.get('item_inicial')?.[0] === '24') &&
-                choices.get('purgatorio') === 'ceifador' &&
-                choices.size === 4
+                !existingChoices.get('item_inicial')?.includes('24') &&
+                existingChoices.get('purgatorio') === 'ceifador' &&
+                existingChoices.size === 4
             };
             if (conditions.notScythe) {
-              pass = false;
-              choices.clear();
+              existingChoices.clear();
               return interaction.reply({
                 content: '❌ Você não pode escolher o Ceifador de Imprévia se não escolher a Foice de Ceifador.',
                 ephemeral: true
               });
             }
             if (conditions.notReaper) {
-              pass = false;
-              choices.clear();
+              existingChoices.clear();
               return interaction.reply({
                 ephemeral: true,
                 content: '❌ Você não pode escolher a Foice de Ceifador se não escolher o Ceifador de Imprévia.'
               });
             }
 
-            if (pass && choices.size === 4) {
+            if (existingChoices.size === 4) {
               return interaction.showModal(
                 createForm([
                   [
-                    ,
+                    true,
                     'persoNome',
                     'Nome do Personagem',
                     'SHORT',
                     'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"',
                     128
                   ],
-                  [, 'persoPersonalidade', 'Personalidade', 'PARAGRAPH', 'Seja Interessante...', 4000],
+                  [true, 'persoPersonalidade', 'Personalidade', 'PARAGRAPH', 'Seja Interessante...', 4000],
                   [
-                    ,
+                    true,
                     'persoFisico',
                     'Características Físicas',
                     'PARAGRAPH',
@@ -92,14 +80,14 @@ export async function execute(interaction) {
                     4000
                   ],
                   [
-                    ,
+                    true,
                     'persoHabilidade',
                     'Habilidade',
                     'PARAGRAPH',
                     'A habilidade do personagem não irá interferir no combate.',
                     4000
                   ],
-                  [, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500]
+                  [true, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500]
                 ])
               );
             }
@@ -112,8 +100,8 @@ export async function execute(interaction) {
               .filter(option => values.includes(option.value))
               .map(option => option.label)
               .slice(1)
-              .map(value =>
-                value
+              .map(str =>
+                str
                   .split('-')
                   .map(value => title(value))
                   .join(' ')
@@ -134,8 +122,8 @@ export async function execute(interaction) {
 
           switch (action) {
             case 'aprovar':
-              const char = await db.get(`${interaction.guildId}.pending.${trialUser.id}`);
-              await new PlayCardBase().create(interaction, channels.rpFichas, char);
+              const approvedChar = await db.get(`${interaction.guildId}.pending.${trialUser.id}`);
+              await new PlayCardBase().create(interaction, channels.rpFichas, approvedChar);
               /**
                * @type {Message}
                */
@@ -190,8 +178,7 @@ export async function execute(interaction) {
               const contactButton = new MessageButton(interaction.component).setDisabled(true);
               interaction.message.edit({
                 components: (() => {
-                  const array = [interaction.message.components[0].spliceComponents(-2, 1, contactButton)];
-                  return array;
+                  return [interaction.message.components[0].spliceComponents(-2, 1, contactButton)];
                 })()
               });
               await interaction.reply(
@@ -213,7 +200,9 @@ export async function execute(interaction) {
       const canalDeAdmin = interaction.guild.channels.cache.get(channels.adminFichaRegistro);
       const userInput = ((inputs = [['']]) => {
         const map = new Map();
-        inputs.map(([mapKey, fieldCustomId]) => map.set(mapKey, interaction.fields.getTextInputValue(fieldCustomId)));
+        inputs.forEach(([mapKey, fieldCustomId]) =>
+          map.set(mapKey, interaction.fields.getTextInputValue(fieldCustomId))
+        );
         return map;
       })([
         ['nome', 'persoNome'],
@@ -223,7 +212,7 @@ export async function execute(interaction) {
         ['imagem', 'persoImagem']
       ]);
       if (!choices)
-        return await interaction.channel.send({
+        return interaction.channel.send({
           content:
             interaction.user +
             ', o bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.'
@@ -334,13 +323,12 @@ async function updatePopulation(interaction) {
       .filter(char => !char?.dead)
       .map(char => {
         if (char?.sum) return char.sum;
-        return;
       })
       .reduce(a => a)
   );
-  somas.forEach(sum => {
-    if (sum === undefined) return;
-    populacao[sum] = populacao[sum] ? populacao[sum] + 1 : 1;
+  somas.forEach(aliveSum => {
+    if (aliveSum === undefined) return;
+    populacao[aliveSum] = populacao[aliveSum] ? populacao[aliveSum] + 1 : 1;
   });
 
   return {msg: sheetCounterMsg, populacao: populacao};

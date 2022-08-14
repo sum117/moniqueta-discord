@@ -1,4 +1,3 @@
-import {ButtonInteraction} from 'discord.js';
 import {db} from '../../db.js';
 import {Combat} from '../../structures/SDA/Combat.js';
 import {Interaction} from '../../structures/SDA/Interaction.js';
@@ -18,7 +17,7 @@ export async function execute(interaction) {
   if (interaction.customId === 'interact') {
     target = await (async () => {
       const id = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
-      return await interaction.guild.members.fetch(id);
+      return interaction.guild.members.fetch(id);
     })();
     interactionPanel.set(target.id, new Interaction(interaction, target));
     await interactionPanel.get(target.id).panel(interaction.customId);
@@ -29,10 +28,10 @@ export async function execute(interaction) {
     const staticUser = await interaction.guild.members.fetch(interaction.customId.split('_')[4]);
 
     const combat = await new Combat().init(interaction, target, staticUser.id);
-    return await combat.fisico();
+    return combat.fisico();
   } else if (interaction.customId.match(/atributos|pick_skill|increment_attribute|decrement_attribute/)) {
     const XpManager = new Xp();
-    return await XpManager.xpPanel(interaction, interaction.customId);
+    return XpManager.xpPanel(interaction, interaction.customId);
   } else {
     const conditions = {
       equipar_item: interaction.customId === 'equipar_item',

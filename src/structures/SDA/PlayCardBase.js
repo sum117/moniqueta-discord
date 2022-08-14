@@ -1,13 +1,4 @@
-import {
-  ButtonInteraction,
-  Formatters,
-  Interaction,
-  Message,
-  MessageActionRow,
-  MessageAttachment,
-  MessageButton,
-  MessageEmbed
-} from 'discord.js';
+import {Formatters, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
 import {bold} from '@discordjs/builders';
@@ -71,21 +62,21 @@ export class PlayCardBase {
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
       if (!chosenChar)
-        return await interaction[interaction.deferred ? 'editReply' : 'reply']({
+        return interaction[interaction.deferred ? 'editReply' : 'reply']({
           content: `Não há nenhum personagem criado ou selecionado para ${
             user.id === interaction.user.id ? 'você' : user
           }`
         });
       else {
-        const char = await db.get(`${user.id}.chars.${chosenChar}`);
-        if (char?.phantom === 'ceifador' && !char?.avatar.match('https://i.imgur.com/')) {
+        const currentChar = await db.get(`${user.id}.chars.${chosenChar}`);
+        if (currentChar?.phantom === 'ceifador' && !currentChar?.avatar.match('https://i.imgur.com/')) {
           const getBase64 = data => Buffer.from(data, 'binary').toString('base64');
           const {ImgurClient} = imgur;
           const imgClient = new ImgurClient({
             clientId: process.env.IMGUR_CLIENT_ID,
             clientSecret: process.env.IMGUR_CLIENT_SECRET
           });
-          const rawAvatar = await (await axios({url: char?.avatar, responseType: 'arraybuffer'})).data;
+          const rawAvatar = await (await axios({url: currentChar?.avatar, responseType: 'arraybuffer'})).data;
           const firstBuffer = (await sharp(rawAvatar).png().toBuffer()).buffer;
 
           const composition = Buffer.from(reaperIcon(getBase64(firstBuffer)));
@@ -94,14 +85,14 @@ export class PlayCardBase {
           const link = (
             await imgClient.upload({
               image: attachment,
-              title: 'icon_ceifador_' + char?.name.replace(/ /g, '_'),
-              description: 'Icone do ceifador de ' + char?.name
+              title: 'icon_ceifador_' + currentChar?.name.replace(/ /g, '_'),
+              description: 'Icone do ceifador de ' + currentChar?.name
             })
           ).data.link;
-          char.avatar = link;
-          return char;
+          currentChar.avatar = link;
+          return currentChar;
         }
-        return char;
+        return currentChar;
       }
     };
   }
@@ -122,9 +113,9 @@ export class PlayCardBase {
     const {members, channels} = guild;
 
     const userId = (() => {
-      const [userId] = message?.content.match(/\d{17,19}/) ?? [];
-      if (!userId) return user.id;
-      else return userId;
+      const [firstMatch] = message?.content.match(/\d{17,19}/) ?? [];
+      if (!firstMatch) return user.id;
+      else return firstMatch;
     })();
     const id = await db.get(`${userId}.count`);
     const charObject = char(name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila);
@@ -205,15 +196,14 @@ export class PlayCardBase {
           console.log(batalha ?? 'null');
           if (!batalha) {
             const chosen = await db.get(`${user.id}.chosenChar`);
-            await db.set(`${user.id}.chars.${chosen}.inCombat`, false), false;
+            await db.set(`${user.id}.chars.${chosen}.inCombat`, false);
             return undefined;
           }
-          const status = {saude: batalha?.saude, vigor: batalha?.vigor};
-          return status;
+          return {saude: batalha?.saude, vigor: batalha?.vigor};
         })();
       const message = await channel.send({
         [interaction.mentions.users.size >= 1 ? 'content' : undefined]: interaction.mentions.users
-          .map(user => user)
+          .map(mentionedUser => mentionedUser)
           .join(','),
         embeds: [
           {
@@ -278,7 +268,7 @@ export class PlayCardBase {
       await (await channel.messages.fetch(msgId)).removeAttachments();
       const msg = await channel.messages.fetch(msgId);
       const embed = msg.embeds[0].setDescription(content);
-      return await channel.messages.edit(msgId, {
+      return channel.messages.edit(msgId, {
         embeds: [embed]
       });
     }
@@ -295,7 +285,7 @@ export class PlayCardBase {
       }
 
       if (msgId === (await db.get(user.id + '.latestMessage.id'))) db.delete(user.id + '.latestMessage');
-      return await channel.messages.delete(msgId);
+      return channel.messages.delete(msgId);
     }
   }
   async list(interaction) {
@@ -305,13 +295,13 @@ export class PlayCardBase {
 
     const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
-      .map(([id, char]) => {
-        return `${bold(id)} : ${assets.sum[char.sum].emoji} ${assets.phantom[char.phantom]} ${char.name} ${
-          chosenCheck.toString() === id.toString() ? ' ⭐' : ''
-        }`;
+      .map(([id, charToList]) => {
+        return `${bold(id)} : ${assets.sum[charToList.sum].emoji} ${assets.phantom[charToList.phantom]} ${
+          charToList.name
+        } ${chosenCheck.toString() === id.toString() ? ' ⭐' : ''}`;
       })
       .join('\n');
-    return await interaction.reply({
+    return interaction.reply({
       content: 'Exibindo personagens de ' + user.username,
       embeds: [
         {
@@ -332,15 +322,15 @@ export class PlayCardBase {
   async choose(interaction, id) {
     const {user} = interaction;
     const list = Object.entries(await db.get(user.id + '.chars'))
-      .map(([id]) => {
-        return id;
+      .map(([charId]) => {
+        return charId;
       })
       .join('\n');
-    if (!list.includes(id)) return await interaction.reply('Esse personagem não existe.');
+    if (!list.includes(id)) return interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
     const {avatar, name, sum, phantom} = chosen;
-    return await interaction.reply({
+    return interaction.reply({
       ephemeral: true,
       embeds: [
         {
