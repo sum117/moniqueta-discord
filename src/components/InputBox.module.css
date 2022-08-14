@@ -1,5 +1,4 @@
 .InputBoxes {
-    height: 100vh;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -7,6 +6,7 @@
     align-content: start;
     gap: 0.5rem;
     margin: 2rem;
+    min-height: auto;
 }
 .InputBoxes textarea {
     width: 50%;

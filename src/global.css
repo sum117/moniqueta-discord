@@ -23,9 +23,20 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-anchor: initial;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+
+}
+::-webkit-scrollbar-track {
+    background: var(--gray-300);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--green-500);
+}
 body {
     height:100vh;
     background: var(--gray-900);
