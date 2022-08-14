@@ -54,7 +54,8 @@ export const assets = {
       color: 16777215,
       emoji: '<:Observata:982082685864378418>'
     },
-    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'}
+    invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
+    subtrato: {color: 8355711, emoji: '<:subtratos:1007714304319033394>'}
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
