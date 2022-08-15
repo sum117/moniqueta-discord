@@ -9,13 +9,13 @@
     min-height: auto;
 }
 .InputBoxes textarea {
-    width: 50%;
+    width: 70vw;
     height: 12rem;
     padding: 1rem;
     border-radius: 8px;
     background: var(--gray-900);
     resize: none;
     color: var(--gray-100);
-    line-height: 1.4;
+    line-height: 1.6;
     margin-top: 1rem;
 }

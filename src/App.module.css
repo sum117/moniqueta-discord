@@ -1,7 +1,7 @@
 .header {
     max-width: 100vw;
     margin: auto;
-    padding:  1rem;
+    padding: 1rem;
     background-color: var(--gray-800);
     display: flex;
     justify-content: center;
