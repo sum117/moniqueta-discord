@@ -2,6 +2,7 @@ const lang = new Map([
   ['a', 'չ'],
   ['b', 'ץ'],
   ['c', 'ฬ'],
+  ['ç', 'ฬ'],
   ['d', 'ש'],
   ['e', 'א'],
   ['f', 'ย'],
@@ -40,11 +41,19 @@ export default function main(id: string, text: string) {
           .join('')}`
       : '';
   } else if (id === 'codificar') {
-    if (!text.split('').find((char) => [...lang].find(([k]) => k === char))) {
+    if (!text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^\w\s\']|_/g, '')
+        .split('')
+        .find((char) => [...lang].find(([k]) => k === char))) {
       return '';
     }
     text = text
       .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^\w\s\']|_/g, '')
       .replace(/\s+/g, ' ');
 
