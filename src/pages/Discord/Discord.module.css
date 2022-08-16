@@ -1,0 +1,14 @@
+.wrapper iframe {
+  margin-top: 1rem;
+  height: 80vh;
+  display: flex;
+  width: 60vh;
+}
+
+.discordIFrame {
+  margin: 0 auto;
+  height: 100%;
+  border: 0;
+  border-radius: 1rem;
+  overflow: hidden;
+}

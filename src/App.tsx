@@ -1,10 +1,21 @@
-import { InputBoxes } from './components/InputBoxes';
-import styles from './App.module.css';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Home, Faq, Tradutor, Discord } from './pages';
+
+import { Sidebar } from './components/Sidebar';
+import { BlogDetails } from './components/BlogDetails';
 export function App() {
   return (
-    <div>
-      <h1 className={styles.header}>TRADUTOR DE SUBTRATO</h1>  
-      <InputBoxes></InputBoxes>
-    </div>
+    <Router>
+      <div>
+        <Sidebar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/faq" element={<Faq />} />
+          <Route path="/faq/:id" element={<BlogDetails />} />
+          <Route path="/tradutor" element={<Tradutor />} />
+          <Route path="/discord" element={<Discord />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
