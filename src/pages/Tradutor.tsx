@@ -1,4 +1,4 @@
-import { InputBoxes } from '../components/InputBoxes';
+import { InputBoxes } from '../components/InputBoxes/InputBoxes';
 import pagesStyles from './Header.module.css';
 export function Tradutor() {
   return (

@@ -1,13 +1,15 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Home, Faq, Tradutor, Discord } from './pages';
 
-import { Sidebar } from './components/Sidebar';
-import { BlogDetails } from './components/BlogDetails';
+import { Sidebar } from './components/Sidebar/Sidebar';
+import { BlogDetails } from './components/BlogDetails/BlogDetails';
+import { Login } from './components/Login/Login';
 export function App() {
   return (
     <Router>
       <div>
         <Sidebar />
+        <Login />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/faq" element={<Faq />} />

@@ -1,7 +1,7 @@
 import styles from './Faq.module.css';
 import pagesStyles from '../Header.module.css';
 import { useFetch } from '../../script/useFetch';
-import { BlogList } from '../../components/BlogList';
+import { BlogList } from '../../components/BlogList/BlogList';
 export function Faq() {
   const {
     data: posts,

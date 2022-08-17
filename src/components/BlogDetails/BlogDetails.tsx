@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import styles from './BlogDetails.module.css';
-import { useFetch } from '../script/useFetch';
+import { useFetch } from '../../script/useFetch';
 
 export function BlogDetails() {
   const { id } = useParams();

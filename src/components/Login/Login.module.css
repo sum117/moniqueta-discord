@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  overflow-x: hidden;
+  position: fixed;
+  width: fit-content;
+  height: 14vh;
+  margin: 0rem 0 auto auto;
+  padding: 1rem;
+  border-radius: 0 0 0 8px;
+  font-weight: 100;
+  font-size: 16px;
+  right: 0;
+  background-color: var(--gray-800);
+  color: var(--gray-100);
+}
+.container a {
+  display: grid;
+  grid-template-columns: 1fr;
+  text-decoration: 0;
+  text-align: center;
+  margin: auto;
+}
+
+.loginIcon {
+  justify-content: center;
+  background-color: var(--gray-800);
+  color: var(--gray-300);
+}
+
+.loginIcon:hover {
+  color: var(--green-300);
+}
