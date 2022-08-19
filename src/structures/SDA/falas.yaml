@@ -183,3 +183,49 @@ Combate:
         - O opositor não é mais capaz de manter-se de pé sozinho! Dá-lhe a chance de render-se.
         - Quem duela contigo não aguenta mais. Mostra-te impenetrável, Austero!
         - O fim se aproxima para teu rival. Mostrá-o as consequências de lutar contra um Austero!
+  humano:
+    hp:
+      self:
+        - Vai mesmo morrer neste planeta?! Você não pode cair agora!
+        - Os alienígenas nunca vão saber como é sangrar! Não os dê o prazer de te ver morrer!
+        - Eles não sentem o suficiente para saber como você está sofrendo! Dê-lhes um gostinho!
+        - Os somáticos não merecem seu sangue e suas lágrimas! Mostre-lhes o que é ser humano!
+      inimigo:
+        - Mais um somático para a vala. Pode colocar no seu cheque!
+        - Está na hora de você ir para o inferno, somático!
+        - Alice está fazendo de tudo para sairmos daqui. Não a decepcione e acabe com eles!
+        - Com uma pistola seria melhor, mas você não tem uma. Então, use suas próprias mãos e execute esse somático de merda!
+    vigor:
+      self:
+        - Eles também sentem cansaço. Você não está perdido, permaneça lutando, Masôriano!
+        - Não deixe seu cansaço vencer! Você não é um somático, você sabe o que é prevalecer!
+        - Quantos da sua espécie não já cometeram milagres? Você também pode! Permaneça de pé!
+        - Desde que nasceu luta contra a fadiga, não desista agora, Masôriano!
+      inimigo:
+        - Ele está prestes a cair de cansaço, Masôriano! Dê-lhe um soco e acabe com ele!
+        - O inimigo fraqueja. Mostre-o o poder de ter pulmões, Masôriano!
+        - Parece que o alienígena vai desmaiar de cansaço. Bote-o para dormir, Masôriano!
+        - Está bambeando de cansaço, o somático. Aposto que Sidera pôs isso nele por sadismo. Livre-o do sofrimento, Masôriano!
+  subtrato:
+    hp:
+      self:
+        - Vai mesmo morrer neste planeta?! Você não pode cair agora!
+        - Os alienígenas nunca vão saber como é sangrar! Não os dê o prazer de te ver morrer!
+        - Eles não sentem o suficiente para saber como você está sofrendo! Dê-lhes um gostinho!
+        - Os somáticos não merecem seu sangue e suas lágrimas! Mostre-lhes o que é ser humano!
+      inimigo:
+        - Mais um somático para a vala. Pode colocar no seu cheque!
+        - Está na hora de você ir para o inferno, somático!
+        - Alice está fazendo de tudo para sairmos daqui. Não a decepcione e acabe com eles!
+        - Com uma pistola seria melhor, mas você não tem uma. Então, use suas próprias mãos e execute esse somático de merda!
+    vigor:
+      self:
+        - Eles também sentem cansaço. Você não está perdido, permaneça lutando, Masôriano!
+        - Não deixe seu cansaço vencer! Você não é um somático, você sabe o que é prevalecer!
+        - Quantos da sua espécie não já cometeram milagres? Você também pode! Permaneça de pé!
+        - Desde que nasceu luta contra a fadiga, não desista agora, Masôriano!
+      inimigo:
+        - Ele está prestes a cair de cansaço, Masôriano! Dê-lhe um soco e acabe com ele!
+        - O inimigo fraqueja. Mostre-o o poder de ter pulmões, Masôriano!
+        - Parece que o alienígena vai desmaiar de cansaço. Bote-o para dormir, Masôriano!
+        - Está bambeando de cansaço, o somático. Aposto que Sidera pôs isso nele por sadismo. Livre-o do sofrimento, Masôriano!
