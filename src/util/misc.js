@@ -42,7 +42,8 @@ export const channels = {
   memberCounter: '977082930402844692', // the channel where the bot will count the members.
   loginoutChannel: '977087066129174538', // the channel where the bot will log users in and out.
   errorChannel: '997289513850261554', // the channel where the bot will log errors.
-  postCounter: '977083043011506196' // the channel where the bot will count the posts.
+  postCounter: '977083043011506196', // the channel where the bot will count the posts.
+  charCounter: '1008888230973820958' // the channel where the bot will count the characters.
 };
 export const roles = {
   entranceRole: '983190321334726666', // the role which will be given to the user when they join the guild.
