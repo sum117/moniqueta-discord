@@ -49,7 +49,7 @@ export async function execute(interaction) {
       });
     });
     collector.on('end', async collected => {
-      if (!collected.size) {
+      if (collected.size < 1) {
         await db.set(`${interaction.user.id}.isEditting`, false);
         return await interaction.editReply({
           content: 'Você não editou a mensagem a tempo.'
