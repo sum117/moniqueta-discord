@@ -46,13 +46,15 @@ export const assets = {
       emoji: '<:Observata:982082685864378418>'
     },
     invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
-    subtrato: {color: 8355711, emoji: '<:subtratos:1007714304319033394>'}
+    subtrato: {color: 8355711, emoji: '<:subtratos:1007714304319033394>'},
+    humano: {color: 16493758, emoji: '<:humanos:1009521051115466843>'}
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',
     vermelho: '<:fantasmaVermelho:982092065989074994>',
     branco: '<:fantasmaBranco:982092065599029268>',
-    ceifador: '<:ceifador:1007356733812903986>'
+    ceifador: '<:ceifador:1007356733812903986>',
+    tempo: '<:tempo:1009528558982549524>'
   }
 };
 
@@ -162,14 +164,14 @@ export class PlayCardBase {
 
   /**
    *
-   * @param {Message} interaction | A mensagem ou comando que iniciou o comando
+   * @param {Message} msgSent | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    * @param {MessageAttachment} attachment A imagem que será usada para a ação.
    */
-  async interact(interaction, action, content = '', attachment = null) {
-    const {channel, guildId} = interaction;
-    const user = interaction?.author ?? interaction.user;
-    const data = await this.character(interaction, user);
+  async interact(msgSent, action, content = '', attachment = null) {
+    const {channel, guildId} = msgSent;
+    const user = msgSent?.author;
+    const data = await this.character(msgSent, user);
     const {name, avatar, sum, dead, phantom} = data;
 
     switch (action) {
@@ -192,8 +194,7 @@ export class PlayCardBase {
       let combate;
       if (combat)
         combate = await (async () => {
-          const batalha = await db.table('batalha').get(`${interaction.channelId}.${user.id}`);
-          console.log(batalha ?? 'null');
+          const batalha = await db.table('batalha').get(`${msgSent.channelId}.${user.id}`);
           if (!batalha) {
             const chosen = await db.get(`${user.id}.chosenChar`);
             await db.set(`${user.id}.chars.${chosen}.inCombat`, false);
@@ -201,15 +202,16 @@ export class PlayCardBase {
           }
           return {saude: batalha?.saude, vigor: batalha?.vigor};
         })();
+
       const message = await channel.send({
-        [interaction.mentions.users.size >= 1 ? 'content' : undefined]: interaction.mentions.users
+        [msgSent.mentions.users.size >= 1 ? 'content' : undefined]: msgSent.mentions.users
           .map(mentionedUser => mentionedUser)
           .join(','),
         embeds: [
           {
-            [phantom === 'ceifador' ? 'author' : undefined]: {
-              name: 'Ceifador de Imprévia',
-              icon_url: 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
+            [data?.title ? 'author' : phantom === 'ceifador' ? 'author' : undefined]: {
+              name: data?.title ? data.title.str : 'Ceifador de Imprévia',
+              icon_url: data?.title ? data.title.icon : 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
             },
             title: `${
               phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
@@ -265,21 +267,26 @@ export class PlayCardBase {
     }
     async function edit(msgId) {
       if (!msgId) throw new Error('Não foi possível encontrar a mensagem para ser editada');
-      await (await channel.messages.fetch(msgId)).removeAttachments();
-      const msg = await channel.messages.fetch(msgId);
-      const embed = msg.embeds[0].setDescription(content);
-      return channel.messages.edit(msgId, {
+      /**
+       * @type {import('discord.js').Message}
+       * @var msg
+       */
+      let msg = await channel.messages.fetch(msgId);
+      let embed = msg.embeds[0];
+      embed = embed.setDescription(content);
+      embed = embed.setImage(`attachment://${embed.image.url.split('/').pop()}` ?? undefined);
+      await channel.messages.edit(msgId, {
         embeds: [embed]
       });
     }
     async function remove(msgId) {
       const messageToCheck = await db.get(`${guildId}.charMessages.${msgId}`);
       if (!msgId) {
-        throw interaction[interaction.deferred ? 'editReply' : 'reply']({
+        throw msgSent[msgSent.deferred ? 'editReply' : 'reply']({
           content: 'Não foi possível encontrar a mensagem para ser removida'
         });
       } else if (messageToCheck !== user.id) {
-        throw interaction[interaction.deferred ? 'editReply' : 'reply']({
+        throw msgSent[msgSent.deferred ? 'editReply' : 'reply']({
           content: 'Você não pode deletar uma mensagem que não pertence a você.'
         });
       }
@@ -454,6 +461,28 @@ function char(
       primordio: 5,
       elemental: 0,
       profano: 0
+    },
+    humano: {
+      vitalidade: 117,
+      vigor: 117,
+      destreza: 117,
+      mente: 117,
+      forca: 117,
+      resistencia: 117,
+      primordio: 117,
+      elemental: 117,
+      profano: 117
+    },
+    subtrato: {
+      vitalidade: 117,
+      vigor: 117,
+      destreza: 117,
+      mente: 117,
+      forca: 117,
+      resistencia: 117,
+      primordio: 117,
+      elemental: 117,
+      profano: 117
     }
   };
 
