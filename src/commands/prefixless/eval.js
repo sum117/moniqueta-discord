@@ -30,26 +30,41 @@ function walk(dir) {
     });
   });
 }
-const msgTop = db.table('msgTop');
 export const data = {
   event: 'messageCreate',
   name: 'Validar JavaScript',
   description: 'Valida javascript desde que seja executada pelo dono da aplicação.'
 };
-export async function execute(client, msg) {
+export async function execute(_client, msg) {
   const evalChId = '1007568778328035408';
   const botOwnerId = '969062359442280548';
   if (msg.channelId != evalChId) return;
   if (msg.author.id != botOwnerId) return;
 
   const evaluate = async str => `${eval(str)}`;
-  let content = msg.content;
+  let content = msg.content.replace(/```js|```/g, '');
 
   if (content == 'ls') {
     let tree = await walk('src');
-    tree = tree.join('\n');
-    return msg.reply(tree);
-  } else if (!content.match(/msg/g))
+    const depthCount = str => str.match(/\//gm).length;
+    tree = tree
+      .map(depth => {
+        let dp = depthCount(depth);
+        return `${'—'.repeat(dp)} ${depth}`;
+      })
+      .sort((depthA = '', depthB = '') => {
+        depthA = depthCount(depthA);
+        depthB = depthCount(depthB);
+        return depthA - depthB;
+      })
+      .join('\n');
+    return tree.length > 2000
+      ? tree
+          .split(/(?<=^(?:.{2000})+)(?!$)/gs)
+          .sort((a, b) => b - a)
+          .forEach(t => msg.channel.send(t))
+      : msg.channel.send(tree);
+  } else if (!content.match(/msg/g) && msg.type !== 'CHANNEL_PINNED_MESSAGE')
     return msg.reply(
       'O comando eval utiliza o objeto da mensagem como operador e é limitado à importação dinâmica ou à constante estatica do DB.'
     );
