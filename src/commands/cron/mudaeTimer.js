@@ -18,5 +18,5 @@ export function execute(client, timer, channel, minutes, role) {
     return isGreen;
   };
 
-  return new CronJob('* 33,40 * * * *', update(), null, true, 'America/Recife');
+  return new CronJob('0 33,40 * * * *', update, null, true, 'America/Recife');
 }
