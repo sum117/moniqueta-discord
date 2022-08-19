@@ -21,6 +21,7 @@
     "@discordjs/opus": "^0.8.0",
     "axios": "^0.27.2",
     "better-sqlite3": "^7.6.1",
+    "cron": "^2.1.0",
     "discord-player": "^5.2.2",
     "discord.js": "^13.8.0",
     "ffmpeg": "0.0.4",

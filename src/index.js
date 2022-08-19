@@ -6,6 +6,7 @@ import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token,
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import * as musicCommands from './commands/music';
+import {mudaeTimer} from './commands/cron';
 import {db} from './db.js';
 // Almost done for first release!
 export const moniqueta = new Client({
@@ -82,6 +83,7 @@ moniqueta.on('ready', async () => {
     ],
     musicPlayerEvents
   );
+  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826', 33);
   updateMemberCounter(moniqueta, myGuild);
   // Salvando invites
   moniqueta.guilds.fetch(myGuild).then(guild =>
