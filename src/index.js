@@ -42,7 +42,7 @@ moniqueta.on('ready', async () => {
     [
       'trackStart',
       (queue, track) => {
-        throw new Error(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
+        queue.metadata.send(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
       }
     ],
     [
@@ -221,18 +221,18 @@ moniqueta.on('ready', async () => {
     ]
   );
 
-  /**
-   * @type {Message}
-   */
-  let msg = await moniqueta.channels.cache.get('977090435845603379').messages.fetch('995391321713938432');
-  let selector = msg.components[2].components[0];
-  selector.addOptions({
-    label: 'Ceifador de Imprévia',
-    value: 'ceifador',
-    description: 'Uma entidade que se absteu de ter soma para um bem maior.',
-    emoji: '<:ceifador:1007356733812903986>'
-  });
-  msg.edit({components: msg.components});
+  // /**
+  //  * @type {Message}
+  //  */
+  // let msg = await moniqueta.channels.cache.get('977090435845603379').messages.fetch('995391321713938432');
+  // let selector = msg.components[2].components[0];
+  // selector.addOptions({
+  //   label: 'Ceifador de Imprévia',
+  //   value: 'ceifador',
+  //   description: 'Uma entidade que se absteu de ter soma para um bem maior.',
+  //   emoji: '<:ceifador:1007356733812903986>'
+  // });
+  // msg.edit({components: msg.components});
   /**
    *
    * @param {string} channelId O id do canal
