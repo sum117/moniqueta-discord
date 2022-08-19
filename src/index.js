@@ -83,7 +83,7 @@ moniqueta.on('ready', async () => {
     ],
     musicPlayerEvents
   );
-  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826', 33);
+  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826');
   updateMemberCounter(moniqueta, myGuild);
   // Salvando invites
   moniqueta.guilds.fetch(myGuild).then(guild =>

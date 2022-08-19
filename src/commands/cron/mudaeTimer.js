@@ -6,7 +6,7 @@ export const data = {
   description: 'Atualiza um canal do servidor com um temporizador da mudae.'
 };
 
-export function execute(client, timer, channel, minutes, role) {
+export function execute(client, timer, channel, role) {
   timer = client.channels.cache.get(timer);
   channel = client.channels.cache.get(channel);
   const update = async () => {
