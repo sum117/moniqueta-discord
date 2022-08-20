@@ -83,7 +83,7 @@ moniqueta.on('ready', async () => {
     ],
     musicPlayerEvents
   );
-  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826');
+  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826', '1010107434741813359');
   updateMemberCounter(moniqueta, myGuild);
   // Salvando invites
   moniqueta.guilds.fetch(myGuild).then(guild =>
@@ -253,9 +253,6 @@ moniqueta.on('ready', async () => {
     placeHolder = '',
     options = [{}]
   ) {
-    /**
-     * @type {Message}
-     */
     const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
     const component = message.components[actionRow].setComponents(
       new MessageSelectMenu()

@@ -133,7 +133,7 @@ export async function execute(interaction) {
                   'POPULAÇÃO DE IMPREVIA (JOGADORES):\n\n' +
                   Object.entries(populacao.populacao)
                     .map(([soma, quantia]) => {
-                      return `${assets.sum[soma].emoji} ${title(soma)}: ${quantia}`;
+                      return `${assets.sum[soma]?.emoji} ${title(soma)}: ${quantia}`;
                     })
                     .join('\n')
               });
@@ -214,7 +214,7 @@ export async function execute(interaction) {
       if (!choices)
         return interaction.channel.send({
           content:
-            interaction.user +
+            userMention(interaction.user.id) +
             ', o bot foi reiniciado recentemente e seu progresso foi apagado. Recomendamos não fazer fichas durante a manhã 06:00-12:00 e a noite 21:00-00:00 para evitar isso.'
         });
       sheet.set(user.id, new Map([...choices, ...userInput]));
@@ -317,15 +317,18 @@ async function updatePopulation(interaction) {
     .map(({value}) => {
       return value.chars;
     });
-
-  const somas = jogadores.map(jogador =>
-    Object.values(jogador)
-      .filter(char => !char?.dead)
-      .map(char => {
-        if (char?.sum) return char.sum;
-      })
-      .reduce(a => a)
-  );
+  let somas = jogadores
+    .filter(({value}) => value !== null)
+    .map(jogador => {
+      let inner = Object.values(jogador)
+        .filter(char => char !== null || !char?.dead)
+        .map(char => {
+          if (char?.sum) return char.sum;
+          return;
+        });
+      if (inner.length >= 1) return inner.reduce(a => a);
+      return inner;
+    });
   somas.forEach(aliveSum => {
     if (aliveSum === undefined) return;
     populacao[aliveSum] = populacao[aliveSum] ? populacao[aliveSum] + 1 : 1;
