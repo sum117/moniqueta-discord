@@ -40,7 +40,7 @@ export async function execute(interaction) {
     await db.set(`${interaction.user.id}.isEditting`, true);
     collector.on('collect', async m => {
       if (m) {
-        await char.interact(interaction, 'edit', m.content);
+        await char.interact(m, 'edit', m.content);
         await db.set(`${m.author.id}.isEditting`, false);
         await m.delete().catch(() => new Error('A mensagem não pode ser deletada pois não existe: playcard.js:45'));
       }

@@ -6,3 +6,4 @@ export * as rps from './rps.js';
 export * as hi from './hi.js';
 export * as top from './top.js';
 export * as log from './log.js';
+export * as calc from './calc.js';

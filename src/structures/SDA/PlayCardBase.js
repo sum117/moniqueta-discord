@@ -170,9 +170,9 @@ export class PlayCardBase {
    */
   async interact(msgSent, action, content = '', attachment = null) {
     const {channel, guildId} = msgSent;
-    const user = msgSent?.author;
+    const user = msgSent?.author ?? msgSent?.user;
     const data = await this.character(msgSent, user);
-    const {name, avatar, sum, dead, phantom} = data;
+    const {name, avatar, sum, dead, phantom, gender} = data;
 
     switch (action) {
       case 'send':
@@ -215,7 +215,7 @@ export class PlayCardBase {
             },
             title: `${
               phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
-            }${phantom === 'ceifador' ? 'Padre ' + name : name}`,
+            }${phantom === 'ceifador' ? (gender === 'masculino' ? 'Padre ' + name : 'Madre ' + name) : name}`,
             thumbnail: {
               url: avatar
             },
@@ -274,7 +274,7 @@ export class PlayCardBase {
       let msg = await channel.messages.fetch(msgId);
       let embed = msg.embeds[0];
       embed = embed.setDescription(content);
-      embed = embed.setImage(`attachment://${embed.image.url.split('/').pop()}` ?? undefined);
+      if (embed?.image?.url) embed.image.url = `attachment://${embed.image.url.split('/').pop()}`;
       await channel.messages.edit(msgId, {
         embeds: [embed]
       });

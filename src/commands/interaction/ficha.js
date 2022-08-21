@@ -146,13 +146,13 @@ export async function execute(interaction) {
               db.delete(`${interaction.guildId}.pending.${trialUser.id}`);
               break;
             case 'rejeitar':
-              trialUser.send({
+              await db.delete(`${interaction.guildId}.pending.${trialUser.id}`);
+              await interaction.message.delete();
+              sheet.delete(trialUser.id);
+              await trialUser.send({
                 content: '❌ Sua última ficha foi rejeitada.',
                 embeds: interaction.message.embeds
               });
-              interaction.message.delete();
-              sheet.delete(trialUser.id);
-              db.delete(`${interaction.guildId}.pending.${trialUser.id}`);
               break;
             case 'contato':
               const ticket = await interaction.guild.channels.create(`disputa-${trialUser.user.username}`, {
