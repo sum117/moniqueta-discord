@@ -14,7 +14,8 @@ export async function execute(msg, args) {
   args = args.replace(/÷/g, '/');
   args = args.replace(/,/g, '.');
   args = args.replace(/ /g, '');
-  args = args.replace(/[^0-9+*(){}.,^\[\]\/\-]/gm, '');
+  args = args.replace(/\^/g, '**');
+  args = args.replace(/[^0-9+*(){}.\[\]\/\-]/gm, '');
 
   if (args.length === 0) {
     msg.channel.send('Você precisa me dizer o que eu devo calcular!');
