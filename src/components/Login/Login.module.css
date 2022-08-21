@@ -30,3 +30,25 @@
 .loginIcon:hover {
   color: var(--green-300);
 }
+.loggedIn {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  top: 10vh;
+  left: 15vw;
+  right: 15vw;
+  margin-top: 1vh;
+  max-width: 56rem;
+  height: 50vh;
+
+  position: fixed;
+  color: var(--gray-300);
+  border-radius: 8px;
+}
+
+.loggedIn div {
+  padding: 0 5rem;
+  background-color: var(--gray-800);
+  border-radius: 8px;
+  margin-right: 0;
+}
