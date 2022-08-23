@@ -4,7 +4,6 @@ import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {Xp} from '../../structures/SDA/Xp.js';
 import {db} from '../../db.js';
 import {bold, quote} from '@discordjs/builders';
-import {prefix} from '../../util';
 export const data = {
   event: 'messageCreate',
   name: 'Enviar Playcard',
@@ -17,7 +16,7 @@ export const data = {
  */
 export async function execute(client, msg) {
   if (msg.type === 'CHANNEL_PINNED_MESSAGE') return;
-  if (msg.content.startsWith(prefix)) return;
+  if (msg.content.startsWith(client.prefix)) return;
   const checkIfThread = (() => {
     if (msg.channel.isThread()) return msg.channel.parent.parentId;
     else return msg.channel.parentId;
