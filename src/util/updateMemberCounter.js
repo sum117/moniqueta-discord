@@ -22,8 +22,8 @@ export function updateMemberCounter(moniqueta, myGuild) {
       return total;
     })();
 
-    moniqueta.postCounter.forEach((time, post) => {
-      if (Date.now() - time > 8 * 3600 * 1000) moniqueta.postCounter.delete(post);
+    moniqueta.postCounter.forEach((time, index) => {
+      if (Date.now() - time > 8 * 3600 * 1000) moniqueta.postCounter = moniqueta.postCounter.splice(index, 1);
     });
     moniqueta.memberCounter.forEach((time, user) => {
       if (Date.now() - time > 8 * 3600 * 1000) moniqueta.memberCounter.delete(user);
@@ -32,7 +32,7 @@ export function updateMemberCounter(moniqueta, myGuild) {
       name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size)
     });
     postCounter.edit({
-      name: postCounter.name.replace(/\d+/, moniqueta.postCounter.size)
+      name: postCounter.name.replace(/\d+/, moniqueta.postCounter.length)
     });
     charCounter.edit({
       name: charCounter.name.replace(/\d+/, totalChars)
