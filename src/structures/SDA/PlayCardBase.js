@@ -72,7 +72,7 @@ export class PlayCardBase {
       else {
         if (interaction.replied) await interaction.editReply({content: 'Carregando personagem...'});
         const currentChar = await db.get(`${user.id}.chars.${chosenChar}`);
-        if (currentChar?.phantom === 'ceifador' && !currentChar?.avatar.match('https://i.imgur.com/')) {
+        if (currentChar?.phantom === 'ceifador' && !currentChar?.avatar.includes('https://i.imgur.com')) {
           const getBase64 = data => Buffer.from(data, 'binary').toString('base64');
           const {ImgurClient} = imgur;
           const imgClient = new ImgurClient({
@@ -80,7 +80,16 @@ export class PlayCardBase {
             clientSecret: process.env.IMGUR_CLIENT_SECRET
           });
           const rawAvatar = await (await axios({url: currentChar?.avatar, responseType: 'arraybuffer'})).data;
-          const firstBuffer = (await sharp(rawAvatar).png().toBuffer()).buffer;
+          const firstBuffer = (
+            await sharp(rawAvatar)
+              .resize({
+                width: 512,
+                height: 512,
+                fit: 'fill'
+              })
+              .png()
+              .toBuffer()
+          ).buffer;
 
           const composition = Buffer.from(reaperIcon(getBase64(firstBuffer)));
 
@@ -93,6 +102,7 @@ export class PlayCardBase {
             })
           ).data.link;
           currentChar.avatar = link;
+          await db.set(`${user.id}.chars.${chosenChar}`, currentChar);
           return currentChar;
         }
         return currentChar;
