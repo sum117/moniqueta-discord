@@ -227,6 +227,7 @@ export class Interaction extends PlayCardBase {
         }
       );
     const editorReplyObject = {
+      content: 'Editando personagem...',
       embeds: [embed],
       components: [
         new MessageActionRow().setComponents(
@@ -270,7 +271,8 @@ export class Interaction extends PlayCardBase {
       if (btn.size < 1) return;
       const [[_messageId, button]] = btn;
       if (!button) return;
-      if (button.customId === 'cancelar') return interaction.editReply({content: 'Edição cancelada.'});
+      if (button.customId === 'cancelar')
+        return interaction.editReply({content: 'Edição cancelada.', embeds: [], components: []});
       const responses = {
         name: 'Digite o novo nome do personagem:',
         avatar: 'Envie um novo link para o avatar do seu personagem:',
@@ -301,7 +303,9 @@ export class Interaction extends PlayCardBase {
         let field = embed.fields.find(f => f.name === dictionary[button.customId]) ?? {};
         if (field?.name !== 'Título' || field?.name !== 'Nome') field.value = msg.content.slice(0, 1021) + '...';
         else field.value = msg.content.slice(0, 1021);
-        await button.editReply(field.name ? field.name : 'Imagem ' + ' atualizado(a) com sucesso para: ' + field.value);
+        await button.editReply(
+          (field.name ? field.name : 'Imagem ') + ' atualizado(a) com sucesso para: ' + field.value
+        );
         await interaction.editReply({embeds: [embed]});
         await msg.delete();
         this.charEditor();
