@@ -271,10 +271,9 @@ export class Interaction extends PlayCardBase {
       if (btn.size < 1) return;
       const [[_messageId, button]] = btn;
       if (!button) return;
-      if (button.customId === 'cancelar') {
-        if (msgCollector) msgCollector.stop({reason: 'cancel'});
+      if (button.customId === 'cancelar')
         return interaction.editReply({content: 'Edição cancelada.', embeds: [], components: []});
-      }
+
       const responses = {
         name: 'Digite o novo nome do personagem:',
         avatar: 'Envie um novo link para o avatar do seu personagem:',
@@ -293,7 +292,7 @@ export class Interaction extends PlayCardBase {
 
       return msgCollector.on('end', async msgs => {
         if (msgs.size < 1) return interaction.editReply({content: 'Você não editou a tempo.'});
-        let [[msgId, msg]] = msgs;
+        let [[_msgId, msg]] = msgs;
         await db.set(`${msg.author.id}.chars.${chosenChar}.${button.customId}`, msg.content);
         const dictionary = {
           name: 'Nome',
