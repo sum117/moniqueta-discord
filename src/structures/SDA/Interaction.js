@@ -271,8 +271,10 @@ export class Interaction extends PlayCardBase {
       if (btn.size < 1) return;
       const [[_messageId, button]] = btn;
       if (!button) return;
-      if (button.customId === 'cancelar')
+      if (button.customId === 'cancelar') {
+        if (msgCollector) msgCollector.stop({reason: 'cancel'});
         return interaction.editReply({content: 'Edição cancelada.', embeds: [], components: []});
+      }
       const responses = {
         name: 'Digite o novo nome do personagem:',
         avatar: 'Envie um novo link para o avatar do seu personagem:',
