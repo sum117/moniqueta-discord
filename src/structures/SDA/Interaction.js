@@ -247,15 +247,7 @@ export class Interaction extends PlayCardBase {
         )
       ]
     };
-    if (character.title) {
-      embed.fields.unshift({name: 'Título', value: character.title});
-      editorReplyObject['embeds'] = [embed];
-      editorReplyObject.components.push(
-        new MessageActionRow().setComponents(
-          new MessageButton().setCustomId('title').setLabel('Editar Título').setEmoji('📝').setStyle('SECONDARY')
-        )
-      );
-    }
+
     await interaction.editReply(editorReplyObject);
     const possibilities = ['name', 'avatar', 'appearance', 'personality', 'title', 'cancelar'];
     const componentCollector = interaction.channel.createMessageComponentCollector({
@@ -293,17 +285,11 @@ export class Interaction extends PlayCardBase {
       return msgCollector.on('end', async msgs => {
         if (msgs.size < 1) return interaction.editReply({content: 'Você não editou a tempo.'});
         let [[_msgId, msg]] = msgs;
-        await db.set(
-          `${msg.author.id}.chars.${chosenChar}.${
-            button.customId === 'title' ? button.customId + '.str' : button.customId
-          }`,
-          msg.content
-        );
+        await db.set(`${msg.author.id}.chars.${chosenChar}.${button.customId}`, msg.content);
         const dictionary = {
           name: 'Nome',
           appearance: 'Descrição Física',
-          personality: 'Personalidade',
-          title: 'Título'
+          personality: 'Personalidade'
         };
         if (msg.content.includes('https://')) embed.image.url = msg.content;
         let field = embed.fields.find(f => f.name === dictionary[button.customId]) ?? {};
