@@ -293,7 +293,12 @@ export class Interaction extends PlayCardBase {
       return msgCollector.on('end', async msgs => {
         if (msgs.size < 1) return interaction.editReply({content: 'Você não editou a tempo.'});
         let [[_msgId, msg]] = msgs;
-        await db.set(`${msg.author.id}.chars.${chosenChar}.${button.customId}`, msg.content);
+        await db.set(
+          `${msg.author.id}.chars.${chosenChar}.${
+            button.customId === 'title' ? button.customId + '.str' : button.customId
+          }`,
+          msg.content
+        );
         const dictionary = {
           name: 'Nome',
           appearance: 'Descrição Física',
