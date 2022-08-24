@@ -295,8 +295,8 @@ export class PlayCardBase {
       return channel.messages.delete(msgId);
     }
   }
-  async list(interaction) {
-    const {user} = interaction;
+  async list(interaction, targetUserId) {
+    const {user} = await interaction.guild.members.fetch({user: targetUserId});
     const data = await this.character(interaction, user);
     const {avatar, sum, phantom} = data;
 

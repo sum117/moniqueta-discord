@@ -18,7 +18,14 @@ export const data = new SCB()
       )
   )
 
-  .addSubcommand(listar => listar.setName('listar').setDescription('Lista todos os seus personagens.'))
+  .addSubcommand(listar =>
+    listar
+      .setName('listar')
+      .setDescription('Lista todos os seus personagens.')
+      .addUserOption(option =>
+        option.setName('user').setDescription('Usuário para listar os personagens.').setRequired(false)
+      )
+  )
   .addSubcommand(escolher =>
     escolher
       .setName('escolher')
@@ -67,7 +74,10 @@ export async function execute(interaction) {
       content: 'Mensagem removida com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'listar') {
-    char.list(interaction);
+    char.list(
+      interaction,
+      interaction.options.getUser('user') ? interaction.options.getUser('user').id : interaction.user.id
+    );
   } else if (interaction.options.getSubcommand() === 'escolher') {
     char.choose(interaction, interaction.options.getString('id'));
   } else if (interaction.options.getSubcommand() === 'top') {
