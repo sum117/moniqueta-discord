@@ -70,6 +70,7 @@ export class PlayCardBase {
           }`
         });
       else {
+        if (interaction.replied) await interaction.editReply({content: 'Carregando personagem...'});
         const currentChar = await db.get(`${user.id}.chars.${chosenChar}`);
         if (currentChar?.phantom === 'ceifador' && !currentChar?.avatar.match('https://i.imgur.com/')) {
           const getBase64 = data => Buffer.from(data, 'binary').toString('base64');
