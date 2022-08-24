@@ -12,17 +12,20 @@ export const data = {
 let interactionPanel = new Map();
 let target;
 let user;
-/** @param {ButtonInteraction} interaction - O botão que inicializou este comando. */
+/** @param {import('discord.js').ButtonInteraction} interaction - O botão que inicializou este comando. */
 export async function execute(interaction) {
   if (interaction.customId === 'interact') {
     target = await (async () => {
       const id = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
-      return interaction.guild.members.fetch(id);
+      return interaction.guild.members.fetch({user: id});
     })();
     interactionPanel.set(target.id, new Interaction(interaction, target));
-    await interactionPanel.get(target.id).panel(interaction.customId);
+
+    return interactionPanel.get(target.id).panel(interaction.customId);
   } else if (interaction.customId.match(/profile|comment|attack/)) {
-    await interactionPanel.get(target.id).panel(interaction.customId);
+    await interaction.deferReply();
+    await interaction.deleteReply();
+    return interactionPanel.get(target.id).panel(interaction.customId);
   } else if (interaction.customId.startsWith('ataque_fisico_')) {
     target = await interaction.guild.members.fetch(interaction.customId.split('_')[2]);
     const staticUser = await interaction.guild.members.fetch(interaction.customId.split('_')[4]);
@@ -32,6 +35,10 @@ export async function execute(interaction) {
   } else if (interaction.customId.match(/atributos|pick_skill|increment_attribute|decrement_attribute/)) {
     const XpManager = new Xp();
     return XpManager.xpPanel(interaction, interaction.customId);
+  } else if (interaction.customId === 'charEditor') {
+    await interaction.deferReply();
+    await interaction.deleteReply();
+    return interactionPanel.get(target.id).panel(interaction.customId);
   } else {
     const conditions = {
       equipar_item: interaction.customId === 'equipar_item',

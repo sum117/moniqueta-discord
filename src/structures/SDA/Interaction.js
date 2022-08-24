@@ -19,7 +19,7 @@ export class Interaction extends PlayCardBase {
     const {interaction, target} = this;
 
     if (action === 'profile') {
-      return await interaction.editReply({
+      return interaction.editReply({
         content: 'Exibindo o perfil do personagem de ' + target.user.username,
         embeds: [await this.profile()],
         components: []
@@ -32,7 +32,7 @@ export class Interaction extends PlayCardBase {
       });
       return this.comment();
     } else if (action === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
-      return await interaction.editReply({
+      return interaction.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
@@ -44,10 +44,10 @@ export class Interaction extends PlayCardBase {
           )
         ]
       });
+    } else if (action === 'charEditor') {
+      await this.charEditor();
     } else {
-      await interaction[interaction.replied || interaction.deferred ? 'followUp' : 'reply']({
-        fetchReply: true,
-        ephemeral: true,
+      const replyObject = {
         content: 'Interagindo com o personagem de ' + target.user.username,
         components: [
           new MessageActionRow().addComponents(
@@ -67,7 +67,20 @@ export class Interaction extends PlayCardBase {
               .setDisabled(interaction.user.id === target.user.id ? true : false)
           )
         ]
-      });
+      };
+      if (interaction.user.id === target.id)
+        replyObject.components[0].components.push(
+          new MessageButton()
+            .setCustomId('charEditor')
+            .setLabel('Editar Personagem')
+            .setEmoji('🖊️')
+            .setStyle('SECONDARY')
+        );
+
+      if (!interaction.replied || !interaction.deferred) {
+        await interaction.deferReply({ephemeral: true});
+        return interaction.editReply(replyObject);
+      } else await interaction.editReply(replyObject);
     }
   }
 
@@ -180,6 +193,119 @@ export class Interaction extends PlayCardBase {
           return false;
         } else return webhooks.first();
       }
+    });
+  }
+  async charEditor() {
+    const {interaction, target} = this;
+    const {id: userId} = interaction.user;
+    const {id: targetId} = target;
+    if (userId !== targetId) return interaction.editReply('Você não pode editar o personagem de outra pessoa.');
+
+    const character = await this.character(interaction, target);
+    let {name, appearance, avatar, personality, sum} = character;
+    let chosenChar = await db.get(`${userId}.chosenChar`);
+    let embed = new MessageEmbed()
+      .setTitle('Editor para ' + name)
+      .setColor(assets.sum[sum].color)
+      .setImage(avatar)
+      .setFooter({
+        text: interaction.user.username,
+        iconURL: interaction.user.displayAvatarURL({dynamic: true, size: 512})
+      })
+      .addFields(
+        {
+          name: 'Nome',
+          value: name
+        },
+        {
+          name: 'Descrição Física',
+          value: appearance.slice(0, 1021) + '...'
+        },
+        {
+          name: 'Personalidade',
+          value: personality.slice(0, 1021) + '...'
+        }
+      );
+    const editorReplyObject = {
+      embeds: [embed],
+      components: [
+        new MessageActionRow().setComponents(
+          new MessageButton().setCustomId('name').setLabel('Editar Nome').setEmoji('🖊️').setStyle('SECONDARY'),
+          new MessageButton().setCustomId('avatar').setLabel('Editar Avatar').setEmoji('🖼️').setStyle('SECONDARY'),
+          new MessageButton()
+            .setCustomId('appearance')
+            .setLabel('Editar Descrição')
+            .setEmoji('📝')
+            .setStyle('SECONDARY'),
+          new MessageButton()
+            .setCustomId('personality')
+            .setLabel('Editar Personalidade')
+            .setEmoji('🤔')
+            .setStyle('SECONDARY'),
+          new MessageButton().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle('DANGER')
+        )
+      ]
+    };
+    if (character.title) {
+      embed.fields.unshift({name: 'Título', value: character.title});
+      editorReplyObject['embeds'] = [embed];
+      editorReplyObject.components.push(
+        new MessageActionRow().setComponents(
+          new MessageButton().setCustomId('title').setLabel('Editar Título').setEmoji('📝').setStyle('SECONDARY')
+        )
+      );
+    }
+    await interaction.editReply(editorReplyObject);
+    const possibilities = ['name', 'avatar', 'appearance', 'personality', 'title', 'cancelar'];
+    const componentCollector = interaction.channel.createMessageComponentCollector({
+      filter: btn => btn.user.id === interaction.user.id && possibilities.includes(btn.customId),
+      time: 120000,
+      max: 1
+    });
+    componentCollector.on('collect', async btn => {
+      await db.set(`${btn.user.id}.isEditting`, true);
+      setTimeout(() => db.set(`${btn.user.id}.isEditting`, false), 120000);
+    });
+    return componentCollector.on('end', async btn => {
+      if (btn.size < 1) return;
+      const [[_messageId, button]] = btn;
+      if (!button) return;
+      if (button.customId === 'cancelar') return interaction.editReply({content: 'Edição cancelada.'});
+      const responses = {
+        name: 'Digite o novo nome do personagem:',
+        avatar: 'Envie um novo link para o avatar do seu personagem:',
+        appearance: 'Digite a nova descrição física do personagem:',
+        personality: 'Digite a nova personalidade do personagem:',
+        title: 'Digite o novo título do personagem:'
+      };
+      await button.deferReply({ephemeral: true});
+      await button.editReply({content: responses[button.customId]});
+
+      let msgCollector = button.channel.createMessageCollector({
+        filter: msg => msg.author.id === button.user.id,
+        time: 10 * 60 * 1000,
+        max: 1
+      });
+
+      return msgCollector.on('end', async msgs => {
+        if (msgs.size < 1) return interaction.editReply({content: 'Você não editou a tempo.'});
+        let [[msgId, msg]] = msgs;
+        await db.set(`${msg.author.id}.chars.${chosenChar}.${button.customId}`, msg.content);
+        const dictionary = {
+          name: 'Nome',
+          appearance: 'Descrição Física',
+          personality: 'Personalidade',
+          title: 'Título'
+        };
+        if (msg.content.includes('https://')) embed.image.url = msg.content;
+        let field = embed.fields.find(f => f.name === dictionary[button.customId]) ?? {};
+        if (field?.name !== 'Título' || field?.name !== 'Nome') field.value = msg.content.slice(0, 1021) + '...';
+        else field.value = msg.content.slice(0, 1021);
+        await button.editReply(field.name ? field.name : 'Imagem ' + ' atualizado(a) com sucesso para: ' + field.value);
+        await interaction.editReply({embeds: [embed]});
+        await msg.delete();
+        this.charEditor();
+      });
     });
   }
 }
