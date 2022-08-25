@@ -1,5 +1,13 @@
 import {channelMention, userMention} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, EmbedBuilder, TextInputBuilder, ButtonStyle, ModalBuilder} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  TextInputBuilder,
+  ButtonStyle,
+  ModalBuilder,
+  InteractionType
+} from 'discord.js';
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
@@ -19,7 +27,7 @@ export async function execute(interaction) {
   if (![channels.rpRegistro, channels.adminFichaRegistro].includes(channelId)) return;
 
   switch (interaction.type) {
-    case 'messageComponent':
+    case InteractionType.MessageComponent:
       switch (channelId) {
         case channels.rpRegistro:
           if (!interaction.customId.match(/soma|genero|purgatorio|item_inicial/)) return;
@@ -188,7 +196,7 @@ export async function execute(interaction) {
           }
       }
       break;
-    case 'modalSubmit':
+    case InteractionType.ModalSubmit:
       if (customId === 'ficha') {
         await interaction.reply({
           ephemeral: true,

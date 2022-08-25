@@ -1,3 +1,4 @@
+import {InteractionType} from 'discord.js';
 import {channels} from '../../util';
 export const data = {
   event: 'interactionCreate',
@@ -7,7 +8,7 @@ export const data = {
 
 export async function execute(interaction) {
   if (interaction.channelId !== channels.rolesChannel) return;
-  if (interaction.isSelectMenu()) {
+  if (interaction.type === InteractionType.MessageComponent) {
     const possibleRoles = interaction.component.options.map(option => option.value);
     await interaction.member.roles.remove(possibleRoles);
     await interaction.member.roles.add(interaction.values);
