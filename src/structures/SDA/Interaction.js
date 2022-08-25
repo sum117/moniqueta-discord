@@ -259,7 +259,7 @@ export class Interaction extends PlayCardBase {
             .setLabel('Editar Personalidade')
             .setEmoji('🤔')
             .setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle('DANGER')
+          new ButtonBuilder().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle(ButtonStyle.Danger)
         )
       ]
     };
