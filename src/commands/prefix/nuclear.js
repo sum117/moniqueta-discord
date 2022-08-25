@@ -1,4 +1,3 @@
-
 export const data = {
   event: 'messageCreate',
   kind: 'regular',

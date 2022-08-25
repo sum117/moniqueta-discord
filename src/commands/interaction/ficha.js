@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 
 import {db} from '../../db.js';
-import {assets,PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
+import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
 const {sum} = assets;
 const sheet = new Map();

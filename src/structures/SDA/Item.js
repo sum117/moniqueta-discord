@@ -1,9 +1,5 @@
 import {bold} from '@discordjs/builders';
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
-} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle} from 'discord.js';
 
 import {db} from '../../db.js';
 import {embedComponent, title} from '../../util';

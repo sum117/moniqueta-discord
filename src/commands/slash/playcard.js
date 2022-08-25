@@ -1,10 +1,10 @@
 import {bold, SlashCommandBuilder as SCB, userMention} from '@discordjs/builders';
-import { EmbedBuilder, InteractionType} from 'discord.js';
+import {EmbedBuilder, InteractionType} from 'discord.js';
 import fs from 'fs';
 import YAML from 'yaml';
 
 import {db} from '../../db.js';
-import {assets,PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
+import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {delay} from '../../util';
 export const data = new SCB()
   .setName('playcard')

@@ -1,4 +1,3 @@
-
 export const data = {
   name: 'Copiar Mensagem',
   kind: 'regular',
