@@ -2,7 +2,6 @@ import {bold} from '@discordjs/builders';
 import {
   ButtonInteraction,
   ButtonStyle,
-  Interaction,
   ActionRowBuilder,
   ButtonBuilder,
   SelectMenuBuilder,
@@ -34,9 +33,6 @@ export class Xp extends PlayCardBase {
 
     const pickedSkill = () => interaction.values[0];
 
-    /**
-     * @type {Interaction}
-     */
     const panel = () => {
       return {
         title: `Painel de Atributos de ${character.name}`,

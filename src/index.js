@@ -1,17 +1,13 @@
 import {Client, Collection, SelectMenuBuilder} from 'discord.js';
-
-import {Player} from 'discord-player';
 import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles} from './util';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
-import * as musicCommands from './commands/music';
 import {mudaeTimer} from './commands/cron';
 import {db} from './db.js';
 export const moniqueta = new Client({
   intents: 32767
 });
-export const player = new Player(moniqueta);
 moniqueta.commands = new Collection();
 moniqueta.memberCounter = new Collection();
 moniqueta.postCounter = [];
@@ -27,62 +23,14 @@ moniqueta.on('ready', async () => {
     });
   await updateMemberCounter(moniqueta, myGuild);
   await registerSlashCommands(moniqueta, myGuild);
-  const musicPlayerEvents = new Map([
-    [
-      'error',
-      (queue, error) => {
-        throw new Error(`${queue.guild.name} Erro emitido da lista: ${error.message}`);
-      }
-    ],
-    [
-      'connectionError',
-      (queue, error) => {
-        throw new Error(`[${queue.guild.name}] Erro emitido da conexão: ${error.message}`);
-      }
-    ],
-    [
-      'trackStart',
-      (queue, track) => {
-        queue.metadata.send(`[${queue.guild.name}] Começou a tocar: ${track.title}`);
-      }
-    ],
-    [
-      'trackAdd',
-      (queue, track) => {
-        queue.metadata.send(`🎶 Adicionei **${track.title}** para a fila!`);
-      }
-    ],
-    [
-      'botDisconnect',
-      queue => {
-        queue.metadata.send('😡 Eu fui desconectada do canal de voz... vou deletar a lista de todo mundo!');
-      }
-    ],
-    [
-      'channelEmpty',
-      queue => {
-        queue.metadata.send('💔 Vocês me deixaram sozinha... vou embora.');
-      }
-    ],
-    [
-      'queueEnd',
-      queue => {
-        queue.metadata.send('✅ Terminei de tocar tudo! O que vamos fazer agora?');
-      }
-    ]
+  await loadEvents(moniqueta, [
+    {once: 'true', name: 'ready'},
+    {name: 'messageCreate'},
+    {name: 'interactionCreate'},
+    {name: 'guildMemberAdd'},
+    {name: 'guildMemberRemove'},
+    {name: 'inviteCreate'}
   ]);
-  await loadEvents(
-    [moniqueta, player],
-    [
-      {once: 'true', name: 'ready'},
-      {name: 'messageCreate'},
-      {name: 'interactionCreate'},
-      {name: 'guildMemberAdd'},
-      {name: 'guildMemberRemove'},
-      {name: 'inviteCreate'}
-    ],
-    musicPlayerEvents
-  );
 
   // Salvando invites
   await moniqueta.guilds.fetch(myGuild).then(guild =>
@@ -94,7 +42,7 @@ moniqueta.on('ready', async () => {
     })
   );
   // Registrando comandos
-  for (const commands of [slashCommands, prefixCommands, musicCommands]) {
+  for (const commands of [slashCommands, prefixCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
       moniqueta.commands.set(key, [command.data.description, command.data?.kind]);
     });

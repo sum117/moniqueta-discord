@@ -1,5 +1,5 @@
 import {channelMention, userMention} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, EmbedBuilder, Modal, TextInputBuilder, ButtonStyle} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, EmbedBuilder, TextInputBuilder, ButtonStyle, ModalBuilder} from 'discord.js';
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
@@ -344,10 +344,10 @@ async function updatePopulation(interaction) {
 /**
  *
  * @param {Array<FormOptions>} options - Uma array do tipo {@link FormOptions} contendo os campos a serem exibidos no formulário.
- * @return {Modal} `Modal` Um objeto do tipo {@link Modal} que representa o formulário.
+ * @return {ModalBuilder} `ModalBuilder` Um objeto do tipo {@link ModalBuilder} que representa o formulário.
  */
 export function createForm(options) {
-  const form = new Modal().setCustomId('ficha').setTitle('Ficha de Personagem');
+  const form = new ModalBuilder().setCustomId('ficha').setTitle('Ficha de Personagem');
   const array = options.map(option => {
     const [required = true, customId = '', label = '', style = '', placeholder = '', maxLength = 128] = option;
     return new TextInputBuilder()

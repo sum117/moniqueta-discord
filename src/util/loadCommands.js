@@ -5,8 +5,6 @@ import * as interactionCommands from '../commands/interaction';
 import * as prefixlessCommands from '../commands/prefixless';
 import * as prefixCommands from '../commands/prefix';
 import * as commandSystems from '../commands/systems';
-import * as musicCommands from '../commands/music';
-const music = Object(musicCommands);
 
 const slash = Object(slashCommands);
 const interactions = Object(interactionCommands);
@@ -14,7 +12,7 @@ const prefixless = Object(prefixlessCommands);
 const prefixed = Object(prefixCommands);
 const systems = Object(commandSystems);
 
-export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
+export async function loadCommands(event, moniqueta, ...args) {
   switch (event) {
     case 'messageCreate':
       const msg = args[0];
@@ -32,28 +30,12 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
       }
       break;
     case 'interactionCreate':
+      /**
+       * @type {import('discord.js').Interaction}
+       */
       const interaction = args[0];
       if (interaction.type === InteractionType.ApplicationCommand) {
         if (slash[interaction.commandName]) await slash[interaction.commandName].execute(interaction, moniqueta);
-        else if (music[interaction?.options.getSubcommand()]) {
-          if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {
-            return void (await interaction.reply({
-              content: '😡 Ei! Você não tá num canal de música, tá tentando me bugar?!',
-              ephemeral: true
-            }));
-          }
-          if (
-            interaction.guild.me.voice.channelId &&
-            interaction.member.voice.channelId !== interaction.guild.me.voice.channelId
-          ) {
-            return void (await interaction.reply({
-              content:
-                '😡 Eu sei que você quer ficar sozinho, mas se sou eu que vou tocar pra você, vai ter que ficar no mesmo canal que eu!',
-              ephemeral: true
-            }));
-          }
-          await music[interaction.options.getSubcommand()].execute(interaction, musicPlayer);
-        }
       } else {
         for (const command in interactions) {
           if (interactions[command].data.event === event) await interactions[command].execute(interaction, moniqueta);

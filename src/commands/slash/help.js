@@ -1,4 +1,4 @@
-import {Collection, Interaction, EmbedBuilder} from 'discord.js';
+import {Collection, CommandInteraction, EmbedBuilder} from 'discord.js';
 import {inlineCode, bold} from '@discordjs/builders';
 import {SlashCommandBuilder} from '@discordjs/builders';
 export const data = new SlashCommandBuilder()
@@ -6,7 +6,7 @@ export const data = new SlashCommandBuilder()
   .setDescription('Mostra todos os comandos disponíveis na moniqueta.');
 
 /**
- * @param {Interaction} interaction
+ * @param {CommandInteraction} interaction
  */
 export async function execute(interaction, client) {
   const moniqueta = client;
@@ -30,7 +30,6 @@ export async function execute(interaction, client) {
         commands
           .filter(([, type]) => {
             if (!type) return false;
-            else if (type === 'music') return false;
             return true;
           })
           .map(([description], command) => inlineCode(moniqueta.prefix + command) + ' ' + bold(description))
@@ -46,17 +45,8 @@ export async function execute(interaction, client) {
     .setFooter({
       text: '💘 Eu estou em construção, tenha paciência!'
     });
-  const embed2 = new EmbedBuilder()
-    .setTitle('🎶 Comandos de Música')
-    .setColor(12340060)
-    .setDescription(
-      commands
-        .filter(([, type]) => type === 'music')
-        .map(([description], command) => inlineCode('/' + command) + ' ' + bold(description))
-        .join('\n')
-    );
   return await interaction.reply({
     content: 'Todos os comandos atualmente disponíveis em mim: ',
-    embeds: [embed, embed2]
+    embeds: [embed]
   });
 }
