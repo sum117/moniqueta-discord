@@ -17,7 +17,7 @@ export const data = {
 /** @param {Message} msg A mensagem que executou este comando*/
 export async function execute(msg, args) {
   // Argumentos raiz e erros.
-  if (!msg.member.permissions.has('MANAGE_GUILD'))
+  if (!msg.member.permissions.has('manageGuild'))
     return msg.reply('❌ Você não pode usar esse comando pois não é um administrador.');
   const comando = args?.[0] ? (args[0].match(/\d{17,20}/) ? args[0] : undefined) : undefined;
   if (!comando)

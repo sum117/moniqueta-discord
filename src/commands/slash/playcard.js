@@ -1,4 +1,4 @@
-import {CommandInteraction, MessageEmbed} from 'discord.js';
+import {CommandInteraction, EmbedBuilder, InteractionType} from 'discord.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {SlashCommandBuilder as SCB, userMention, bold} from '@discordjs/builders';
 import {db} from '../../db.js';
@@ -36,7 +36,7 @@ export const data = new SCB()
 
 /** @param {CommandInteraction} interaction A opção que executou este comando*/
 export async function execute(interaction) {
-  if (!interaction.isCommand()) return;
+  if (interaction.type !== InteractionType.ApplicationCommand) return;
   const char = new PlayCardBase();
   if (interaction.options.getSubcommand() === 'editar') {
     await interaction.deferReply({ephemeral: true});
@@ -136,7 +136,7 @@ export async function execute(interaction) {
 
     await interaction.editReply({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setAuthor({
             name: '🏆 Top 15 Personagens do Servidor 🏆',
             iconURL: interaction.guild.iconURL({dynamic: true, size: 512})

@@ -1,4 +1,4 @@
-import {Client, Collection, MessageSelectMenu} from 'discord.js';
+import {Client, Collection, SelectMenuBuilder} from 'discord.js';
 
 import {Player} from 'discord-player';
 import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles} from './util';
@@ -266,7 +266,7 @@ async function changeComponentOptions(
 ) {
   const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
   const component = message.components[actionRow].setComponents(
-    new MessageSelectMenu()
+    new SelectMenuBuilder()
       .setCustomId(customId)
       .setMaxValues(2)
       .setMinValues(1)

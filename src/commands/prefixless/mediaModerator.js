@@ -1,6 +1,6 @@
 import {channels, bulkEmoji} from '../../util';
 import {channelMention, userMention} from '@discordjs/builders';
-import {MessageAttachment} from 'discord.js';
+import {AttachmentBuilder} from 'discord.js';
 export const data = {
   event: 'messageCreate',
   name: 'Media Moderator',
@@ -11,7 +11,7 @@ export function execute(client, msg) {
     setTimeout(() => {
       if (msg.attachments.size >= 1) {
         msg.attachments.forEach(attachment => {
-          const media = new MessageAttachment(attachment.url);
+          const media = new AttachmentBuilder(attachment.url);
 
           msg.guild.channels.cache
             .get(channels.mediaChannel)

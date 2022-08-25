@@ -1,5 +1,5 @@
 import {codeBlock, userMention} from '@discordjs/builders';
-import {MessageEmbed} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 export const data = {
   event: 'messageCreate',
   kind: 'regular',
@@ -33,7 +33,7 @@ export async function execute(msg, args) {
   const link = paragraphs.pop();
   if (!link?.includes('http')) return msg.channel.send('❌ Você não informou um link no último elemento do parâmetro.');
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle(parsedTitle.join(' '))
     .setDescription(paragraphs.join('\n'))
     .setImage(link)

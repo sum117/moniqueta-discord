@@ -1,5 +1,5 @@
 import {channelMention, userMention} from '@discordjs/builders';
-import {MessageActionRow, MessageButton, MessageEmbed, Modal, TextInputComponent} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, EmbedBuilder, Modal, TextInputBuilder, ButtonStyle} from 'discord.js';
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
@@ -19,7 +19,7 @@ export async function execute(interaction) {
   if (![channels.rpRegistro, channels.adminFichaRegistro].includes(channelId)) return;
 
   switch (interaction.type) {
-    case 'MESSAGE_COMPONENT':
+    case 'messageComponent':
       switch (channelId) {
         case channels.rpRegistro:
           if (!interaction.customId.match(/soma|genero|purgatorio|item_inicial/)) return;
@@ -162,11 +162,11 @@ export async function execute(interaction) {
                 permissionOverwrites: [
                   {
                     id: trialUser.user.id,
-                    allow: ['SEND_MESSAGES', 'VIEW_CHANNEL']
+                    allow: ['sendMessages', 'viewChannel']
                   },
                   {
                     id: interaction.guild.roles.everyone.id,
-                    deny: ['VIEW_CHANNEL']
+                    deny: ['viewChannel']
                   }
                 ]
               });
@@ -175,7 +175,7 @@ export async function execute(interaction) {
                   trialUser.id
                 )}, uma disputa para a sua última ficha foi aberta por ${userMention(user.id)}!`
               });
-              const contactButton = new MessageButton(interaction.component).setDisabled(true);
+              const contactButton = new ButtonBuilder(interaction.component).setDisabled(true);
               interaction.message.edit({
                 components: (() => {
                   return [interaction.message.components[0].spliceComponents(-2, 1, contactButton)];
@@ -188,7 +188,7 @@ export async function execute(interaction) {
           }
       }
       break;
-    case 'MODAL_SUBMIT':
+    case 'modalSubmit':
       if (customId === 'ficha') {
         await interaction.reply({
           ephemeral: true,
@@ -220,7 +220,7 @@ export async function execute(interaction) {
       sheet.set(user.id, new Map([...choices, ...userInput]));
       const embedArray = (() => {
         const array = [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setAuthor({
               name: user.username,
               iconURL: user.avatarURL({
@@ -259,7 +259,7 @@ export async function execute(interaction) {
         ];
         userInput.delete('nome');
         userInput.forEach((value, key) => {
-          const embed = new MessageEmbed()
+          const embed = new EmbedBuilder()
             .setTitle(title(key))
             .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
             .setDescription(value);
@@ -270,10 +270,10 @@ export async function execute(interaction) {
         });
         return array;
       })();
-      const components = new MessageActionRow().addComponents(
-        new MessageButton().setCustomId('aprovar').setLabel('Aprovado').setEmoji('✅').setStyle('SUCCESS'),
-        new MessageButton().setCustomId('contato').setLabel('Disputar').setEmoji('💬').setStyle('SECONDARY'),
-        new MessageButton().setCustomId('rejeitar').setLabel('Rejeitado').setEmoji('❌').setStyle('DANGER')
+      const components = new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('aprovar').setLabel('Aprovado').setEmoji('✅').setStyle(ButtonStyle.Primary),
+        new ButtonBuilder().setCustomId('contato').setLabel('Disputar').setEmoji('💬').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('rejeitar').setLabel('Rejeitado').setEmoji('❌').setStyle(ButtonStyle.Danger)
       );
       canalDeAdmin.send({
         content: `Ficha de ${user}`,
@@ -350,7 +350,7 @@ export function createForm(options) {
   const form = new Modal().setCustomId('ficha').setTitle('Ficha de Personagem');
   const array = options.map(option => {
     const [required = true, customId = '', label = '', style = '', placeholder = '', maxLength = 128] = option;
-    return new TextInputComponent()
+    return new TextInputBuilder()
       .setRequired(required)
       .setCustomId(customId)
       .setLabel(label)
@@ -358,7 +358,7 @@ export function createForm(options) {
       .setPlaceholder(placeholder)
       .setMaxLength(maxLength);
   });
-  const rows = array.map(field => new MessageActionRow().addComponents(field));
+  const rows = array.map(field => new ActionRowBuilder().addComponents(field));
   form.addComponents(rows);
   return form;
 }

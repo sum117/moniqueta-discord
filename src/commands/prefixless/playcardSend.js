@@ -15,7 +15,7 @@ export const data = {
  * @param {Message} msg
  */
 export async function execute(client, msg) {
-  if (msg.type === 'CHANNEL_PINNED_MESSAGE') return;
+  if (msg.type === 'ChannelPinnedMessage') return;
   if (msg.content.startsWith(client.prefix)) return;
   const checkIfThread = (() => {
     if (msg.channel.isThread()) return msg.channel.parent.parentId;

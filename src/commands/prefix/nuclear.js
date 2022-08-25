@@ -11,7 +11,7 @@ export const data = {
  * @param {Number} number  O numero de iterações.
  */
 export async function execute(msg) {
-  if (!msg.member.permissions.has('MANAGE_GUILD')) {
+  if (!msg.member.permissions.has('manageGuild')) {
     return msg.reply('❌ Apenas administradores podem usar bombas nucleares.');
   }
   await msg.channel.send({

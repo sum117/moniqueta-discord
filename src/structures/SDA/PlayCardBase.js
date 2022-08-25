@@ -1,4 +1,4 @@
-import {Formatters, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
+import {Formatters, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
 import {bold} from '@discordjs/builders';
@@ -150,7 +150,7 @@ export class PlayCardBase {
     return canalAprovados.send({
       content: `Ficha de ${userMention(membro.user.id)}, aprovada por ${userMention(aprovador.id)}`,
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle(name)
           .setThumbnail(avatar)
           .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
@@ -177,7 +177,7 @@ export class PlayCardBase {
    *
    * @param {Message} msgSent | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
-   * @param {MessageAttachment} attachment A imagem que será usada para a ação.
+   * @param {AttachmentBuilder} attachment A imagem que será usada para a ação.
    */
   async interact(msgSent, action, content = '', attachment = null) {
     const {channel, guildId} = msgSent;
@@ -267,9 +267,17 @@ export class PlayCardBase {
             ]
           : [],
         components: [
-          new MessageActionRow().addComponents(
-            new MessageButton().setCustomId('interact').setEmoji('🖐️').setLabel('Interagir').setStyle('PRIMARY'),
-            new MessageButton().setCustomId('inventario').setEmoji('🎒').setLabel('Inventário').setStyle('SUCCESS')
+          new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setCustomId('interact')
+              .setEmoji('🖐️')
+              .setLabel('Interagir')
+              .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+              .setCustomId('inventario')
+              .setEmoji('🎒')
+              .setLabel('Inventário')
+              .setStyle(ButtonStyle.Success)
           )
         ]
       });

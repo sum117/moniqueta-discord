@@ -10,7 +10,7 @@ export const data = {
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg, args) {
-  if (!msg.member.permissions.has('MANAGE_GUILD')) {
+  if (!msg.member.permissions.has('manageGuild')) {
     return msg.reply('❌ Você não tem permissão para usar este comando.');
   }
   for (const messageToCopy of args) {

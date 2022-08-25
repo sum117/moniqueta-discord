@@ -1,5 +1,5 @@
 import {prefix} from './misc.js';
-import {GuildMember} from 'discord.js';
+import {GuildMember, InteractionType} from 'discord.js';
 import * as slashCommands from '../commands/slash';
 import * as interactionCommands from '../commands/interaction';
 import * as prefixlessCommands from '../commands/prefixless';
@@ -33,7 +33,7 @@ export async function loadCommands(event, [moniqueta, musicPlayer], ...args) {
       break;
     case 'interactionCreate':
       const interaction = args[0];
-      if (interaction.isCommand()) {
+      if (interaction.type === InteractionType.ApplicationCommand) {
         if (slash[interaction.commandName]) await slash[interaction.commandName].execute(interaction, moniqueta);
         else if (music[interaction?.options.getSubcommand()]) {
           if (!(interaction.member instanceof GuildMember) || !interaction.member.voice.channel) {

@@ -1,5 +1,5 @@
 import {db} from '../../db.js';
-import {MessageEmbed} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {userMention} from '@discordjs/builders';
 
 export const data = {
@@ -41,7 +41,7 @@ export async function execute(msg) {
     (await msg.reply('Carregando...')).delete();
   } while (firstPlace === undefined);
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('🏆 MENSAGENS - TOP 15 🏆')
     .setDescription(str)
     .setColor('RANDOM')

@@ -1,10 +1,11 @@
 import {bold} from '@discordjs/builders';
 import {
   ButtonInteraction,
+  ButtonStyle,
   Interaction,
-  MessageActionRow,
-  MessageButton,
-  MessageSelectMenu,
+  ActionRowBuilder,
+  ButtonBuilder,
+  SelectMenuBuilder,
   SelectMenuInteraction
 } from 'discord.js';
 import {db} from '../../db.js';
@@ -117,8 +118,8 @@ export class Xp extends PlayCardBase {
           ephemeral: true,
           embeds: [panel()],
           components: [
-            new MessageActionRow().addComponents(
-              new MessageSelectMenu()
+            new ActionRowBuilder().addComponents(
+              new SelectMenuBuilder()
                 .setCustomId('pick_skill')
                 .setPlaceholder('Selecione uma habilidade...')
                 .setMaxValues(1)
@@ -134,19 +135,19 @@ export class Xp extends PlayCardBase {
                   })
                 )
             ),
-            new MessageActionRow().addComponents(
-              new MessageButton()
+            new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
                 .setCustomId('increment_attribute')
                 .setEmoji('➕')
                 .setLabel('Aumentar')
                 .setDisabled(true)
-                .setStyle('SUCCESS'),
-              new MessageButton()
+                .setStyle(ButtonStyle.Success),
+              new ButtonBuilder()
                 .setCustomId('decrement_attribute')
                 .setEmoji('➖')
                 .setLabel('Diminuir')
                 .setDisabled(true)
-                .setStyle('DANGER')
+                .setStyle(ButtonStyle.Danger)
             )
           ]
         });

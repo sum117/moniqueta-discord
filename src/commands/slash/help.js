@@ -1,4 +1,4 @@
-import {Collection, Interaction, MessageEmbed} from 'discord.js';
+import {Collection, Interaction, EmbedBuilder} from 'discord.js';
 import {inlineCode, bold} from '@discordjs/builders';
 import {SlashCommandBuilder} from '@discordjs/builders';
 export const data = new SlashCommandBuilder()
@@ -16,7 +16,7 @@ export async function execute(interaction, client) {
    */
   const commands = moniqueta.commands;
   const owner = await interaction.guild.fetchOwner();
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setDescription(
       bold('Comandos de Barra') +
         '\n\n' +
@@ -46,7 +46,7 @@ export async function execute(interaction, client) {
     .setFooter({
       text: '💘 Eu estou em construção, tenha paciência!'
     });
-  const embed2 = new MessageEmbed()
+  const embed2 = new EmbedBuilder()
     .setTitle('🎶 Comandos de Música')
     .setColor(12340060)
     .setDescription(

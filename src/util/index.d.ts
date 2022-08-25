@@ -1,4 +1,4 @@
-import {Client, Message, MessageEmbed, Snowflake} from 'discord.js';
+import {Client, Message, EmbedBuilder, Snowflake} from 'discord.js';
 
 /**
  * Gera uma string com o tempo formatado de forma legível.
@@ -55,7 +55,7 @@ export declare async function loadEvents(
 export declare async function embedComponent(
   description: string,
   fields?: [{name: string; value: string}]
-): Promise<MessageEmbed>;
+): Promise<EmbedBuilder>;
 
 export declare function delay(n: number): Promise<void>;
 

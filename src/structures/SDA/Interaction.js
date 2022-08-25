@@ -1,5 +1,5 @@
 import {bold, quote, userMention} from '@discordjs/builders';
-import {ButtonInteraction, GuildMember, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
+import {ButtonInteraction, GuildMember, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
 import {assets, PlayCardBase} from './PlayCardBase.js';
@@ -35,12 +35,12 @@ export class Interaction extends PlayCardBase {
       return interaction.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
-          new MessageActionRow().addComponents(
-            new MessageButton()
+          new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
               .setCustomId(`ataque_fisico_${target.id}_${interaction.message.id}_${interaction.user.id}`)
               .setLabel('Ataque Físico')
               .setEmoji('⚔️')
-              .setStyle('DANGER')
+              .setStyle(ButtonStyle.Danger)
           )
         ]
       });
@@ -50,31 +50,39 @@ export class Interaction extends PlayCardBase {
       const replyObject = {
         content: 'Interagindo com o personagem de ' + target.user.username,
         components: [
-          new MessageActionRow().addComponents(
-            new MessageButton()
+          new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
               .setCustomId('atributos')
               .setLabel('Atributos')
               .setEmoji('📈')
-              .setStyle('SECONDARY')
+              .setStyle(ButtonStyle.Secondary)
               .setDisabled(interaction.user.id === target.id ? false : true),
-            new MessageButton().setCustomId('profile').setLabel('Perfil').setEmoji('📝').setStyle('SECONDARY'),
-            new MessageButton().setCustomId('comment').setLabel('Comentar').setEmoji('💬').setStyle('SECONDARY'),
-            new MessageButton()
+            new ButtonBuilder()
+              .setCustomId('profile')
+              .setLabel('Perfil')
+              .setEmoji('📝')
+              .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+              .setCustomId('comment')
+              .setLabel('Comentar')
+              .setEmoji('💬')
+              .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
               .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
               .setLabel('Atacar')
               .setEmoji('🗡️')
-              .setStyle('SECONDARY')
+              .setStyle(ButtonStyle.Secondary)
               .setDisabled(interaction.user.id === target.user.id ? true : false)
           )
         ]
       };
       if (interaction.user.id === target.id)
         replyObject.components[0].components.push(
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId('charEditor')
             .setLabel('Editar Personagem')
             .setEmoji('🖊️')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
         );
 
       if (!interaction.replied || !interaction.deferred) {
@@ -92,7 +100,7 @@ export class Interaction extends PlayCardBase {
     const totalXp = db?.xpCount ?? 0;
     const level = db?.level ?? 1;
     const nextLevelXp = levels[level] === 0 ? 4089 : levels[level];
-    return new MessageEmbed()
+    return new EmbedBuilder()
       .setTitle(name)
       .setThumbnail(avatar)
       .setColor(assets.sum[sum].color)
@@ -204,7 +212,7 @@ export class Interaction extends PlayCardBase {
     const character = await this.character(interaction, target);
     let {name, appearance, avatar, personality, sum} = character;
     let chosenChar = await db.get(`${userId}.chosenChar`);
-    let embed = new MessageEmbed()
+    let embed = new EmbedBuilder()
       .setTitle('Editor para ' + name)
       .setColor(assets.sum[sum].color)
       .setImage(avatar)
@@ -230,20 +238,28 @@ export class Interaction extends PlayCardBase {
       content: 'Editando personagem...',
       embeds: [embed],
       components: [
-        new MessageActionRow().setComponents(
-          new MessageButton().setCustomId('name').setLabel('Editar Nome').setEmoji('🖊️').setStyle('SECONDARY'),
-          new MessageButton().setCustomId('avatar').setLabel('Editar Avatar').setEmoji('🖼️').setStyle('SECONDARY'),
-          new MessageButton()
+        new ActionRowBuilder().setComponents(
+          new ButtonBuilder()
+            .setCustomId('name')
+            .setLabel('Editar Nome')
+            .setEmoji('🖊️')
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
+            .setCustomId('avatar')
+            .setLabel('Editar Avatar')
+            .setEmoji('🖼️')
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
             .setCustomId('appearance')
             .setLabel('Editar Descrição')
             .setEmoji('📝')
-            .setStyle('SECONDARY'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder()
             .setCustomId('personality')
             .setLabel('Editar Personalidade')
             .setEmoji('🤔')
-            .setStyle('SECONDARY'),
-          new MessageButton().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle('DANGER')
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonBuilder().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle('DANGER')
         )
       ]
     };

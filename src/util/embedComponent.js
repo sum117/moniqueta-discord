@@ -1,8 +1,8 @@
-import {MessageEmbed} from 'discord.js';
+import {EmbedBuilder} from 'discord.js';
 import {moniqueta} from '../index.js';
 
 export async function embedComponent(description = '', fields = [{name: '', value: ''}] ?? undefined) {
-  return new MessageEmbed()
+  return new EmbedBuilder()
     .setColor('RANDOM')
     .setTimestamp(Date.now())
     .setFooter({

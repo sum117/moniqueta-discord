@@ -1,5 +1,12 @@
 import {bold} from '@discordjs/builders';
-import {MessageActionRow, MessageButton, MessageSelectMenu, ButtonInteraction, SelectMenuInteraction} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  SelectMenuBuilder,
+  ButtonInteraction,
+  SelectMenuInteraction,
+  ButtonStyle
+} from 'discord.js';
 import {db} from '../../db.js';
 import {title, embedComponent} from '../../util';
 import {Combat} from './Combat.js';
@@ -131,10 +138,10 @@ export class Item extends Combat {
           }
         ],
         components: [
-          new MessageActionRow().addComponents(generateButtons().splice(0, 5)),
-          new MessageActionRow().addComponents(generateButtons().slice(5)),
-          new MessageActionRow().addComponents({
-            type: 'SELECT_MENU',
+          new ActionRowBuilder().addComponents(generateButtons().splice(0, 5)),
+          new ActionRowBuilder().addComponents(generateButtons().slice(5)),
+          new ActionRowBuilder().addComponents({
+            type: 'selectMenu',
             customId: 'equipar_item',
             placeholder: 'Aguardando seleção de slot...',
             options: [
@@ -191,7 +198,7 @@ export class Item extends Combat {
           });
         selector.setOptions(newOptions);
         selector.placeholder = title(interaction.customId);
-        staticEmbed.components.splice(2, 1, new MessageActionRow().addComponents(selector));
+        staticEmbed.components.splice(2, 1, new ActionRowBuilder().addComponents(selector));
         return await interaction?.update({
           embeds: msgObj().embeds,
           components: staticEmbed.components
@@ -296,7 +303,7 @@ export class Item extends Combat {
 }
 function generateButtons() {
   return Object.entries(assets.itens).map(([slot, emoji]) => {
-    return new MessageButton().setCustomId(slot).setStyle('PRIMARY').setEmoji(emoji);
+    return new ButtonBuilder().setCustomId(slot).setStyle(ButtonStyle.Primary).setEmoji(emoji);
   });
 }
 

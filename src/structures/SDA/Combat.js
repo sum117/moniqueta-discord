@@ -1,4 +1,4 @@
-import {MessageActionRow, MessageButton} from 'discord.js';
+import {ButtonStyle, ActionRowBuilder, ButtonBuilder} from 'discord.js';
 import {bold, userMention} from '@discordjs/builders';
 import {db} from '../../db.js';
 import {PlayCardBase} from './PlayCardBase.js';
@@ -202,15 +202,15 @@ export class Combat extends PlayCardBase {
         alvo.name
       )}!\nO destino dele(a) deverá ser decidido nos proximos dez minutos, ou morrerá de sangramento de qualquer forma!`,
       components: [
-        new MessageActionRow().addComponents([
-          new MessageButton()
+        new ActionRowBuilder().addComponents([
+          new ButtonBuilder()
             .setCustomId(`executar_${target.id}_${userId}`)
-            .setStyle('DANGER')
+            .setStyle(ButtonStyle.Danger)
             .setLabel('EXECUTAR!')
             .setEmoji('🗡️'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(`poupar_${target.id}_${userId}`)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setLabel('POUPAR!')
             .setEmoji('🆘')
         ])
@@ -276,21 +276,21 @@ export class Combat extends PlayCardBase {
           : ''
       }`,
       components: [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder().addComponents(
+          new ButtonBuilder()
             .setCustomId(`defender_${target.id}_${userId}`)
             .setLabel('DEFESA')
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('🛡'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(`contra_ataque_${target.id}_${userId}`)
             .setLabel('CONTRA-ATAQUE')
-            .setStyle('DANGER')
+            .setStyle(ButtonStyle.Danger)
             .setEmoji('🤞'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(`esquiva_${target.id}_${userId}`)
             .setLabel('ESQUIVA')
-            .setStyle('SUCCESS')
+            .setStyle(ButtonStyle.Success)
             .setEmoji('💨')
         )
       ]

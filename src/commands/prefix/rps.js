@@ -1,4 +1,4 @@
-import {Formatters, MessageActionRow, MessageButton, MessageEmbed} from 'discord.js';
+import {Formatters, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
 import {title} from '../../util';
 
 const {userMention} = Formatters;
@@ -23,9 +23,9 @@ export async function execute(msg) {
     session.set(rival.id, choice);
   }
   const array = buttons('pedra', 'papel', 'tesoura');
-  const buttonRow = new MessageActionRow().addComponents(array);
+  const buttonRow = new ActionRowBuilder().addComponents(array);
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setAuthor({
       name: host.username,
       iconURL: host.avatarURL({dynamic: true, size: 512})
@@ -97,9 +97,9 @@ export async function execute(msg) {
     };
     if (options.constructor !== Array) options = Array.from(arguments);
     return options.map(value => {
-      return new MessageButton()
+      return new ButtonBuilder()
         .setCustomId(value)
-        .setStyle('PRIMARY')
+        .setStyle(ButtonStyle.Primary)
         .setLabel(value.charAt(0).toUpperCase() + value.slice(1))
         .setEmoji(emojis[value]);
     });

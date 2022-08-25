@@ -97,7 +97,7 @@ export async function execute(interaction) {
 
   switch (command) {
     case 'criar':
-      if (!interaction.memberPermissions.has('MANAGE_GUILD'))
+      if (!interaction.memberPermissions.has('manageGuild'))
         return await interaction.reply('❌ Você não tem permissão para criar itens.');
       const slot = interaction.options.getString('slot');
       const nome = interaction.options.getString('nome');
@@ -121,7 +121,7 @@ export async function execute(interaction) {
       return await interaction.reply({embeds: [item]});
 
     case 'deletar':
-      if (!interaction.memberPermissions.has('MANAGE_GUILD'))
+      if (!interaction.memberPermissions.has('manageGuild'))
         return interaction.reply('❌ Você não tem permissão para criar itens.');
       const idDelete = interaction.options.getString('id');
       const itemDeletado = await Item.delete(idDelete);

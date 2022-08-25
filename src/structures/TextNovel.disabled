@@ -1,7 +1,7 @@
 import {
   Message,
-  MessageButton,
-  MessageActionRow,
+  ButtonBuilder,
+  ActionRowBuilder,
   Formatters,
 } from "discord.js";
 import { db } from "../db.js";
@@ -88,12 +88,12 @@ export default class TextNovel {
     const buttons = this.choices.map((possible, index) => {
       if (possible.length > 80)
         throw new Error("Botões podem ter apenas 80 caracteres.");
-      return new MessageButton()
+      return new ButtonBuilder()
         .setCustomId("choice" + index)
         .setLabel(possible)
         .setStyle("SECONDARY");
     });
-    const row = new MessageActionRow().addComponents(buttons);
+    const row = new ActionRowBuilder().addComponents(buttons);
 
     return row;
   }
