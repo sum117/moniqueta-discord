@@ -1,4 +1,6 @@
 export * from './bulkEmoji.js';
+export * from './delay.js';
+export * from './embedComponent.js';
 export * from './loadCommands.js';
 export * from './loadEvents.js';
 export * from './misc.js';
@@ -7,5 +9,3 @@ export * from './registerSlashCommands.js';
 export * from './statusBar.js';
 export * from './title.js';
 export * from './updateMemberCounter.js';
-export * from './embedComponent.js';
-export * from './delay.js';

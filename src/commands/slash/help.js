@@ -1,6 +1,6 @@
-import {Collection, CommandInteraction, EmbedBuilder} from 'discord.js';
-import {inlineCode, bold} from '@discordjs/builders';
+import {bold, inlineCode} from '@discordjs/builders';
 import {SlashCommandBuilder} from '@discordjs/builders';
+import { EmbedBuilder} from 'discord.js';
 export const data = new SlashCommandBuilder()
   .setName('help')
   .setDescription('Mostra todos os comandos disponíveis na moniqueta.');

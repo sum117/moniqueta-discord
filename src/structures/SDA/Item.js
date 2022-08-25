@@ -2,13 +2,11 @@ import {bold} from '@discordjs/builders';
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  SelectMenuBuilder,
-  ButtonInteraction,
-  SelectMenuInteraction,
   ButtonStyle
 } from 'discord.js';
+
 import {db} from '../../db.js';
-import {title, embedComponent} from '../../util';
+import {embedComponent, title} from '../../util';
 import {Combat} from './Combat.js';
 import {assets} from './PlayCardBase.js';
 
@@ -44,7 +42,7 @@ export class Item extends Combat {
   static async delete(id) {
     const serverItems = db.table('server_items');
     const item = await serverItems.get(id);
-    if (!item) return `❌ Item não encontrado`;
+    if (!item) return '❌ Item não encontrado';
     await serverItems.delete(id);
     return await embedComponent(`✅ ${bold(item.nome)} deletado com sucesso`);
   }
@@ -52,7 +50,7 @@ export class Item extends Combat {
   static async show(id) {
     const serverItems = db.table('server_items');
     const item = await serverItems.get(id);
-    if (!item) return `❌ Item não encontrado`;
+    if (!item) return '❌ Item não encontrado';
     return await embedComponent(
       `✅ ${bold(item.nome)}:\n\n${Object.entries(item)
         .filter(([key]) => key !== 'equipado')
@@ -79,7 +77,7 @@ export class Item extends Combat {
     const {mochila: receivingUserItems, char: receivingUserChar} = await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};
 
-    if (!serverItem) return await embedComponent(`❌ Item não encontrado`);
+    if (!serverItem) return await embedComponent('❌ Item não encontrado');
 
     if (givingUserItem?.quantia === 0) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
     if (givingUserItem?.quantia < quantia)
@@ -227,7 +225,7 @@ export class Item extends Combat {
             await setChar(user, 'armas', charDb.char.armas);
           }
           await setInventory(user, itemId, item);
-          return interaction.update({content: `✅ Item desequipado com sucesso!`, ephemeral: true});
+          return interaction.update({content: '✅ Item desequipado com sucesso!', ephemeral: true});
         }
         // Msg de erro
         if (item.quantia < 1)

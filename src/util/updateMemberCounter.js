@@ -1,5 +1,5 @@
-import {channels} from './misc.js';
 import {db} from '../db.js';
+import {channels} from './misc.js';
 export function updateMemberCounter(moniqueta, myGuild) {
   setInterval(async () => {
     const memberCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.memberCounter);

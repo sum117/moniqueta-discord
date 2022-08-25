@@ -1,10 +1,11 @@
-import {prefix} from './misc.js';
 import {InteractionType} from 'discord.js';
-import * as slashCommands from '../commands/slash';
+
 import * as interactionCommands from '../commands/interaction';
-import * as prefixlessCommands from '../commands/prefixless';
 import * as prefixCommands from '../commands/prefix';
+import * as prefixlessCommands from '../commands/prefixless';
+import * as slashCommands from '../commands/slash';
 import * as commandSystems from '../commands/systems';
+import {prefix} from './misc.js';
 
 const slash = Object(slashCommands);
 const interactions = Object(interactionCommands);

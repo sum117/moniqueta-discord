@@ -1,5 +1,5 @@
-import sharp from 'sharp';
 import axios from 'axios';
+import sharp from 'sharp';
 
 export const data = {
   event: 'messageCreate',

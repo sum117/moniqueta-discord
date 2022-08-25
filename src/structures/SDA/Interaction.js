@@ -1,9 +1,10 @@
 import {bold, quote, userMention} from '@discordjs/builders';
-import {ButtonInteraction, GuildMember, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from 'discord.js';
+
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
-import {assets, PlayCardBase} from './PlayCardBase.js';
 import {levels} from './levels';
+import {assets,PlayCardBase} from './PlayCardBase.js';
 export class Interaction extends PlayCardBase {
   /**
    * @param {ButtonInteraction} interaction - O botão que iniciou o painel.

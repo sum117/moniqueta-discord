@@ -1,16 +1,15 @@
 import {bold} from '@discordjs/builders';
 import {
-  ButtonInteraction,
-  ButtonStyle,
   ActionRowBuilder,
   ButtonBuilder,
-  SelectMenuBuilder,
-  SelectMenuInteraction
+  ButtonStyle,
+  SelectMenuBuilder
 } from 'discord.js';
+
 import {db} from '../../db.js';
-import {statusBar, title} from '../../util';
+import {statusBar} from '../../util';
 import {levels} from './levels';
-import {assets, PlayCardBase} from './PlayCardBase.js';
+import {assets,PlayCardBase} from './PlayCardBase.js';
 export class Xp extends PlayCardBase {
   constructor() {
     super();

@@ -1,4 +1,3 @@
-import {Message} from 'discord.js';
 
 export const data = {
   event: 'messageCreate',

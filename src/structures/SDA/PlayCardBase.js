@@ -1,12 +1,14 @@
-import {Formatters, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
+import {bold} from '@discordjs/builders';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Formatters} from 'discord.js';
+
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
-import {bold} from '@discordjs/builders';
 const {userMention} = Formatters;
-import sharp from 'sharp';
 import axios from 'axios';
-import {reaperIcon} from './icons';
 import imgur from 'imgur';
+import sharp from 'sharp';
+
+import {reaperIcon} from './icons';
 
 export const assets = {
   skills: {

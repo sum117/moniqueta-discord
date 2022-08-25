@@ -1,4 +1,5 @@
 import {InteractionType} from 'discord.js';
+
 import {channels} from '../../util';
 export const data = {
   event: 'interactionCreate',

@@ -1,5 +1,5 @@
 import {SlashCommandBuilder as SCB} from '@discordjs/builders';
-import {CommandInteraction} from 'discord.js';
+
 import {Item} from '../../structures/SDA/Item.js';
 export const data = new SCB()
   .setName('item')

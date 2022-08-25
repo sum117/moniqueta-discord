@@ -1,7 +1,7 @@
 import {codeBlock, inlineCode} from '@discordjs/builders';
-import {Message} from 'discord.js';
 import fs from 'fs';
 import yaml from 'yaml';
+
 import {db} from '../../db.js';
 import {levels} from '../../structures/SDA/levels.js';
 import {delay} from '../../util';
@@ -26,11 +26,11 @@ export async function execute(msg, args) {
     );
   const parsed = `${comando.replace(/\<|\>|\@|\!/g, '')}`.trim();
   const dados = await db.get(`${parsed}`);
-  if (!dados) return msg.reply(`O usuário não tem um personagem.`);
+  if (!dados) return msg.reply('O usuário não tem um personagem.');
 
   const escolhido = dados?.chosenChar;
   const personagem = dados?.chars[escolhido];
-  if (!escolhido || !personagem) return msg.reply(`O usuário não tem um personagem.`);
+  if (!escolhido || !personagem) return msg.reply('O usuário não tem um personagem.');
 
   // Código autorizado
   personagem.user = parsed;

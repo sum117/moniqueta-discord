@@ -1,6 +1,7 @@
-import {channels, bulkEmoji} from '../../util';
 import {channelMention, userMention} from '@discordjs/builders';
 import {AttachmentBuilder} from 'discord.js';
+
+import {bulkEmoji, channels} from '../../util';
 export const data = {
   event: 'messageCreate',
   name: 'Media Moderator',

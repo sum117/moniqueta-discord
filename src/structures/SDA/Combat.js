@@ -1,10 +1,11 @@
-import {ButtonStyle, ActionRowBuilder, ButtonBuilder} from 'discord.js';
 import {bold, userMention} from '@discordjs/builders';
-import {db} from '../../db.js';
-import {PlayCardBase} from './PlayCardBase.js';
-import {title} from '../../util';
-import YAML from 'yaml';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle} from 'discord.js';
 import fs from 'fs';
+import YAML from 'yaml';
+
+import {db} from '../../db.js';
+import {title} from '../../util';
+import {PlayCardBase} from './PlayCardBase.js';
 
 export class Combat extends PlayCardBase {
   /**

@@ -1,4 +1,5 @@
 import {EmbedBuilder} from 'discord.js';
+
 import {moniqueta} from '../index.js';
 
 export async function embedComponent(description = '', fields = [{name: '', value: ''}] ?? undefined) {

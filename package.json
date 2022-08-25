@@ -38,6 +38,10 @@
   },
   "devDependencies": {
     "dotenv": "^16.0.1",
+    "eslint": "^8.22.0",
+    "eslint-plugin-only-warn": "^1.0.3",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.7.1",
     "yaml": "^2.1.1"
   },

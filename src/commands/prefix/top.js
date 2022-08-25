@@ -1,6 +1,7 @@
-import {db} from '../../db.js';
-import {EmbedBuilder} from 'discord.js';
 import {userMention} from '@discordjs/builders';
+import {EmbedBuilder} from 'discord.js';
+
+import {db} from '../../db.js';
 
 export const data = {
   name: 'Top de Mensagens',

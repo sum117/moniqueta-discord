@@ -1,4 +1,5 @@
-import {Formatters, ActionRowBuilder, ButtonBuilder, EmbedBuilder, ButtonStyle} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Formatters} from 'discord.js';
+
 import {title} from '../../util';
 
 const {userMention} = Formatters;

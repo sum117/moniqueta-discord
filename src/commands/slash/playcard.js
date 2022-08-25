@@ -1,10 +1,11 @@
-import {CommandInteraction, EmbedBuilder, InteractionType} from 'discord.js';
-import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
-import {SlashCommandBuilder as SCB, userMention, bold} from '@discordjs/builders';
-import {db} from '../../db.js';
-import {delay} from '../../util';
-import YAML from 'yaml';
+import {bold, SlashCommandBuilder as SCB, userMention} from '@discordjs/builders';
+import { EmbedBuilder, InteractionType} from 'discord.js';
 import fs from 'fs';
+import YAML from 'yaml';
+
+import {db} from '../../db.js';
+import {assets,PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
+import {delay} from '../../util';
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')

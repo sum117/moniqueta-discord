@@ -1,4 +1,3 @@
-import {db} from '../../db.js';
 import fs from 'fs';
 import path from 'path';
 
