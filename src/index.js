@@ -185,7 +185,12 @@ moniqueta.on('ready', async () => {
 
   mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826', '1010107434741813359');
 });
-
+moniqueta.on('error', e => {
+  console.log(e);
+  moniqueta.channels.cache.get(channels.errorChannel).send({
+    content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
+  });
+});
 process.on('unhandledRejection', e => {
   console.log(e);
   moniqueta.channels.cache.get(channels.errorChannel).send({
