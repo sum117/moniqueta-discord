@@ -307,7 +307,7 @@ export class Interaction extends PlayCardBase {
           appearance: 'Descrição Física',
           personality: 'Personalidade'
         };
-        if (msg.content.includes('https://')) embed.image.url = msg.content;
+        if (msg.content.includes('https://')) embed.data.image.url = msg.content;
         let field = embed.data.fields.find(f => f.name === dictionary[button.customId]) ?? {};
         if (field?.name !== 'Título' || field?.name !== 'Nome') field.value = msg.content.slice(0, 1021) + '...';
         else field.value = msg.content.slice(0, 1021);
