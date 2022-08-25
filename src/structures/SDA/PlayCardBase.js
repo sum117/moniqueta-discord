@@ -290,10 +290,10 @@ export class PlayCardBase {
        * @type {import('discord.js').Message}
        * @var msg
        */
-      let msg = await channel.messages.fetch(msgId);
-      let embed = msg.embeds[0];
+      let msg = await channel.messages.fetch({message: msgId});
+      let embed = EmbedBuilder.from(msg.embeds[0]);
       embed = embed.setDescription(content);
-      if (embed?.image?.url) embed.image.url = `attachment://${embed.image.url.split('/').pop()}`;
+      if (embed.data?.image?.url) embed.data.image.url = `attachment://${embed.image.url.split('/').pop()}`;
       await channel.messages.edit(msgId, {
         embeds: [embed]
       });
