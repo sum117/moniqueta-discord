@@ -67,8 +67,12 @@ export class Xp extends PlayCardBase {
           return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
 
         staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
-        interaction.message.components[1].components.forEach(component => (component.disabled = false));
-        return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
+        let actionRows = interaction.message.components;
+
+        actionRows[1].components = actionRows[1].components.map(component =>
+          ButtonBuilder.from(component).setDisabled(false)
+        );
+        return await interaction.update({embeds: [staticPanel], components: [...actionRows]});
 
       case 'increment_attribute':
         if (character.attributePoints > 0) {
