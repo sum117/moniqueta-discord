@@ -201,7 +201,7 @@ export class Item extends Combat {
       case 'equipar_item':
         const id = interaction.values[0];
         const item = charDb.mochila[interaction.values[0]];
-
+        if (id === 'nenhum_item') return await interaction?.update({content: '🥚 Pó Pó!'});
         // Desequipar item
         if (id.startsWith('desequipar')) {
           const slot = id.split('_')[1];
