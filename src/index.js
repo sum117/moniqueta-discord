@@ -1,4 +1,4 @@
-import {Client, Collection, SelectMenuBuilder} from 'discord.js';
+import {Client, Collection, SelectMenuBuilder, GatewayIntentBits} from 'discord.js';
 import {loadEvents, registerSlashCommands, updateMemberCounter, channels, token, myGuild, prefix, roles} from './util';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from './commands/prefix';
@@ -6,7 +6,17 @@ import * as slashCommands from './commands/slash';
 import {mudaeTimer} from './commands/cron';
 import {db} from './db.js';
 export const moniqueta = new Client({
-  intents: 32767
+  intents: [
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildInvites,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.GuildVoiceStates
+  ]
 });
 moniqueta.commands = new Collection();
 moniqueta.memberCounter = new Collection();

@@ -1,5 +1,5 @@
 import {prefix} from './misc.js';
-import {GuildMember, InteractionType} from 'discord.js';
+import {InteractionType} from 'discord.js';
 import * as slashCommands from '../commands/slash';
 import * as interactionCommands from '../commands/interaction';
 import * as prefixlessCommands from '../commands/prefixless';
