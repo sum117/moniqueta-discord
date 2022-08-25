@@ -1,5 +1,12 @@
 import {bold} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ComponentType,
+  SelectMenuBuilder,
+  SelectMenuOptionBuilder
+} from 'discord.js';
 
 import {db} from '../../db.js';
 import {embedComponent, title} from '../../util';
@@ -134,26 +141,20 @@ export class Item extends Combat {
         components: [
           new ActionRowBuilder().addComponents(generateButtons().splice(0, 5)),
           new ActionRowBuilder().addComponents(generateButtons().slice(5)),
-          new ActionRowBuilder().addComponents({
-            type: 'selectMenu',
-            customId: 'equipar_item',
-            placeholder: 'Aguardando seleção de slot...',
-            options: [
-              {
-                label: 'nada',
-                value: 'nada',
-                description: 'nada'
-              }
-            ],
-            disabled: true
-          })
+          new ActionRowBuilder().addComponents(
+            new SelectMenuBuilder()
+              .setCustomId('equipar_item')
+              .setPlaceholder('Aguardando seleção de slot...')
+              .setOptions([new SelectMenuOptionBuilder().setLabel('nada').setValue('nada').setDescription('nada')])
+              .setDisabled(true)
+          )
         ]
       };
     };
     const staticEmbed = msgObj();
     switch (action) {
       case 'selecionar_slot':
-        const selector = interaction.message.components[2].components[0];
+        const selector = SelectMenuBuilder.from(interaction.message.components[2].components[0]);
         const options = () =>
           Object.entries(charDb.mochila)
             .filter(([, item]) => !item.equipado && interaction.customId.match(item.slot))
@@ -166,7 +167,7 @@ export class Item extends Combat {
                 description: `Quantia: ${item.quantia}`
               };
             });
-        selector.disabled = false;
+        selector.setDisabled(false);
         const unequipOptions = () =>
           [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
             .filter(([key, item]) => item.equipado && interaction.customId === key)
@@ -191,7 +192,7 @@ export class Item extends Combat {
             emoji: '🐓'
           });
         selector.setOptions(newOptions);
-        selector.placeholder = title(interaction.customId);
+        selector.setPlaceholder(title(interaction.customId));
         staticEmbed.components.splice(2, 1, new ActionRowBuilder().addComponents(selector));
         return await interaction?.update({
           embeds: msgObj().embeds,
@@ -221,7 +222,12 @@ export class Item extends Combat {
             await setChar(user, 'armas', charDb.char.armas);
           }
           await setInventory(user, itemId, item);
-          return interaction.update({content: '✅ Item desequipado com sucesso!', ephemeral: true});
+          return interaction.update({
+            content: '✅ Item desequipado com sucesso!',
+            ephemeral: true,
+            embeds: msgObj().embeds,
+            components: staticEmbed.components
+          });
         }
         // Msg de erro
         if (item.quantia < 1)
