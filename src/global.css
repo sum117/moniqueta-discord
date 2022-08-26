@@ -38,6 +38,7 @@ a:focus {
 ::-webkit-scrollbar-thumb {
   background: var(--green-500);
 }
+
 body {
   height: 100vh;
   background: var(--gray-900);

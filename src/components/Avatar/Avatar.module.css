@@ -1,0 +1,9 @@
+.avatar {
+  width: 128px;
+  height: 128px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 5px solid var(--green-300);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}

@@ -7,7 +7,6 @@ import { useState } from 'react';
 export function App() {
   const [login, setLogin] = useState(false);
   if (!login) handleLogin();
-  console.log(login);
   return (
     <Router>
       <div className={styles.wrapper}>
@@ -35,7 +34,7 @@ export function App() {
     const storage: userObject = JSON.parse(
       window.sessionStorage.getItem('user_object') as any,
     );
-    let guild = storage.guilds.find(
+    let guild = storage?.guilds?.find(
       (guild) => guild.id === '976870103125733388',
     );
     if (guild) return setLogin(true);

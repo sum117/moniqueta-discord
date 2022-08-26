@@ -1,5 +1,5 @@
 .loginWrapper {
-  margin: 0 5rem 5rem 5rem;
+  margin: 0 5rem 0 5rem;
   max-height: 50vh;
   border-radius: 8px;
   background-color: var(--gray-800);
@@ -26,9 +26,26 @@
   display: -webkit-inline-box;
   gap: 0.3rem;
 }
-
+.userInfo {
+  display: flex;
+  justify-content: flex-start;
+  background-color: var(--gray-800);
+  margin: 0 5rem 0 5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.1s ease-in-out;
+}
+.userInfo:hover {
+  background-color: var(--gray-900);
+  box-shadow: 0 0 10px var(--green-300);
+  transform: scale(1.1);
+}
 @media (max-width: 768px) {
   .loginWrapper {
+    margin: 0;
+    max-height: 50vh;
+  }
+  .userInfo {
     margin: 0;
     max-height: 50vh;
   }
