@@ -1,54 +1,35 @@
-.container {
-  display: flex;
-  overflow-x: hidden;
-  position: fixed;
-  width: fit-content;
-  height: 14vh;
-  margin: 0rem 0 auto auto;
-  padding: 1rem;
-  border-radius: 0 0 0 8px;
-  font-weight: 100;
-  font-size: 16px;
-  right: 0;
+.loginWrapper {
+  margin: 0 5rem 5rem 5rem;
+  max-height: 50vh;
+  border-radius: 8px;
   background-color: var(--gray-800);
   color: var(--gray-100);
-}
-.container a {
-  display: grid;
-  grid-template-columns: 1fr;
-  text-decoration: 0;
   text-align: center;
-  margin: auto;
+}
+.loginWrapper h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  background-color: var(--green-300);
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-.loginIcon {
-  justify-content: center;
-  background-color: var(--gray-800);
-  color: var(--gray-300);
+.loginWrapper ul {
+  display: grid;
+  font-size: 0.7rem;
+  font-weight: 100;
+  margin-bottom: 0.5rem;
+  text-align: start;
+  padding: 0.5rem 0 0 0.5rem;
+}
+.loginWrapper li {
+  display: -webkit-inline-box;
+  gap: 0.3rem;
 }
 
-.loginIcon:hover {
-  color: var(--green-300);
-}
-.loggedIn {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-end;
-  top: 10vh;
-  left: 15vw;
-  right: 15vw;
-  margin-top: 1vh;
-  max-width: 56rem;
-  height: 50vh;
-
-  position: fixed;
-  color: var(--gray-300);
-  border-radius: 8px;
-}
-
-.loggedIn div {
-  padding: 0 5rem;
-  background-color: var(--gray-800);
-  border-radius: 8px;
-  margin-right: 0;
+@media (max-width: 768px) {
+  .loginWrapper {
+    margin: 0;
+    max-height: 50vh;
+  }
 }

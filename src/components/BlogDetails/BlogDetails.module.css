@@ -1,29 +1,17 @@
+.wrapper {
+  margin: 0 auto;
+}
 .wrapper p {
   margin-top: 1rem;
   text-align: center;
   transition: all 0.1s ease-in-out;
 }
 
-.header {
-  max-width: 70vw;
-  margin: auto;
-  padding: 1rem;
-  background-color: var(--gray-800);
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  color: var(--gray-100);
-  font-size: 3rem;
-  font-weight: 900;
-  border-radius: 0 0 1rem 1rem;
-  align-content: center;
-}
-
 .post {
-  max-width: 70vw;
-  height: 80vh;
+  max-width: 90vw;
+  height: fit-content;
   margin: auto;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   padding: 1rem;
   background-color: var(--gray-800);
   display: flex;
@@ -44,19 +32,19 @@
   align-items: center;
   justify-content: center;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .post article p {
   padding: auto;
   text-align: left;
   transition: all 0.1s ease-in-out;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 1rem;
 }
 .post article > div {
   padding-top: 1rem;
   text-align: left;
   transition: all 0.1s ease-in-out;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 0.675rem;
 }

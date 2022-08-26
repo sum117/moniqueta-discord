@@ -11,7 +11,6 @@ export function BlogDetails() {
   } = useFetch('http://localhost:6652/posts/' + id);
   return (
     <div className={styles.wrapper}>
-      <h1 className={styles.header}>FAQ</h1>
       <div className={styles.post}>
         {loading && <div>Carregando...</div>}
         {error && <div>{error}</div>}

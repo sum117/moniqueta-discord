@@ -1,9 +1,9 @@
 import styles from './Discord.module.css';
-import pagesStyles from '../Header.module.css';
+import HeaderStyle from '../Header.module.css';
 export function Discord() {
   return (
     <div className={styles.wrapper}>
-      <h1 className={pagesStyles.header}>DISCORD</h1>
+      <h1 className={HeaderStyle.header}>DISCORD</h1>
       <iframe
         className={styles.discordIFrame}
         src="https://discord.com/widget?id=976870103125733388&theme=dark"

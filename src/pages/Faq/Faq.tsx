@@ -1,5 +1,5 @@
 import styles from './Faq.module.css';
-import pagesStyles from '../Header.module.css';
+import HeaderStyle from '../Header.module.css';
 import { useFetch } from '../../script/useFetch';
 import { BlogList } from '../../components/BlogList/BlogList';
 export function Faq() {
@@ -10,7 +10,7 @@ export function Faq() {
   } = useFetch('http://localhost:6652/posts');
   return (
     <div className={styles.wrapper}>
-      <h1 className={pagesStyles.header}>FAQ</h1>
+      <h1 className={HeaderStyle.header}>FAQ</h1>
       {loading && <p>Carregando...</p>}
       {error && <p>{error}</p>}
       {posts && <BlogList blogs={posts} />}
