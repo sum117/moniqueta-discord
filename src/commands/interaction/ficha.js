@@ -6,7 +6,8 @@ import {
   EmbedBuilder,
   InteractionType,
   ModalBuilder,
-  TextInputBuilder
+  TextInputBuilder,
+  TextInputStyle
 } from 'discord.js';
 
 import {db} from '../../db.js';
@@ -75,16 +76,16 @@ export async function execute(interaction) {
                     true,
                     'persoNome',
                     'Nome do Personagem',
-                    'SHORT',
+                    TextInputStyle.Short,
                     'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"',
                     128
                   ],
-                  [true, 'persoPersonalidade', 'Personalidade', 'PARAGRAPH', 'Seja Interessante...', 4000],
+                  [true, 'persoPersonalidade', 'Personalidade', TextInputStyle.Paragraph, 'Seja Interessante...', 4000],
                   [
                     true,
                     'persoFisico',
                     'Características Físicas',
-                    'PARAGRAPH',
+                    TextInputStyle.Paragraph,
                     'Peso, aparência geral, altura e etc...',
                     4000
                   ],
@@ -92,11 +93,18 @@ export async function execute(interaction) {
                     true,
                     'persoHabilidade',
                     'Habilidade',
-                    'PARAGRAPH',
+                    TextInputStyle.Paragraph,
                     'A habilidade do personagem não irá interferir no combate.',
                     4000
                   ],
-                  [true, 'persoImagem', 'Link de Imagem', 'SHORT', 'https://i.imgur.com/image.png', 500]
+                  [
+                    true,
+                    'persoImagem',
+                    'Link de Imagem',
+                    TextInputStyle.Paragraph,
+                    'https://i.imgur.com/image.png',
+                    500
+                  ]
                 ])
               );
             }
