@@ -164,13 +164,19 @@ export class PlayCardBase {
               size: 512
             })
           })
-          .addField(
-            'Gênero',
-            gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
-            true
+          .addFields(
+            {
+              name: 'Gênero',
+              value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+              inline: true
+            },
+            {
+              name: 'Purgatório',
+              value: assets.phantom[phantom] + ' ' + title(phantom),
+              inline: true
+            },
+            {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true}
           )
-          .addField('Purgatório', assets.phantom[phantom] + ' ' + title(phantom), true)
-          .addField('Soma', assets.sum[sum].emoji + ' ' + title(sum), true)
       ]
     });
   }

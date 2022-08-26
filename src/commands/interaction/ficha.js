@@ -248,30 +248,34 @@ export async function execute(interaction) {
             .setTitle(userInput.get('nome'))
             .setThumbnail(userInput.get('imagem'))
             .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
-            .addField(
-              'Soma',
-              sum[choices.get('soma')].emoji +
-                ' ' +
-                title(
-                  choices.get('purgatorio') === 'ceifador'
-                    ? 'Antigo ' + choices.get('soma').charAt(0).toUpperCase() + choices.get('soma').slice(1)
-                    : choices.get('soma')
-                ),
-              true
-            )
-            .addField(
-              'Genero',
-              choices.get('genero') === 'masculino'
-                ? '♂️ Masculino'
-                : choices.get('genero') === 'feminino'
-                ? '♀️ Feminino'
-                : '👽 Descubra',
-              true
-            )
-            .addField(
-              'Fantasma',
-              assets.phantom[choices.get('purgatorio')] + ' ' + title(choices.get('purgatorio')),
-              true
+            .addFields(
+              {
+                name: 'Soma',
+                value:
+                  sum[choices.get('soma')].emoji +
+                  ' ' +
+                  title(
+                    choices.get('purgatorio') === 'ceifador'
+                      ? 'Antigo ' + choices.get('soma').charAt(0).toUpperCase() + choices.get('soma').slice(1)
+                      : choices.get('soma')
+                  ),
+                inline: true
+              },
+              {
+                name: 'Genero',
+                value:
+                  choices.get('genero') === 'masculino'
+                    ? '♂️ Masculino'
+                    : choices.get('genero') === 'feminino'
+                    ? '♀️ Feminino'
+                    : '👽 Descubra',
+                inline: true
+              },
+              {
+                name: 'Fantasma',
+                value: assets.phantom[choices.get('purgatorio')] + ' ' + title(choices.get('purgatorio')),
+                inline: true
+              }
             )
         ];
         userInput.delete('nome');

@@ -33,8 +33,14 @@ export async function execute(msg) {
     })
     .setColor(3553599)
     .setThumbnail('attachment://rps.jpg')
-    .addField(host.username, 'Aguardando escolha...', true)
-    .addField(rival.username, rival.id === client.user.id ? 'Moniqueta já escolheu!' : 'Aguardando escolha...', true);
+    .addFields(
+      {name: host.username, value: 'Aguardando escolha...', inline: true},
+      {
+        name: rival.username,
+        value: rival.id === client.user.id ? 'Moniqueta já escolheu!' : 'Aguardando escolha...',
+        inline: true
+      }
+    );
   const game = await channel.send({
     content: `Pedra, Papel e Tesoura entre ${host} e ${rival} invocado!`,
     embeds: [embed],
