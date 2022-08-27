@@ -280,13 +280,17 @@ export async function execute(interaction) {
         ];
         userInput.delete('nome');
         userInput.forEach((value, key) => {
-          const embed = new EmbedBuilder()
-            .setTitle(title(key))
-            .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
-            .setDescription(value);
-          if (key === 'imagem') embed.setImage(value).setTitle('').setDescription('');
-          const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
-          embed.description = check(embed.description);
+          const embed = new EmbedBuilder().setColor(
+            choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color
+          );
+          if (key === 'imagem') {
+            embed.setImage(value);
+          } else {
+            embed.setTitle(title(key)).setDescription(value);
+
+            const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
+            embed.data.description = check(embed.data.description);
+          }
           array.push(embed);
         });
         return array;

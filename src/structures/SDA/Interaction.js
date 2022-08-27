@@ -163,6 +163,7 @@ export class Interaction extends PlayCardBase {
     });
     return collector.on('end', async m => {
       if (!m) return;
+      if (typeof m[Symbol.iterator] !== 'function') return;
       const [[, msg]] = m;
       const threadChannel = interaction.message.hasThread
         ? interaction.message.thread

@@ -4,7 +4,7 @@ import {moniqueta} from '../index.js';
 
 export async function embedComponent(description = '', fields = [{name: '', value: ''}] ?? undefined) {
   return new EmbedBuilder()
-    .setColor('RANDOM')
+    .setColor('Random')
     .setTimestamp(Date.now())
     .setFooter({
       iconURL: moniqueta.user.avatarURL({dynamic: true, size: 512}),
