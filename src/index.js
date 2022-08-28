@@ -60,7 +60,7 @@ moniqueta.on('ready', async () => {
   }
   setInterval(async () => {
     const members = await moniqueta.guilds.cache.first().members.fetch();
-    members.forEach(async member => {
+    members.map(async member => {
       if (
         member.user.username.startsWith('SDA •') ||
         member.presence?.activities[0]?.state?.match(/https\:\/\/discord\.sumserver\.xyz/)
