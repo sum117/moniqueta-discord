@@ -4,6 +4,7 @@ import {db} from '../../db.js';
 import {PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {Xp} from '../../structures/SDA/Xp.js';
 import {categories} from '../../util';
+
 export const data = {
   event: 'messageCreate',
   name: 'Enviar Playcard',
@@ -34,6 +35,7 @@ export async function execute(client, msg) {
 
   if (msg.content.match(/^\!/) && msg.member.permissions.has('MANAGE_GUILD')) {
     const check = await handleWebhooks(msg);
+    if (msg.channel.isThread()) return msg.reply('É esperado que você saiba que o bot é incapaz de criar uma thread dentro de uma thread. Comandos que usam threads como filhos não funcionam dentro de um ambiente thread.');
     const webhook = check ? check : await msg.channel.createWebhook('moniquetaHook');
     await webhook.edit({
       name: msg.member.nickname ? msg.member.nickname : msg.author.username,
@@ -88,7 +90,7 @@ export async function execute(client, msg) {
 async function handleWebhooks(msg) {
   const webhooks = await msg.channel.fetchWebhooks();
   if (webhooks.size > 6) {
-    webhooks.forEach(async wh => await wh.delete());
+    webhooks.map(async wh => await wh.delete());
     return false;
   } else return webhooks.first();
 }

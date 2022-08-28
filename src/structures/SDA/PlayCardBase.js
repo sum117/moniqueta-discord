@@ -1,9 +1,8 @@
 import {bold} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Formatters} from 'discord.js';
+import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, userMention} from 'discord.js';
 
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
-const {userMention} = Formatters;
 import axios from 'axios';
 import imgur from 'imgur';
 import sharp from 'sharp';
@@ -111,8 +110,10 @@ export class PlayCardBase {
       }
     };
   }
+
   /**
    * @param {ButtonInteraction} - Usuário que teve seu personagem criado
+   * @param {String} approvedChannelId - O canal onde as fichas aprovadas d
    * @param {Object} character - Objeto que contém todas as informações do personagem
    * @param {String} character.name - Nome do personagem
    * @param {String} character.gender - Gênero do personagem
@@ -153,30 +154,28 @@ export class PlayCardBase {
       content: `Ficha de ${userMention(membro.user.id)}, aprovada por ${userMention(aprovador.id)}`,
       embeds: [
         new EmbedBuilder()
-          .setTitle(name)
-          .setThumbnail(avatar)
-          .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
-          .setDescription(appearance)
-          .setAuthor({
-            name: membro.user.username,
-            iconURL: membro.user.avatarURL({
-              dynamic: true,
-              size: 512
+            .setTitle(name)
+            .setThumbnail(avatar)
+            .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
+            .setDescription(appearance)
+            .setAuthor({
+              name: membro.user.username,
+              iconURL: membro.user.avatarURL({
+                dynamic: true,
+                size: 512
+              })
             })
-          })
-          .addFields(
-            {
-              name: 'Gênero',
-              value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
-              inline: true
-            },
-            {
-              name: 'Purgatório',
-              value: assets.phantom[phantom] + ' ' + title(phantom),
-              inline: true
-            },
-            {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true}
-          )
+            .addFields({
+                  name: 'Gênero',
+                  value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+                  inline: true
+                },
+                {
+                  name: 'Purgatório',
+                  value: assets.phantom[phantom] + ' ' + title(phantom),
+                  inline: true
+                },
+                {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true})
       ]
     });
   }
@@ -186,6 +185,7 @@ export class PlayCardBase {
    * @param {Message} msgSent | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    * @param {AttachmentBuilder} attachment A imagem que será usada para a ação.
+   * @param {string} content O conteúdo do post.
    */
   async interact(msgSent, action, content = '', attachment = null) {
     const {channel, guildId} = msgSent;
@@ -233,14 +233,14 @@ export class PlayCardBase {
               icon_url: data?.title ? data.title.icon : 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
             },
             title: `${
-              phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
+                phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
             }${phantom === 'ceifador' ? (gender === 'masculino' ? 'Padre ' + name : 'Madre ' + name) : name}`,
             thumbnail: {
               url: avatar
             },
             image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
-            color: phantom === 'ceifador' ? 5592405 : assets.sum[sum].color,
-            description: content.replace(/\<@!?\d{17,20}\>/g, ''),
+            color: phantom === 'ceifador' ? 5592405 : assets.sum?.[sum].color ?? 5592405,
+            description: content.replace(/<@!?\d{17,20}>/g, ''),
             footer: {
               text: user.username,
               icon_url: user.avatarURL({
@@ -301,7 +301,7 @@ export class PlayCardBase {
       let msg = await channel.messages.fetch({message: msgId});
       let embed = EmbedBuilder.from(msg.embeds[0]);
       embed = embed.setDescription(content);
-      if (embed.data?.image?.url) embed.data.image.url = `attachment://${embed.image.url.split('/').pop()}`;
+      if (embed.data?.image.url) embed.data.image.url = `attachment://${embed.image.url.split('/').pop()}`;
       await channel.messages.edit(msgId, {
         embeds: [embed]
       });
@@ -330,8 +330,8 @@ export class PlayCardBase {
     const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id, charToList]) => {
-        return `${bold(id)} : ${assets.sum[charToList.sum].emoji} ${assets.phantom[charToList.phantom]} ${
-          charToList.name
+        return `${bold(id)} : ${assets.sum?.[charToList.sum].emoji} ${assets.phantom?.[charToList.phantom]} ${
+            charToList?.name ?? 'Não encontrado.'
         } ${chosenCheck.toString() === id.toString() ? ' ⭐' : ''}`;
       })
       .join('\n');

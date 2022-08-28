@@ -93,7 +93,7 @@ export async function execute(msg) {
       inline: true
     };
 
-    embed.setFields(index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]);
+    embed.setFields((index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]) ?? null);
     button.update({embeds: [embed], files: []});
   });
   function buttons(options = [arguments]) {

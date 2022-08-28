@@ -5,6 +5,7 @@ import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
 import {levels} from './levels';
 import {assets, PlayCardBase} from './PlayCardBase.js';
+
 export class Interaction extends PlayCardBase {
   /**
    * @param {ButtonInteraction} interaction - O botão que iniciou o painel.
@@ -52,28 +53,28 @@ export class Interaction extends PlayCardBase {
         content: 'Interagindo com o personagem de ' + target.user.username,
         components: [
           new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId('atributos')
-              .setLabel('Atributos')
-              .setEmoji('📈')
-              .setStyle(ButtonStyle.Secondary)
-              .setDisabled(interaction.user.id === target.id ? false : true),
-            new ButtonBuilder()
-              .setCustomId('profile')
-              .setLabel('Perfil')
-              .setEmoji('📝')
-              .setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder()
-              .setCustomId('comment')
-              .setLabel('Comentar')
-              .setEmoji('💬')
-              .setStyle(ButtonStyle.Secondary),
-            new ButtonBuilder()
-              .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
-              .setLabel('Atacar')
-              .setEmoji('🗡️')
-              .setStyle(ButtonStyle.Secondary)
-              .setDisabled(interaction.user.id === target.user.id ? true : false)
+              new ButtonBuilder()
+                  .setCustomId('atributos')
+                  .setLabel('Atributos')
+                  .setEmoji('📈')
+                  .setStyle(ButtonStyle.Secondary)
+                  .setDisabled(interaction.user.id !== target.id),
+              new ButtonBuilder()
+                  .setCustomId('profile')
+                  .setLabel('Perfil')
+                  .setEmoji('📝')
+                  .setStyle(ButtonStyle.Secondary),
+              new ButtonBuilder()
+                  .setCustomId('comment')
+                  .setLabel('Comentar')
+                  .setEmoji('💬')
+                  .setStyle(ButtonStyle.Secondary),
+              new ButtonBuilder()
+                  .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
+                  .setLabel('Atacar')
+                  .setEmoji('🗡️')
+                  .setStyle(ButtonStyle.Secondary)
+                  .setDisabled(interaction.user.id === target.user.id)
           )
         ]
       };
@@ -198,8 +199,9 @@ export class Interaction extends PlayCardBase {
       }
       async function handleWebhooks() {
         const webhooks = await msg.channel.fetchWebhooks();
+        if (msg.channel.isThread()) return msg.reply('É esperado que você saiba que é impossível criar uma thread dentro de outra. Por favor... não tente fazer isso novamente.');
         if (webhooks.size > 6) {
-          webhooks.forEach(async wh => await wh.delete());
+          webhooks.map(async wh => await wh.delete());
           return false;
         } else return webhooks.first();
       }
@@ -313,12 +315,13 @@ export class Interaction extends PlayCardBase {
         let field = embed.data.fields.find(f => f.name === dictionary[button.customId]) ?? {};
         if (field?.name !== 'Título' || field?.name !== 'Nome') field.value = msg.content.slice(0, 1021) + '...';
         else field.value = msg.content.slice(0, 1021);
+        if (!interaction.isRepliable()) return;
         await button.editReply(
           (field.name ? field.name : 'Imagem ') + ' atualizado(a) com sucesso para: ' + field.value
         );
         await interaction.editReply({embeds: [embed]});
         await msg.delete();
-        this.charEditor();
+        await this.charEditor();
       });
     });
   }
