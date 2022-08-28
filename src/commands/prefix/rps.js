@@ -92,7 +92,6 @@ export async function execute(msg) {
       value: 'Opção selecionada!',
       inline: true
     };
-    z;
     embed.setFields(index === 1 ? [embed.data.fields[0], choice] : [choice, embed.data.fields[1]]);
     button.update({embeds: [embed], files: []});
   });
