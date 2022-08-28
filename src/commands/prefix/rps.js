@@ -86,14 +86,14 @@ export async function execute(msg) {
       }
     }
     session.set(button.user.id, button.customId);
-    const embed = button.message.embeds[0];
+    const embed = EmbedBuilder.from(button.message.embeds[0]);
     const choice = {
       name: embed.fields[index].name,
       value: 'Opção selecionada!',
       inline: true
     };
 
-    embed.setFields((index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]) ?? null);
+    embed.setFields(index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]);
     button.update({embeds: [embed], files: []});
   });
   function buttons(options = [arguments]) {
