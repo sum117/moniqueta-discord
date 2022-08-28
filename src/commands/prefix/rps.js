@@ -88,12 +88,12 @@ export async function execute(msg) {
     session.set(button.user.id, button.customId);
     const embed = EmbedBuilder.from(button.message.embeds[0]);
     const choice = {
-      name: embed.fields[index].name,
+      name: embed.data.fields[index].name,
       value: 'Opção selecionada!',
       inline: true
     };
-
-    embed.setFields(index === 1 ? [embed.fields[0], choice] : [choice, embed.fields[1]]);
+    z;
+    embed.setFields(index === 1 ? [embed.data.fields[0], choice] : [choice, embed.data.fields[1]]);
     button.update({embeds: [embed], files: []});
   });
   function buttons(options = [arguments]) {
