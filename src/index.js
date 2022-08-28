@@ -25,12 +25,16 @@ moniqueta.postCounter = [];
 moniqueta.inviteCodeUses = new Collection();
 moniqueta.guildInvites = new Collection();
 moniqueta.prefix = await prefix;
-moniqueta.on('ready', async () => {
+moniqueta.on('ready', async moniqueta => {
+  // Make sure counter channels are cached to prevent weird errors.
+  await moniqueta.guilds.fetch({cache: true});
+  await moniqueta.guilds.cache.get(myGuild).channels.fetch({cache: true});
   console.log('Moniqueta pronta.');
+  // Reset the member editing value to false to prevent them from not being able to roleplay after bot restarts.
   (await db.all())
-    .filter(value => value.value.isEditting)
-    .map(async value => {
-      await db.set(`${value.id}.isEditting`, false);
+    .filter(member => member.value.isEditting)
+    .map(async member => {
+      await db.set(`${member.id}.isEditting`, false);
     });
   await updateMemberCounter(moniqueta, myGuild);
   await registerSlashCommands(moniqueta, myGuild);
@@ -44,14 +48,13 @@ moniqueta.on('ready', async () => {
   ]);
 
   // Salvando invites
-  await moniqueta.guilds.fetch(myGuild).then(guild =>
-    guild.invites.fetch().then(invites => {
-      console.log('Novos convites foram salvos.');
-      invites.each(invite => moniqueta.inviteCodeUses.set(invite.code, invite.uses));
-      moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
-      console.log(moniqueta.guildInvites);
-    })
-  );
+  const guild = moniqueta.guilds.cache.get(myGuild);
+  guild.invites.fetch().then(invites => {
+    console.log('Novos convites foram salvos.');
+    invites.each(invite => moniqueta.inviteCodeUses.set(invite.code, invite.uses));
+    moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
+    console.log(moniqueta.guildInvites);
+  });
   // Registrando comandos
   for (const commands of [slashCommands, prefixCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
@@ -59,7 +62,8 @@ moniqueta.on('ready', async () => {
     });
   }
   setInterval(async () => {
-    const members = await moniqueta.guilds.cache.first().members.fetch();
+    // Atualizando o contador de membros
+    const members = await moniqueta.guilds.cache.first().members.fetch({cache: true});
     members.map(async member => {
       if (
         member.user.username.startsWith('SDA •') ||
