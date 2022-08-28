@@ -2,10 +2,10 @@ import {db} from '../db.js';
 import {channels} from './misc.js';
 export function updateMemberCounter(moniqueta, myGuild) {
   setInterval(async () => {
-    const memberCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.memberCounter);
-    const postCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.postCounter);
-    const charCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.charCounter);
-    const totalChars = await (async () => {
+    let memberCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.memberCounter);
+    let postCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.postCounter);
+    let charCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.charCounter);
+    let totalChars = await (async () => {
       let database = await db.all();
       let total = database
         .filter(({_id, value}) => value?.chars !== undefined)
@@ -37,5 +37,5 @@ export function updateMemberCounter(moniqueta, myGuild) {
     charCounter.edit({
       name: charCounter.name.replace(/\d+/, totalChars)
     });
-  }, 5 * 60 * 1000);
+  }, 10 * 60 * 1000);
 }
