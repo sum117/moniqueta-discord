@@ -28,7 +28,6 @@ moniqueta.prefix = await prefix;
 moniqueta.on('ready', async moniqueta => {
   // Make sure counter channels are cached to prevent weird errors.
   await moniqueta.guilds.fetch({cache: true});
-  await moniqueta.guilds.cache.get(myGuild).channels.fetch({cache: true});
   console.log('Moniqueta pronta.');
   // Reset the member editing value to false to prevent them from not being able to roleplay after bot restarts.
   (await db.all())
