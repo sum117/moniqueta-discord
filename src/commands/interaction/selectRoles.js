@@ -18,13 +18,13 @@ export async function execute(interaction) {
     await interaction.reply({
       ephemeral: true,
       content: `Cargos atualizados para a sua sessão de ${interaction.component.placeholder}: ${interaction.values
-          .map(role => '<@&' + role + '>')
-          .join(', ')}`
+        .map(role => '<@&' + role + '>')
+        .join(', ')}`
     });
   } else {
     const allSelectorRoles = interaction.message.components.flatMap(actionRow => {
       return actionRow.components
-          .filter(component => component.type !== ComponenType.Button)
+        .filter(component => component.type !== ComponenType.Button)
         .flatMap(selectMenu => selectMenu.options.map(option => option.value));
     });
     await interaction.member.roles.remove(allSelectorRoles);

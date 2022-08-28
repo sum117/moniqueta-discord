@@ -154,28 +154,30 @@ export class PlayCardBase {
       content: `Ficha de ${userMention(membro.user.id)}, aprovada por ${userMention(aprovador.id)}`,
       embeds: [
         new EmbedBuilder()
-            .setTitle(name)
-            .setThumbnail(avatar)
-            .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
-            .setDescription(appearance)
-            .setAuthor({
-              name: membro.user.username,
-              iconURL: membro.user.avatarURL({
-                dynamic: true,
-                size: 512
-              })
+          .setTitle(name)
+          .setThumbnail(avatar)
+          .setColor(phantom === 'ceifador' ? 5592405 : assets.sum[sum].color)
+          .setDescription(appearance)
+          .setAuthor({
+            name: membro.user.username,
+            iconURL: membro.user.avatarURL({
+              dynamic: true,
+              size: 512
             })
-            .addFields({
-                  name: 'Gênero',
-                  value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
-                  inline: true
-                },
-                {
-                  name: 'Purgatório',
-                  value: assets.phantom[phantom] + ' ' + title(phantom),
-                  inline: true
-                },
-                {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true})
+          })
+          .addFields(
+            {
+              name: 'Gênero',
+              value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+              inline: true
+            },
+            {
+              name: 'Purgatório',
+              value: assets.phantom[phantom] + ' ' + title(phantom),
+              inline: true
+            },
+            {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true}
+          )
       ]
     });
   }
@@ -233,7 +235,7 @@ export class PlayCardBase {
               icon_url: data?.title ? data.title.icon : 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
             },
             title: `${
-                phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
+              phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
             }${phantom === 'ceifador' ? (gender === 'masculino' ? 'Padre ' + name : 'Madre ' + name) : name}`,
             thumbnail: {
               url: avatar
@@ -331,7 +333,7 @@ export class PlayCardBase {
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id, charToList]) => {
         return `${bold(id)} : ${assets.sum?.[charToList.sum].emoji} ${assets.phantom?.[charToList.phantom]} ${
-            charToList?.name ?? 'Não encontrado.'
+          charToList?.name ?? 'Não encontrado.'
         } ${chosenCheck.toString() === id.toString() ? ' ⭐' : ''}`;
       })
       .join('\n');

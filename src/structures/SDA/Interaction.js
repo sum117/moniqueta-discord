@@ -53,28 +53,28 @@ export class Interaction extends PlayCardBase {
         content: 'Interagindo com o personagem de ' + target.user.username,
         components: [
           new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                  .setCustomId('atributos')
-                  .setLabel('Atributos')
-                  .setEmoji('📈')
-                  .setStyle(ButtonStyle.Secondary)
-                  .setDisabled(interaction.user.id !== target.id),
-              new ButtonBuilder()
-                  .setCustomId('profile')
-                  .setLabel('Perfil')
-                  .setEmoji('📝')
-                  .setStyle(ButtonStyle.Secondary),
-              new ButtonBuilder()
-                  .setCustomId('comment')
-                  .setLabel('Comentar')
-                  .setEmoji('💬')
-                  .setStyle(ButtonStyle.Secondary),
-              new ButtonBuilder()
-                  .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
-                  .setLabel('Atacar')
-                  .setEmoji('🗡️')
-                  .setStyle(ButtonStyle.Secondary)
-                  .setDisabled(interaction.user.id === target.user.id)
+            new ButtonBuilder()
+              .setCustomId('atributos')
+              .setLabel('Atributos')
+              .setEmoji('📈')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(interaction.user.id !== target.id),
+            new ButtonBuilder()
+              .setCustomId('profile')
+              .setLabel('Perfil')
+              .setEmoji('📝')
+              .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+              .setCustomId('comment')
+              .setLabel('Comentar')
+              .setEmoji('💬')
+              .setStyle(ButtonStyle.Secondary),
+            new ButtonBuilder()
+              .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
+              .setLabel('Atacar')
+              .setEmoji('🗡️')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(interaction.user.id === target.user.id)
           )
         ]
       };
@@ -199,7 +199,10 @@ export class Interaction extends PlayCardBase {
       }
       async function handleWebhooks() {
         const webhooks = await msg.channel.fetchWebhooks();
-        if (msg.channel.isThread()) return msg.reply('É esperado que você saiba que é impossível criar uma thread dentro de outra. Por favor... não tente fazer isso novamente.');
+        if (msg.channel.isThread())
+          return msg.reply(
+            'É esperado que você saiba que é impossível criar uma thread dentro de outra. Por favor... não tente fazer isso novamente.'
+          );
         if (webhooks.size > 6) {
           webhooks.map(async wh => await wh.delete());
           return false;
