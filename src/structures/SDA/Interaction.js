@@ -8,7 +8,7 @@ import {assets, PlayCardBase} from './PlayCardBase.js';
 
 export class Interaction extends PlayCardBase {
   /**
-   * @param {ButtonInteraction} interaction - O botão que iniciou o painel.
+   * @param {import('discord.js').ButtonInteraction} interaction - O botão que iniciou o painel.
    * @param {GuildMember} target - O usuário alvo da interação.
    */
   constructor(interaction, target) {
@@ -172,7 +172,13 @@ export class Interaction extends PlayCardBase {
             name: 'Comentários do Post'
           });
       const check = await handleWebhooks();
-      const webhook = check ? check : await msg.channel.createWebhook('moniquetaHook');
+      const webhook = check
+        ? check
+        : await msg.channel.createWebhook({
+            name: 'moniquetaHook',
+            avatar: user.displayAvatarURL({dynamic: true, size: 512}),
+            reason: 'Comentário do Post'
+          });
       await webhook.edit({
         name: msg.author.username,
         avatar: msg.author.avatarURL({dynamic: true, size: 512})
