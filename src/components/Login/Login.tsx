@@ -2,7 +2,6 @@ import styles from './Login.module.css';
 import { FaBook, FaPeopleCarry, FaHandHoldingHeart } from 'react-icons/fa';
 import { useFetch } from '../../script/useFetch';
 import { Avatar } from '../Avatar/Avatar';
-import { ProgressBar } from '../ProgressBar/ProgressBar';
 export function LoggedInComponent() {
   type LoginData = {
     data: {
@@ -38,16 +37,7 @@ export function LoggedInComponent() {
           </ul>
         )}
       </article>
-      <div className={styles.userInfo}>
-        {!loading && (
-          <header>
-            <Avatar
-              user_object={sessionStorage.getItem('user_object') as string}
-            />
-            <ProgressBar value={50} max={100} key="progressBar" />
-          </header>
-        )}
-      </div>
+      <Avatar user_object={sessionStorage.getItem('user_object') as string}/>
     </>
   );
 }
