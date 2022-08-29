@@ -67,7 +67,7 @@ export class PlayCardBase {
       if (!chosenChar)
         return interaction[interaction.deferred ? 'editReply' : 'reply']({
           content: `Não há nenhum personagem criado ou selecionado para ${
-            user.id === interaction.user.id ? 'você' : user
+            user.id === interaction.user?.id ? 'você' : user
           }`
         });
       else {
@@ -241,7 +241,7 @@ export class PlayCardBase {
               url: avatar
             },
             image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
-            color: phantom === 'ceifador' ? 5592405 : assets.sum?.[sum].color ?? 5592405,
+            color: phantom === 'ceifador' ? 5592405 : assets.sum?.[sum]?.color ?? 5592405,
             description: content.replace(/<@!?\d{17,20}>/g, ''),
             footer: {
               text: user.username,
