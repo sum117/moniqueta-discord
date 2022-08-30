@@ -76,7 +76,7 @@ export class Item extends Combat {
     const serverItem = await serverItems.get(id);
     const givingUserItems = (await getInventory(givingUser)).mochila;
     const givingUserItem = (await givingUserItems?.[id]) ?? {};
-    if (givingUser.permissions.has('manageGuild')) givingUserItem.quantia = 1;
+    if (givingUser.memberPermissions.has('manageGuild')) givingUserItem.quantia = 1;
     const {mochila: receivingUserItems, char: receivingUserChar} = await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};
 
