@@ -71,28 +71,29 @@ export class Item extends Combat {
     const items = await serverItems.all();
     return await embedComponent(items.map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`).join('\n'));
   }
-  static async give(id = '', givingUser, receivingUser, quantia = 1) {
+  static async give(id = '', givingMember, receivingUser, quantia = 1) {
     const serverItems = db.table('server_items');
     const serverItem = await serverItems.get(id);
-    const givingUserItems = (await getInventory(givingUser)).mochila;
+
+    const givingUserItems = (await getInventory(givingMember.user)).mochila;
     const givingUserItem = (await givingUserItems?.[id]) ?? {};
-    if (givingUser.memberPermissions.has('manageGuild')) givingUserItem.quantia = 1;
+    if (givingMember.permissions.has('manageGuild')) givingUserItem.quantia = 1;
     const {mochila: receivingUserItems, char: receivingUserChar} = await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};
 
     if (!serverItem) return await embedComponent('❌ Item não encontrado');
 
-    if (givingUserItem?.quantia < 1 ) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
+    if (givingUserItem?.quantia < 1) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
     if (givingUserItem?.quantia < quantia)
       return await embedComponent(`❌ Você não tem ${bold(quantia)} de ${bold(serverItem.nome)}`);
 
     givingUserItem.quantia = givingUserItem.quantia - quantia;
-    await setInventory(givingUser, id, givingUserItem);
+    await setInventory(givingMember.user, id, givingUserItem);
     await setInventory(receivingUser, id, {...serverItem, quantia: receivingUserItem.quantia + quantia});
 
     return await embedComponent(
       `✅ ${bold(serverItem.nome)} adicionado ao inventário de ${bold(receivingUserChar.name)}. Ele foi dado por ${bold(
-        givingUser.username
+        givingMember.user.username
       )}`
     );
   }

@@ -133,9 +133,11 @@ export async function execute(interaction) {
       return await interaction.reply({embeds: [itemMostrar]});
     case 'dar':
       const usuario = interaction.options.getUser('usuario');
-      const quantidade = interaction.memberPermissions.has('manageGuild') ? 1: interaction.options.getNumber('quantidade');
+      const quantidade = interaction.memberPermissions.has('manageGuild')
+        ? 1
+        : interaction.options.getNumber('quantidade');
       const id = interaction.options.getString('id');
-      const itemDado = await Item.give(id, interaction.user, usuario, quantidade);
+      const itemDado = await Item.give(id, interaction.member, usuario, quantidade);
 
       return await interaction.reply({embeds: [itemDado]});
     case 'listar':
