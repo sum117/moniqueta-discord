@@ -1,9 +1,8 @@
-import {bold} from '@discordjs/builders';
 import {
   ActionRowBuilder,
+  bold,
   ButtonBuilder,
   ButtonStyle,
-  ComponentType,
   SelectMenuBuilder,
   SelectMenuOptionBuilder
 } from 'discord.js';
@@ -82,7 +81,7 @@ export class Item extends Combat {
 
     if (!serverItem) return await embedComponent('❌ Item não encontrado');
 
-    if (givingUserItem?.quantia === 0) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
+    if (givingUserItem?.quantia < 1 ) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
     if (givingUserItem?.quantia < quantia)
       return await embedComponent(`❌ Você não tem ${bold(quantia)} de ${bold(serverItem.nome)}`);
 
@@ -100,6 +99,7 @@ export class Item extends Combat {
    *
    * @param {SelectMenuInteraction | ButtonInteraction} interaction O seletor ou botão que instanciou esta interação
    * @param {string} action A ação que o usuário escolheu
+   * @param {User} user O usuário que instanciou o comando.
    * @returns Um painel de interação com o usuário para escolher os itens
    */
   static async equipPanel(interaction, action, user) {

@@ -1,4 +1,4 @@
-import {SlashCommandBuilder as SCB} from '@discordjs/builders';
+import {SlashCommandBuilder as SCB} from 'discord.js';
 
 import {Item} from '../../structures/SDA/Item.js';
 export const data = new SCB()
@@ -91,7 +91,6 @@ export const data = new SCB()
   )
   .addSubcommand(listar => listar.setName('listar').setDescription('lista todos os itens do servidor'));
 
-/** @param {CommandInteraction} interaction A interação que executou este comando*/
 export async function execute(interaction) {
   const command = interaction.options.getSubcommand();
 
@@ -134,7 +133,7 @@ export async function execute(interaction) {
       return await interaction.reply({embeds: [itemMostrar]});
     case 'dar':
       const usuario = interaction.options.getUser('usuario');
-      const quantidade = interaction.options.getNumber('quantidade');
+      const quantidade = interaction.memberPermissions.has('manageGuild') ? 1: interaction.options.getNumber('quantidade');
       const id = interaction.options.getString('id');
       const itemDado = await Item.give(id, interaction.user, usuario, quantidade);
 
