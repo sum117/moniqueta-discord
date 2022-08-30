@@ -76,6 +76,7 @@ export class Item extends Combat {
     const serverItem = await serverItems.get(id);
     const givingUserItems = (await getInventory(givingUser)).mochila;
     const givingUserItem = (await givingUserItems?.[id]) ?? {};
+    if (givingUser.permissions.has('manageGuild')) givingUserItem.quantia = 1;
     const {mochila: receivingUserItems, char: receivingUserChar} = await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};
 
@@ -231,7 +232,7 @@ export class Item extends Combat {
         }
         // Msg de erro
         if (item.quantia < 1)
-          return await interaction.update({content: '❌ Você não tem nenhum desse item sobrando.', ephemeral: true});
+          return interaction.update({content: '❌ Você não tem nenhum desse item sobrando.', ephemeral: true});
         // Equipar item
         else {
           item.equipado = true;
@@ -288,8 +289,8 @@ export class Item extends Combat {
       default:
         if (interaction.user.id !== user.id) {
           staticEmbed.components = [];
-          return await interaction.reply(staticEmbed);
-        } else return await interaction.reply(staticEmbed);
+          return interaction.reply(staticEmbed);
+        } else return interaction.reply(staticEmbed);
     }
   }
 
@@ -310,7 +311,7 @@ function generateButtons() {
 async function sortItems() {
   const serverItems = db.table('server_items');
   const itemList = await serverItems.all();
-  itemList.forEach(async (item, index) => {
+  itemList.map(async (item, index) => {
     const value = item.value;
 
     if (item.id !== index.toString()) {
