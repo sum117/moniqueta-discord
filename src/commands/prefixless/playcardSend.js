@@ -72,8 +72,8 @@ export async function execute(client, msg) {
       '❌ Houve um erro ao executar seu playcard. É possível que ele não exista. Entre em contato com um administrador.'
     );
 
-  client.postCounter.push(Date.now());
-  await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
+        client.postCounter = [...client.postCounter, Date.now()];
+	await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
   const {name, xpCount: xp, attributePoints: ap, xpLog: cache, level} = await char.character(msg, msg.author);
   sent.content = `Mensagem enviada por ${msg.author.username} em ${msg.channel}.`;
   await msg.guild.channels.cache.get('977090634466857030').send({content: sent.content, embeds: [sent.embeds?.[0]]});
