@@ -1,0 +1,12 @@
+# files
+.vscode
+.env
+.env.local
+package-lock.json
+yarn.lock
+database.sqlite
+
+# folders
+build
+node_modules
+migrations

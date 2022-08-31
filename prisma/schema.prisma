@@ -1,0 +1,83 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String  @id @unique
+  isEditting    Boolean
+  chosenChar    Char?   @relation("chosenChar")
+  chosenCharId  Int     @default(1)
+  lastMessageId String
+
+  chars Char[]
+
+  @@index([lastMessageId, chosenCharId])
+}
+
+model Char {
+  id              Int      @id @default(autoincrement())
+  name            String
+  sum             String
+  phantom         String
+  personality     String
+  gender          String
+  appearance      String
+  avatar          String
+  inCombat        Boolean  @default(false)
+  kills           Int      @default(0)
+  expTotal        Int      @default(0)
+  expCache        Int      @default(0)
+  level           Int      @default(1)
+  attributePoints Int      @default(2)
+  createdAt       DateTime @default(now())
+
+  user         User          @relation(fields: [userId], references: [id])
+  chosenBy     User?         @relation("chosenChar", fields: [chosenById], references: [id])
+  armas        Armas?        @relation(fields: [armasId], references: [id])
+  equipamentos Equipamentos? @relation(fields: [equipamentosId], references: [id])
+  mochila      Mochila?      @relation(fields: [mochilaId], references: [id])
+  skills       Skills?       @relation(fields: [skillsId], references: [id])
+  title        Title?        @relation(fields: [titleId], references: [id])
+
+  userId         String
+  chosenById     String? @unique
+  armasId        Int?    @unique
+  equipamentosId Int?    @unique
+  mochilaId      Int?    @unique
+  skillsId       Int?    @unique
+  titleId        Int?
+
+  @@index([userId, titleId, skillsId, mochilaId, equipamentosId, armasId])
+}
+
+model Title {
+  id      Int    @id @default(autoincrement())
+  title   String
+  iconURL String
+  chars   Char[]
+}
+
+model Skills {
+  id   Int   @id @default(autoincrement())
+  char Char?
+}
+
+model Mochila {
+  id   Int   @id @default(autoincrement())
+  char Char?
+}
+
+model Equipamentos {
+  id   Int   @id @default(autoincrement())
+  char Char?
+}
+
+model Armas {
+  id   Int   @id @default(autoincrement())
+  char Char?
+}
