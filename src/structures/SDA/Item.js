@@ -90,6 +90,7 @@ export class Item extends Combat {
         .join('\n')}`
     );
   }
+
   static async list() {
     await sortItems();
     const serverItems = db.table('server_items');
@@ -100,6 +101,7 @@ export class Item extends Combat {
         .join('\n')
     );
   }
+
   static async give(id = '', givingMember, receivingUser, quantia = 1) {
     const serverItems = db.table('server_items');
     const serverItem = await serverItems.get(id);
@@ -117,7 +119,9 @@ export class Item extends Combat {
       return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
     if (givingUserItem?.quantia < quantia)
       return await embedComponent(
-        `❌ Você não tem ${bold(quantia)} de ${bold(serverItem.nome)}`
+        `❌ Você não tem ${bold(quantia.toString())} de ${bold(
+          serverItem.nome
+        )}`
       );
 
     givingUserItem.quantia = givingUserItem.quantia - quantia;
@@ -133,6 +137,7 @@ export class Item extends Combat {
       )}. Ele foi dado por ${bold(givingMember.user.username)}`
     );
   }
+
   /**
    *
    * @param {SelectMenuInteraction | ButtonInteraction} interaction O seletor ou botão que instanciou esta interação
@@ -142,8 +147,12 @@ export class Item extends Combat {
    */
   static async equipPanel(interaction, action, user) {
     const charDb = await getInventory(user);
-    const getEquipped = () =>
-      [
+    const getEquipped = () => {
+      if (!charDb.char.equipamentos)
+        return interaction.reply(
+          'Houve um erro ao processar seu equipamento. Marque um administrador para ver o erro.'
+        );
+      return [
         ...Object.entries(charDb.char.equipamentos),
         ...Object.entries(charDb.char.armas)
       ]
@@ -151,11 +160,17 @@ export class Item extends Combat {
           ([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `
         )
         .join('\n');
-    const getUnequipped = () =>
-      Object.entries(charDb.mochila)
+    };
+    const getUnequipped = () => {
+      if (!charDb.mochila)
+        return interaction.reply(
+          'Houve um erro ao processar seu inventário. Marque um administrador para ver o erro.'
+        );
+      return Object.entries(charDb.mochila)
         .filter(([, item]) => !item.equipado)
         .map(([, item]) => `${item.nome} • ${item.quantia}`)
         .join('\n');
+    };
     const msgObj = () => {
       return {
         fetchReply: true,
@@ -187,15 +202,15 @@ export class Item extends Combat {
           new ActionRowBuilder().addComponents(generateButtons().splice(0, 5)),
           new ActionRowBuilder().addComponents(generateButtons().slice(5)),
           new ActionRowBuilder().addComponents(
-            new SelectMenuBuilder()
+            ...new SelectMenuBuilder()
               .setCustomId('equipar_item')
               .setPlaceholder('Aguardando seleção de slot...')
-              .setOptions([
-                new SelectMenuOptionBuilder()
+              .setOptions(
+                ...new SelectMenuOptionBuilder()
                   .setLabel('nada')
                   .setValue('nada')
                   .setDescription('nada')
-              ])
+              )
               .setDisabled(true)
           )
         ]
@@ -262,7 +277,7 @@ export class Item extends Combat {
         staticEmbed.components.splice(
           2,
           1,
-          new ActionRowBuilder().addComponents(selector)
+          new ActionRowBuilder().addComponents(...selector)
         );
         return await interaction?.update({
           embeds: msgObj().embeds,
@@ -388,6 +403,7 @@ export class Item extends Combat {
     })();
   }
 }
+
 function generateButtons() {
   return Object.entries(assets.itens).map(([slot, emoji]) => {
     return new ButtonBuilder()
@@ -409,6 +425,7 @@ async function sortItems() {
     }
   });
 }
+
 async function getInventory(user) {
   const chosenChar = await db.get(`${user.id}.chosenChar`);
   return {
@@ -416,10 +433,12 @@ async function getInventory(user) {
     char: await db.get(`${user.id}.chars.${chosenChar}`)
   };
 }
+
 async function setChar(user, itemStr, item) {
   const chosenChar = await db.get(`${user.id}.chosenChar`);
   return await db.set(`${user.id}.chars.${chosenChar}.${itemStr}`, item);
 }
+
 async function setInventory(user, itemId, item) {
   const chosenChar = await db.get(`${user.id}.chosenChar`);
   return await db.set(`${user.id}.chars.${chosenChar}.mochila.${itemId}`, item);
