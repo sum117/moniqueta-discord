@@ -148,10 +148,6 @@ export class Item extends Combat {
   static async equipPanel(interaction, action, user) {
     const charDb = await getInventory(user);
     const getEquipped = () => {
-      if (!charDb.char.equipamentos)
-        return interaction.reply(
-          'Houve um erro ao processar seu equipamento. Marque um administrador para ver o erro.'
-        );
       return [
         ...Object.entries(charDb.char.equipamentos),
         ...Object.entries(charDb.char.armas)
@@ -202,11 +198,11 @@ export class Item extends Combat {
           new ActionRowBuilder().addComponents(generateButtons().splice(0, 5)),
           new ActionRowBuilder().addComponents(generateButtons().slice(5)),
           new ActionRowBuilder().addComponents(
-            ...new SelectMenuBuilder()
+            new SelectMenuBuilder()
               .setCustomId('equipar_item')
               .setPlaceholder('Aguardando seleção de slot...')
               .setOptions(
-                ...new SelectMenuOptionBuilder()
+                new SelectMenuOptionBuilder()
                   .setLabel('nada')
                   .setValue('nada')
                   .setDescription('nada')
@@ -277,7 +273,7 @@ export class Item extends Combat {
         staticEmbed.components.splice(
           2,
           1,
-          new ActionRowBuilder().addComponents(...selector)
+          new ActionRowBuilder().addComponents(selector)
         );
         return await interaction?.update({
           embeds: msgObj().embeds,
