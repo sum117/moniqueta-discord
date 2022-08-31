@@ -1,0 +1,52 @@
+.postWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0 auto;
+  height: 100vh;
+  padding: 0 5rem;
+}
+.blogPreview {
+  overflow: hidden;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  margin-top: 1rem;
+  border: 8px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--gray-800);
+  color: var(--gray-100);
+  scale: 1;
+  transition: all 0.1s ease-in-out;
+}
+.blogPreview:hover {
+  box-shadow: 0 0 10px rgba(250, 246, 246, 0.2);
+  transform: scale(1.1);
+}
+.blogPreview a {
+  text-decoration: none;
+  color: var(--gray-100);
+  font-size: 0.5rem;
+  font-weight: 500;
+  text-align: start;
+  margin: 0;
+}
+.blogPreview a h2:hover {
+  color: var(--green-300);
+}
+
+.blogPreview p {
+  font-size: 0.5rem;
+  font-weight: 300;
+  text-align: start;
+}
+@media (max-width: 768px) {
+  .postWrapper {
+    padding: 0;
+  }
+}

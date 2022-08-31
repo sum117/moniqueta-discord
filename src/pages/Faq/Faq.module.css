@@ -1,0 +1,8 @@
+.wrapper {
+  flex: 1;
+}
+.wrapper p {
+  margin-top: 1rem;
+  text-align: center;
+  transition: all 0.1s ease-in-out;
+}

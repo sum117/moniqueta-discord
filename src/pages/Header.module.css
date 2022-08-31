@@ -1,0 +1,26 @@
+.header {
+  max-height: 5rem;
+
+  flex: 1;
+  padding: 1rem;
+  margin: 0 5rem 0;
+  background-color: var(--gray-800);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: var(--gray-100);
+  font-size: 2rem;
+  font-weight: 300;
+  border-radius: 0 0 1rem 1rem;
+  align-content: center;
+}
+
+@media (max-width: 768px) {
+  .header {
+    margin: 0;
+    text-align: center;
+
+    overflow-y: hidden;
+    padding: 0;
+  }
+}

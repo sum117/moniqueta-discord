@@ -1,0 +1,36 @@
+.loginWrapper {
+    margin: 0 5rem 0 5rem;
+    max-height: 50vh;
+    border-radius: 8px;
+    background-color: var(--gray-800);
+    color: var(--gray-100);
+    text-align: center;
+}
+
+.loginWrapper h1 {
+    font-size: 1.5rem;
+    background-color: var(--green-300);
+    text-align: center;
+    margin: 0 0 0.5rem;
+}
+
+.loginWrapper ul {
+    display: grid;
+    font-size: 0.7rem;
+    font-weight: 100;
+    margin-bottom: 0.5rem;
+    text-align: start;
+    padding: 0.5rem 0 0 0.5rem;
+}
+
+.loginWrapper li {
+    display: -webkit-inline-box;
+    gap: 0.3rem;
+}
+
+@media (max-width: 768px) {
+    .loginWrapper {
+        margin: 0;
+        max-height: 50vh;
+    }
+}

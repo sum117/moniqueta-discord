@@ -1,0 +1,25 @@
+.InputBoxes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: row;
+  align-content: start;
+  gap: 0.5rem;
+  min-height: auto;
+}
+.InputBoxes textarea {
+  width: 50vw;
+  height: 12rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: var(--gray-900);
+  resize: none;
+  color: var(--gray-100);
+  line-height: 1.6;
+  margin-top: 1rem;
+}
+@media (max-width: 768px) {
+  .InputBoxes textarea {
+    width: 80vw;
+  }
+}

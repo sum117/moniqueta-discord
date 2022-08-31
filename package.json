@@ -1,0 +1,31 @@
+{
+  "name": "moniqueta-front",
+  "private": false,
+  "homepage": "https://sum117.github.io/Moniqueta-Discord.js",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "json-server": "npx json-server --watch data/db.json --port 6652",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "echo 'moniqueta.sumserver.xyz' > ./dist/CNAME && gh-pages -d dist -b gh-pages",
+    "prettier": "prettier --write ."
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.4.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.1",
+    "gh-pages": "^4.0.0",
+    "prettier": "^2.7.1",
+    "react-router-dom": "^6.3.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.7"
+  }
+}
