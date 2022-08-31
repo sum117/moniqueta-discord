@@ -16,7 +16,9 @@ export class Combat extends PlayCardBase {
     super();
   }
   async init(interaction, target, userId) {
-    const {Combate} = YAML.parse(fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8'));
+    const {Combate} = YAML.parse(
+      fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8')
+    );
     // Usuário brutos
     this.userId = userId;
     this.target = await interaction.guild.members.fetch(target);
@@ -30,7 +32,9 @@ export class Combat extends PlayCardBase {
     this.batalha = await (async () => {
       const batalha = db.table('batalha');
       return (async (origem, alvo) => {
-        const dbOrigem = await batalha.get(`${interaction.channelId}.${origem}`);
+        const dbOrigem = await batalha.get(
+          `${interaction.channelId}.${origem}`
+        );
         const dbAlvo = await batalha.get(`${interaction.channelId}.${alvo}`);
         const conditions = {
           both: dbOrigem && dbAlvo,
@@ -38,7 +42,8 @@ export class Combat extends PlayCardBase {
           alvo: !dbOrigem && dbAlvo,
           none: !dbOrigem && !dbAlvo
         };
-        if (conditions.both) return {db: await batalha.get(`${interaction.channelId}`)};
+        if (conditions.both)
+          return {db: await batalha.get(`${interaction.channelId}`)};
         if (conditions.origem) {
           await batalha.set(`${interaction.channelId}.${alvo}`, {
             saude: 100 + this.alvo.skills.vitalidade * 10,
@@ -70,37 +75,85 @@ export class Combat extends PlayCardBase {
   }
 
   async fisico() {
-    const {alvo, batalha, origem, interaction, target, userId, falasOrigem, falasAlvo} = this;
+    const {
+      alvo,
+      batalha,
+      origem,
+      interaction,
+      target,
+      userId,
+      falasOrigem,
+      falasAlvo
+    } = this;
     const ultimoPost = await db.get(`${userId}.latestMessage`);
-    const charMessagesDb = await db.get(`${interaction.guildId}.charMessages.${interaction.customId.split('_')[3]}`);
+    const charMessagesDb = await db.get(
+      `${interaction.guildId}.charMessages.${
+        interaction.customId.split('_')[3]
+      }`
+    );
     const personagemAtualAlvo = await db.get(`${target.id}.chosenChar`);
     const personagemAtualOrigem = await db.get(`${userId}.chosenChar`);
     const dadoAlvo = Math.floor(Math.random() * 20) + 1;
     const dadoOrigem = Math.floor(Math.random() * 20) + 1;
 
     // ------------------------------------------------ Erros de validação ------------------------------------------------
-    if (!(ultimoPost?.channelId === interaction.channelId && ultimoPost.time > Date.now() - 1000 * 60 * 45))
+    if (
+      !(
+        ultimoPost?.channelId === interaction.channelId &&
+        ultimoPost.time > Date.now() - 1000 * 60 * 45
+      )
+    )
       return interaction.reply({
         content:
           '❌ Você não pode atacar ninguém se o seu personagem não enviou um post no canal do alvo nos últimos 45 minutos.',
         ephemeral: true
       });
     if (!interaction.customId.startsWith('ataque_fisico'))
-      throw new Error('Você usou o método de ataque físico em uma interação incongruente.');
+      throw new Error(
+        'Você usou o método de ataque físico em uma interação incongruente.'
+      );
 
-    if (!charMessagesDb) return interaction.reply('❌ A mensagem do alvo foi deletada, não é possível atacar.');
+    if (!charMessagesDb)
+      return interaction.reply(
+        '❌ A mensagem do alvo foi deletada, não é possível atacar.'
+      );
 
     if (ultimoPost.token)
-      return interaction.reply(`${userMention(userId)}, você já usou seu token de combate para este turno!`);
+      return interaction.reply(
+        `${userMention(
+          userId
+        )}, você já usou seu token de combate para este turno!`
+      );
 
     // ------------------------------------------------ Ataque validado ------------------------------------------------
     await interaction.deferReply({fetchReply: true});
-    const escolhaAlvo = await this.responsePanel(interaction, origem, target, alvo, userId);
-    const resposta = calculo(origem, alvo, escolhaAlvo, dadoOrigem, dadoAlvo, batalha.db[target.id]?.esquivas);
+    const escolhaAlvo = await this.responsePanel(
+      interaction,
+      origem,
+      target,
+      alvo,
+      userId
+    );
+    const resposta = calculo(
+      origem,
+      alvo,
+      escolhaAlvo,
+      dadoOrigem,
+      dadoAlvo,
+      batalha.db[target.id]?.esquivas
+    );
 
     // Se o dano for maior que a vida do alvo, enviar um prompt de escolha de destino para o atacante decidir se deseja matar o alvo ou não
     if (resposta?.dano > batalha.db[target.id].saude) {
-      await this.executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem);
+      await this.executionPanel(
+        interaction,
+        origem,
+        alvo,
+        target,
+        userId,
+        personagemAtualAlvo,
+        personagemAtualOrigem
+      );
     } else {
       await setCombatState(target.id, personagemAtualAlvo, true);
       await setCombatState(userId, personagemAtualOrigem, true);
@@ -110,22 +163,39 @@ export class Combat extends PlayCardBase {
         if (resposta?.msg) return resposta.msg;
         else {
           if (resposta?.dano > 0)
-            msg += `\n\n${bold(origem.name)} infligiu ${bold(resposta?.dano)} de dano em ${bold(alvo.name)}!`;
-          else msg += `\n\n${bold(origem.name)} não causou dano em ${bold(alvo.name)}!`;
+            msg += `\n\n${bold(origem.name)} infligiu ${bold(
+              resposta?.dano
+            )} de dano em ${bold(alvo.name)}!`;
+          else
+            msg += `\n\n${bold(origem.name)} não causou dano em ${bold(
+              alvo.name
+            )}!`;
           if (resposta?.defesa > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
-              msg += `\n\n${bold(alvo.name)} defendeu ${bold(resposta?.defesa)} de dano!`;
-            else msg += `\n\n${bold(alvo.name)} não defendeu nenhum dano pois está cansado(a) demais!`;
+              msg += `\n\n${bold(alvo.name)} defendeu ${bold(
+                resposta?.defesa
+              )} de dano!`;
+            else
+              msg += `\n\n${bold(
+                alvo.name
+              )} não defendeu nenhum dano pois está cansado(a) demais!`;
           } else if (resposta?.esquiva > 0) {
             if (batalha.db[target.id].vigor > resposta?.custo)
-              msg += `\n\n${bold(alvo.name)} ignorou ${resposta?.esquiva} do ataque!`;
-            else msg += `\n\n${bold(alvo.name)} não ignorou o ataque pois está cansado(a) demais!`;
+              msg += `\n\n${bold(alvo.name)} ignorou ${
+                resposta?.esquiva
+              } do ataque!`;
+            else
+              msg += `\n\n${bold(
+                alvo.name
+              )} não ignorou o ataque pois está cansado(a) demais!`;
           }
 
           if (resposta?.payback === 'contra_ataque' && resposta?.danoAlvo)
-            msg += `\n\n${bold(alvo.name)} decidiu contra-atacar e causou ${bold(resposta?.danoAlvo)} de dano em ${
-              origem.name
-            }!`;
+            msg += `\n\n${bold(
+              alvo.name
+            )} decidiu contra-atacar e causou ${bold(
+              resposta?.danoAlvo
+            )} de dano em ${origem.name}!`;
           return msg;
         }
       })();
@@ -136,10 +206,12 @@ export class Combat extends PlayCardBase {
     if (resposta?.danoAlvo) this.setHealth(batalha, userId, -resposta.danoAlvo);
     if (batalha.db[target.id].vigor > resposta?.custo) {
       batalha.db[target.id].esquivas += 1;
-      batalha.db[target.id].vigor = batalha.db[target.id].vigor - resposta?.custo;
+      batalha.db[target.id].vigor =
+        batalha.db[target.id].vigor - resposta?.custo;
       this.setHealth(batalha, target.id, -resposta?.dano);
     } else this.setHealth(batalha, target.id, -resposta?.danoTotal);
-    if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/)) await setCombatToken(target.id, false);
+    if (resposta?.payback?.match(/defesa_perfeita|esquiva_perfeita/))
+      await setCombatToken(target.id, false);
     else await setCombatToken(userId, true);
 
     await updateDb(interaction, batalha);
@@ -148,14 +220,47 @@ export class Combat extends PlayCardBase {
     };
     const updatedData = await updatedBattle(interaction.channelId);
     // Checando se o alvo ja foi avisado sobre a sua situação dificil, e enviando uma mensagem caso ainda não tenha sido
-    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasAlvo, 'warned');
-    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasAlvo, 'vwarned');
+    await this.handleEffectPhrase(
+      updatedData,
+      target,
+      alvo,
+      userId,
+      interaction,
+      falasAlvo,
+      'warned'
+    );
+    await this.handleEffectPhrase(
+      updatedData,
+      target,
+      alvo,
+      userId,
+      interaction,
+      falasAlvo,
+      'vwarned'
+    );
     // Se o alvo estiver perto da morte, ou sem energia, enviar uma mensagem de encorajamento para o atacante se uma não foi enviada
-    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasOrigem, 'encouraged');
-    await this.handleEffectPhrase(updatedData, target, alvo, userId, interaction, falasOrigem, 'vencouraged');
+    await this.handleEffectPhrase(
+      updatedData,
+      target,
+      alvo,
+      userId,
+      interaction,
+      falasOrigem,
+      'encouraged'
+    );
+    await this.handleEffectPhrase(
+      updatedData,
+      target,
+      alvo,
+      userId,
+      interaction,
+      falasOrigem,
+      'vencouraged'
+    );
   }
   setHealth(batalha, targetId, value) {
-    return (batalha.db[targetId].saude = batalha.db[targetId].saude + (value ? value : 0));
+    return (batalha.db[targetId].saude =
+      batalha.db[targetId].saude + (value ? value : 0));
   }
 
   async handleEffectPhrase(
@@ -175,9 +280,14 @@ export class Combat extends PlayCardBase {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.channel.send({
-        content: `🗣️ ${userMention(state === 'warned' ? target.id : userId)} 🗣️\n${
+        content: `🗣️ ${userMention(
+          state === 'warned' ? target.id : userId
+        )} 🗣️\n${
           falas.hp[state === 'warned' ? 'self' : 'inimigo'][
-            Math.floor(Math.random() * falas.hp[state === 'warned' ? 'self' : 'inimigo'].length)
+            Math.floor(
+              Math.random() *
+                falas.hp[state === 'warned' ? 'self' : 'inimigo'].length
+            )
           ]
         }`
       });
@@ -189,15 +299,28 @@ export class Combat extends PlayCardBase {
       batalha.db[userId][state] = true;
       await updateDb(interaction, batalha);
       await interaction.channel.send({
-        content: `🗣️ ${userMention(state === 'vwarned' ? target.id : userId)} 🗣️\n${
+        content: `🗣️ ${userMention(
+          state === 'vwarned' ? target.id : userId
+        )} 🗣️\n${
           falas.vigor[state === 'vwarned' ? 'self' : 'inimigo'][
-            Math.floor(Math.random() * falas.vigor[state === 'vwarned' ? 'self' : 'inimigo'].length)
+            Math.floor(
+              Math.random() *
+                falas.vigor[state === 'vwarned' ? 'self' : 'inimigo'].length
+            )
           ]
         }`
       });
     }
   }
-  async executionPanel(interaction, origem, alvo, target, userId, personagemAtualAlvo, personagemAtualOrigem) {
+  async executionPanel(
+    interaction,
+    origem,
+    alvo,
+    target,
+    userId,
+    personagemAtualAlvo,
+    personagemAtualOrigem
+  ) {
     const painelFinal = await interaction.editReply({
       content: `${bold(origem.name)} derrubou ${bold(
         alvo.name
@@ -233,9 +356,14 @@ export class Combat extends PlayCardBase {
       } else {
         await setCombatState(targetId, personagemAtualAlvo, false);
         await setCombatState(originUser, personagemAtualOrigem, false);
-        await button.message.edit({content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`, components: []});
+        await button.message.edit({
+          content: `${bold(origem.name)} poupou ${bold(alvo.name)}...`,
+          components: []
+        });
         await button.channel.send({
-          content: `A batalha entre ${bold(origem.name)} e ${bold(alvo.name)} acabou. O vencedor é ${bold(
+          content: `A batalha entre ${bold(origem.name)} e ${bold(
+            alvo.name
+          )} acabou. O vencedor é ${bold(
             origem.name
           )}, que decidiu poupar o(a) opositor(a)!`
         });
@@ -251,7 +379,9 @@ export class Combat extends PlayCardBase {
     });
     async function handleExecutar(btn) {
       await btn.message.edit({
-        content: `${bold(origem.name)} executou ${bold(alvo.name)}... Que Sidera o(a) tenha! 💀`,
+        content: `${bold(origem.name)} executou ${bold(
+          alvo.name
+        )}... Que Sidera o(a) tenha! 💀`,
         components: []
       });
 
@@ -267,7 +397,9 @@ export class Combat extends PlayCardBase {
 
   async responsePanel(interaction, origem, target, alvo, userId) {
     const painel = await interaction.channel.send({
-      content: `Seu personagem foi atacado por ${bold(origem.name)}, ${userMention(target.id)}!${
+      content: `Seu personagem foi atacado por ${bold(
+        origem.name
+      )}, ${userMention(target.id)}!${
         !origem.inCombat
           ? `\n💀 ${bold(
               alvo.name
@@ -304,12 +436,15 @@ export class Combat extends PlayCardBase {
       })
       .then(async reacaoAlvo => {
         await painel.edit({
-          content: `${userMention(target.id)} escolheu ${bold(title(reacaoAlvo.component.label))}!`,
+          content: `${userMention(target.id)} escolheu ${bold(
+            title(reacaoAlvo.component.label)
+          )}!`,
           components: []
         });
 
         if (reacaoAlvo?.customId.startsWith('defender')) return 'defender';
-        else if (reacaoAlvo?.customId.startsWith('contra_ataque')) return 'contra_ataque';
+        else if (reacaoAlvo?.customId.startsWith('contra_ataque'))
+          return 'contra_ataque';
         else if (reacaoAlvo?.customId.startsWith('esquiva')) return 'esquiva';
       })
       .catch(async () => {
@@ -354,7 +489,14 @@ async function updateDb(interaction, batalha) {
  * @param {number} dadoAlvo - Dado do personagem que é atacado
  * @returns Um calculo de dano ou um objeto com dados sobre a batalha.
  */
-function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAlvo = 0, esquivas = 1) {
+function calculo(
+  origem = {},
+  alvo = {},
+  actionAlvo = '',
+  dadoOrigem = 0,
+  dadoAlvo = 0,
+  esquivas = 1
+) {
   const dano = Object.values(origem.armas)
     .filter(item => item.base)
     .map(item => itemComRng(origem, item, dadoOrigem))
@@ -376,22 +518,45 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
           payback: 'defesa_perfeita'
         };
       else {
-        const handleEscudo = alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
+        const handleEscudo =
+          alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
 
         if (handleEscudo) {
-          const escudoBase = itemComRng(alvo, alvo.armas.armaSecundaria, dadoAlvo);
+          const escudoBase = itemComRng(
+            alvo,
+            alvo.armas.armaSecundaria,
+            dadoAlvo
+          );
           return dano - escudoBase < 0 ? 0 : dano - escudoBase;
         } else
           return {
             danoTotal: dano,
             dano:
-              Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa) < 0
+              Math.floor(
+                dano -
+                  dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 -
+                  defesa
+              ) < 0
                 ? 0
-                : Math.floor(dano - dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa),
+                : Math.floor(
+                    dano -
+                      dano *
+                        (0.15 + (0.3 * alvo.skills.resistencia) / 100) *
+                        1.25 -
+                      defesa
+                  ),
             defesa:
-              Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa) < 0
+              Math.floor(
+                dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 -
+                  defesa
+              ) < 0
                 ? 0
-                : Math.floor(dano * (0.15 + (0.3 * alvo.skills.resistencia) / 100) * 1.25 - defesa),
+                : Math.floor(
+                    dano *
+                      (0.15 + (0.3 * alvo.skills.resistencia) / 100) *
+                      1.25 -
+                      defesa
+                  ),
             custo: 15
           };
       }
@@ -408,13 +573,26 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
         return {
           danoTotal: dano,
           dano:
-            Math.floor(dano - dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+            Math.floor(
+              dano -
+                dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 -
+                defesa
+            ) < 0
               ? 0
-              : Math.floor(dano - dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+              : Math.floor(
+                  dano -
+                    dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 -
+                    defesa
+                ),
           esquiva:
-            Math.floor(dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa) < 0
+            Math.floor(
+              dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa
+            ) < 0
               ? 0
-              : Math.floor(dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 - defesa),
+              : Math.floor(
+                  dano * (0.25 + (0.3 * alvo.skills.destreza) / 100) * 1.25 -
+                    defesa
+                ),
           custo: 5 * (esquivas ? esquivas : 1)
         };
 
@@ -431,15 +609,29 @@ function calculo(origem = {}, alvo = {}, actionAlvo = '', dadoOrigem = 0, dadoAl
         danoTotal: dano,
         dano: dano - defesa < 0 ? 0 : Math.floor(dano - defesa),
         danoAlvo:
-          Math.floor(danoAlvo - danoAlvo * (0.15 + (0.3 * origem.skills.resistencia) / 100) * 1.25 - defesaOrigem) < 0
+          Math.floor(
+            danoAlvo -
+              danoAlvo *
+                (0.15 + (0.3 * origem.skills.resistencia) / 100) *
+                1.25 -
+              defesaOrigem
+          ) < 0
             ? 0
-            : Math.floor(danoAlvo - danoAlvo * (0.15 + (0.3 * origem.skills.resistencia) / 100) * 1.25 - defesaOrigem),
+            : Math.floor(
+                danoAlvo -
+                  danoAlvo *
+                    (0.15 + (0.3 * origem.skills.resistencia) / 100) *
+                    1.25 -
+                  defesaOrigem
+              ),
         payback: 'contra_ataque'
       };
   }
 
   function itemComRng(player, item = {}, dado = 0) {
-    const resultado = item.base + item.multiplicador.num * (player.skills[item.multiplicador.tipo] * 0.2);
+    const resultado =
+      item.base +
+      item.multiplicador.num * (player.skills[item.multiplicador.tipo] * 0.2);
     const multiplicadorBase = () => {
       if (dado === 20) return 3;
       else if (dado >= 14) return 1.25;

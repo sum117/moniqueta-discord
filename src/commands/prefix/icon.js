@@ -5,7 +5,8 @@ export const data = {
   event: 'messageCreate',
   kind: 'regular',
   name: 'Imagem para Icone',
-  description: 'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.'
+  description:
+    'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.'
 };
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
@@ -19,9 +20,13 @@ export async function execute(msg, args) {
    */
 
   const [color, imageUrl] = args;
-  if (!color) return msg.reply('❌ Você precisa informar uma cor para o icone.');
-  const userInput = await (await axios({url: imageUrl, responseType: 'arraybuffer'})).data;
-  if (!imageUrl) return msg.reply('❌ Você precisa informar um link de imagem.');
+  if (!color)
+    return msg.reply('❌ Você precisa informar uma cor para o icone.');
+  const userInput = await (
+    await axios({url: imageUrl, responseType: 'arraybuffer'})
+  ).data;
+  if (!imageUrl)
+    return msg.reply('❌ Você precisa informar um link de imagem.');
 
   const radius = Buffer.from(
     `<svg

@@ -1,5 +1,10 @@
 import {bold, quote, userMention} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder
+} from 'discord.js';
 
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
@@ -29,17 +34,23 @@ export class Interaction extends PlayCardBase {
     } else if (action === 'comment') {
       await db.set(`${interaction.user.id}.isEditting`, true);
       await interaction.editReply({
-        content: 'O que você digitar a seguir será enviado como comentário para o dono do post.',
+        content:
+          'O que você digitar a seguir será enviado como comentário para o dono do post.',
         components: []
       });
       return this.comment();
-    } else if (action === `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`) {
+    } else if (
+      action ===
+      `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`
+    ) {
       return interaction.editReply({
         content: 'Você está atacando o personagem de ' + target.user.username,
         components: [
           new ActionRowBuilder().addComponents(
             new ButtonBuilder()
-              .setCustomId(`ataque_fisico_${target.id}_${interaction.message.id}_${interaction.user.id}`)
+              .setCustomId(
+                `ataque_fisico_${target.id}_${interaction.message.id}_${interaction.user.id}`
+              )
               .setLabel('Ataque Físico')
               .setEmoji('⚔️')
               .setStyle(ButtonStyle.Danger)
@@ -70,7 +81,9 @@ export class Interaction extends PlayCardBase {
               .setEmoji('💬')
               .setStyle(ButtonStyle.Secondary),
             new ButtonBuilder()
-              .setCustomId(`attack_${target.id}_${interaction.message.id}_${interaction.user.id}`)
+              .setCustomId(
+                `attack_${target.id}_${interaction.message.id}_${interaction.user.id}`
+              )
               .setLabel('Atacar')
               .setEmoji('🗡️')
               .setStyle(ButtonStyle.Secondary)
@@ -97,7 +110,17 @@ export class Interaction extends PlayCardBase {
   async profile() {
     const {interaction, target} = this;
     const db = await this.character(interaction, target);
-    const {name, avatar, sum, appearance, gender, phantom, skills, equipamentos, armas} = db;
+    const {
+      name,
+      avatar,
+      sum,
+      appearance,
+      gender,
+      phantom,
+      skills,
+      equipamentos,
+      armas
+    } = db;
     const xpLog = db?.xpLog ?? 1;
     const totalXp = db?.xpCount ?? 0;
     const level = db?.level ?? 1;
@@ -111,9 +134,11 @@ export class Interaction extends PlayCardBase {
         iconURL: target.displayAvatarURL({dynamic: true, size: 512})
       })
       .setDescription(
-        `${appearance ? appearance : 'O personagem em questão não possui descrição alguma.'}\n\n${bold(
-          'PROGRESSO'
-        )}\n${level} ${statusBar(
+        `${
+          appearance
+            ? appearance
+            : 'O personagem em questão não possui descrição alguma.'
+        }\n\n${bold('PROGRESSO')}\n${level} ${statusBar(
           xpLog,
           nextLevelXp,
           '<:barEnergy:994630956180840529>',
@@ -147,11 +172,24 @@ export class Interaction extends PlayCardBase {
 
         {
           name: 'Genero',
-          value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+          value:
+            gender === 'masculino'
+              ? '♂️ Masculino'
+              : gender === 'feminino'
+              ? '♀️ Feminino'
+              : '👽 Descubra',
           inline: true
         },
-        {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true},
-        {name: 'Purgatório', value: assets.phantom[phantom] + ' ' + title(phantom), inline: true}
+        {
+          name: 'Soma',
+          value: assets.sum[sum].emoji + ' ' + title(sum),
+          inline: true
+        },
+        {
+          name: 'Purgatório',
+          value: assets.phantom[phantom] + ' ' + title(phantom),
+          inline: true
+        }
       );
   }
   async comment() {
@@ -163,9 +201,8 @@ export class Interaction extends PlayCardBase {
       max: 1
     });
     return collector.on('end', async m => {
-      if (!m) return;
-      if (typeof m[Symbol.iterator] !== 'function') return;
-      const [[, msg]] = m;
+      if (!m.first()) return;
+      const msg = m.first();
       const threadChannel = interaction.message.hasThread
         ? interaction.message.thread
         : await interaction.message.startThread({
@@ -220,7 +257,10 @@ export class Interaction extends PlayCardBase {
     const {interaction, target} = this;
     const {id: userId} = interaction.user;
     const {id: targetId} = target;
-    if (userId !== targetId) return interaction.editReply('Você não pode editar o personagem de outra pessoa.');
+    if (userId !== targetId)
+      return interaction.editReply(
+        'Você não pode editar o personagem de outra pessoa.'
+      );
 
     const character = await this.character(interaction, target);
     let {name, appearance, avatar, personality, sum} = character;
@@ -272,18 +312,32 @@ export class Interaction extends PlayCardBase {
             .setLabel('Editar Personalidade')
             .setEmoji('🤔')
             .setStyle(ButtonStyle.Secondary),
-          new ButtonBuilder().setCustomId('cancelar').setEmoji('❌').setLabel('Cancelar').setStyle(ButtonStyle.Danger)
+          new ButtonBuilder()
+            .setCustomId('cancelar')
+            .setEmoji('❌')
+            .setLabel('Cancelar')
+            .setStyle(ButtonStyle.Danger)
         )
       ]
     };
 
     await interaction.editReply(editorReplyObject);
-    const possibilities = ['name', 'avatar', 'appearance', 'personality', 'title', 'cancelar'];
-    const componentCollector = interaction.channel.createMessageComponentCollector({
-      filter: btn => btn.user.id === interaction.user.id && possibilities.includes(btn.customId),
-      time: 120000,
-      max: 1
-    });
+    const possibilities = [
+      'name',
+      'avatar',
+      'appearance',
+      'personality',
+      'title',
+      'cancelar'
+    ];
+    const componentCollector =
+      interaction.channel.createMessageComponentCollector({
+        filter: btn =>
+          btn.user.id === interaction.user.id &&
+          possibilities.includes(btn.customId),
+        time: 120000,
+        max: 1
+      });
     componentCollector.on('collect', async btn => {
       await db.set(`${btn.user.id}.isEditting`, true);
       setTimeout(() => db.set(`${btn.user.id}.isEditting`, false), 120000);
@@ -293,7 +347,11 @@ export class Interaction extends PlayCardBase {
       const [[_messageId, button]] = btn;
       if (!button) return;
       if (button.customId === 'cancelar')
-        return interaction.editReply({content: 'Edição cancelada.', embeds: [], components: []});
+        return interaction.editReply({
+          content: 'Edição cancelada.',
+          embeds: [],
+          components: []
+        });
 
       const responses = {
         name: 'Digite o novo nome do personagem:',
@@ -312,21 +370,31 @@ export class Interaction extends PlayCardBase {
       });
 
       return msgCollector.on('end', async msgs => {
-        if (msgs.size < 1) return interaction.editReply({content: 'Você não editou a tempo.'});
+        if (msgs.size < 1)
+          return interaction.editReply({content: 'Você não editou a tempo.'});
         let [[_msgId, msg]] = msgs;
-        await db.set(`${msg.author.id}.chars.${chosenChar}.${button.customId}`, msg.content);
+        await db.set(
+          `${msg.author.id}.chars.${chosenChar}.${button.customId}`,
+          msg.content
+        );
         const dictionary = {
           name: 'Nome',
           appearance: 'Descrição Física',
           personality: 'Personalidade'
         };
-        if (msg.content.includes('https://')) embed.data.image.url = msg.content;
-        let field = embed.data.fields.find(f => f.name === dictionary[button.customId]) ?? {};
-        if (field?.name !== 'Título' || field?.name !== 'Nome') field.value = msg.content.slice(0, 1021) + '...';
+        if (msg.content.includes('https://'))
+          embed.data.image.url = msg.content;
+        let field =
+          embed.data.fields.find(f => f.name === dictionary[button.customId]) ??
+          {};
+        if (field?.name !== 'Título' || field?.name !== 'Nome')
+          field.value = msg.content.slice(0, 1021) + '...';
         else field.value = msg.content.slice(0, 1021);
         if (!interaction.isRepliable()) return;
         await button.editReply(
-          (field.name ? field.name : 'Imagem ') + ' atualizado(a) com sucesso para: ' + field.value
+          (field.name ? field.name : 'Imagem ') +
+            ' atualizado(a) com sucesso para: ' +
+            field.value
         );
         await interaction.editReply({embeds: [embed]});
         await msg.delete();

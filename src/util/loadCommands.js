@@ -24,7 +24,8 @@ export async function loadCommands(event, moniqueta, ...args) {
         userArgs.shift();
         if (command) {
           await command.execute(msg, userArgs);
-        } else msg.reply('❌ Não encontrei o comando que você tentou executar.');
+        } else
+          msg.reply('❌ Não encontrei o comando que você tentou executar.');
       }
       for (const [, command] of Object.entries(prefixless)) {
         command.execute(moniqueta, msg);
@@ -36,16 +37,19 @@ export async function loadCommands(event, moniqueta, ...args) {
        */
       const interaction = args[0];
       if (interaction.type === InteractionType.ApplicationCommand) {
-        if (slash[interaction.commandName]) await slash[interaction.commandName].execute(interaction, moniqueta);
+        if (slash[interaction.commandName])
+          await slash[interaction.commandName].execute(interaction, moniqueta);
       } else {
         for (const command in interactions) {
-          if (interactions[command].data.event === event) await interactions[command].execute(interaction, moniqueta);
+          if (interactions[command].data.event === event)
+            await interactions[command].execute(interaction, moniqueta);
         }
       }
       break;
     default:
       for (const [, system] of Object.entries(systems)) {
-        if (system.data.events.includes(event)) await system.execute(event, moniqueta, ...args);
+        if (system.data.events.includes(event))
+          await system.execute(event, moniqueta, ...args);
       }
   }
 }

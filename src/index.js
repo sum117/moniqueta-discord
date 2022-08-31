@@ -1,11 +1,25 @@
-import {Client, Collection, GatewayIntentBits, SelectMenuBuilder} from 'discord.js';
+import {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  SelectMenuBuilder
+} from 'discord.js';
 
 import {mudaeTimer} from './commands/cron';
 // Since we're using the ready event in index, I imported prefix and slash commands here to setup the .commands collection for the bot, which is used in the help command.
 import * as prefixCommands from './commands/prefix';
 import * as slashCommands from './commands/slash';
 import {db} from './db.js';
-import {channels, loadEvents, myGuild, prefix, registerSlashCommands, roles, token, updateMemberCounter} from './util';
+import {
+  channels,
+  loadEvents,
+  myGuild,
+  prefix,
+  registerSlashCommands,
+  roles,
+  token,
+  updateMemberCounter
+} from './util';
 export const moniqueta = new Client({
   intents: [
     GatewayIntentBits.MessageContent,
@@ -50,27 +64,37 @@ moniqueta.on('ready', async moniqueta => {
   const guild = moniqueta.guilds.cache.get(myGuild);
   guild.invites.fetch().then(invites => {
     console.log('Novos convites foram salvos.');
-    invites.each(invite => moniqueta.inviteCodeUses.set(invite.code, invite.uses));
+    invites.each(invite =>
+      moniqueta.inviteCodeUses.set(invite.code, invite.uses)
+    );
     moniqueta.guildInvites.set(myGuild, moniqueta.inviteCodeUses);
     console.log(moniqueta.guildInvites);
   });
   // Registrando comandos
   for (const commands of [slashCommands, prefixCommands]) {
     Object.entries(commands).forEach(([key, command]) => {
-      moniqueta.commands.set(key, [command.data.description, command.data?.kind]);
+      moniqueta.commands.set(key, [
+        command.data.description,
+        command.data?.kind
+      ]);
     });
   }
   setInterval(async () => {
     // Atualizando o contador de membros
-    const members = await moniqueta.guilds.cache.first().members.fetch({cache: true});
+    const members = await moniqueta.guilds.cache
+      .first()
+      .members.fetch({cache: true});
     members.map(async member => {
       if (
         member.user.username.startsWith('SDA •') ||
-        member.presence?.activities[0]?.state?.match(/https\:\/\/discord\.sumserver\.xyz/)
+        member.presence?.activities[0]?.state?.match(
+          /https\:\/\/discord\.sumserver\.xyz/
+        )
       ) {
         await member.roles.add(roles.xpBoostRole);
       } else {
-        if (member.roles.cache.get(roles.xpBoostRole)) await member.roles.remove(roles.xpBoostRole);
+        if (member.roles.cache.get(roles.xpBoostRole))
+          await member.roles.remove(roles.xpBoostRole);
       }
     });
   }, 5 * 60 * 1000);
@@ -197,7 +221,12 @@ moniqueta.on('ready', async moniqueta => {
   // });
   // msg.edit({components: msg.components});
 
-  mudaeTimer.execute(moniqueta, '1010063139963949196', '977083355327778826', '1010107434741813359');
+  mudaeTimer.execute(
+    moniqueta,
+    '1010063139963949196',
+    '977083355327778826',
+    '1010107434741813359'
+  );
 });
 moniqueta.on('error', e => {
   console.log(e);
@@ -232,7 +261,9 @@ async function changeComponentOptions(
   placeHolder = '',
   options = [{}]
 ) {
-  const message = await moniqueta.channels.cache.get(channelId).messages.fetch(messageId);
+  const message = await moniqueta.channels.cache
+    .get(channelId)
+    .messages.fetch(messageId);
   const component = message.components[actionRow].setComponents(
     new SelectMenuBuilder()
       .setCustomId(customId)

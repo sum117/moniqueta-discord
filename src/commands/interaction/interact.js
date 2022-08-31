@@ -16,7 +16,9 @@ let user;
 export async function execute(interaction) {
   if (interaction.customId === 'interact') {
     target = await (async () => {
-      const id = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
+      const id = await db.get(
+        `${interaction.guildId}.charMessages.${interaction.message.id}`
+      );
       return interaction.guild.members.fetch({user: id});
     })();
     interactionPanel.set(target.id, new Interaction(interaction, target));
@@ -27,12 +29,20 @@ export async function execute(interaction) {
     await interaction.deleteReply();
     return interactionPanel.get(target.id).panel(interaction.customId);
   } else if (interaction.customId.startsWith('ataque_fisico_')) {
-    target = await interaction.guild.members.fetch(interaction.customId.split('_')[2]);
-    const staticUser = await interaction.guild.members.fetch(interaction.customId.split('_')[4]);
+    target = await interaction.guild.members.fetch(
+      interaction.customId.split('_')[2]
+    );
+    const staticUser = await interaction.guild.members.fetch(
+      interaction.customId.split('_')[4]
+    );
 
     const combat = await new Combat().init(interaction, target, staticUser.id);
     return combat.fisico();
-  } else if (interaction.customId.match(/atributos|pick_skill|increment_attribute|decrement_attribute/)) {
+  } else if (
+    interaction.customId.match(
+      /atributos|pick_skill|increment_attribute|decrement_attribute/
+    )
+  ) {
     const XpManager = new Xp();
     return XpManager.xpPanel(interaction, interaction.customId);
   } else if (interaction.customId === 'charEditor') {
@@ -56,8 +66,10 @@ export async function execute(interaction) {
       ].includes(interaction.customId),
       inventario: interaction.customId === 'inventario'
     };
-    if (conditions.equipar_item) await Item.equipPanel(interaction, interaction.customId, user);
-    else if (conditions.selecionar_slot) await Item.equipPanel(interaction, 'selecionar_slot', user);
+    if (conditions.equipar_item)
+      await Item.equipPanel(interaction, interaction.customId, user);
+    else if (conditions.selecionar_slot)
+      await Item.equipPanel(interaction, 'selecionar_slot', user);
     else if (conditions.inventario) {
       user = await Item.fetchUser(interaction);
       await Item.equipPanel(interaction, interaction.customId, user);

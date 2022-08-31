@@ -18,11 +18,19 @@ export const data = {
 export async function execute(msg, args) {
   // Argumentos raiz e erros.
   if (!msg.member.permissions.has('manageGuild'))
-    return msg.reply('❌ Você não pode usar esse comando pois não é um administrador.');
-  const comando = args?.[0] ? (args[0].match(/\d{17,20}/) ? args[0] : undefined) : undefined;
+    return msg.reply(
+      '❌ Você não pode usar esse comando pois não é um administrador.'
+    );
+  const comando = args?.[0]
+    ? args[0].match(/\d{17,20}/)
+      ? args[0]
+      : undefined
+    : undefined;
   if (!comando)
     return msg.reply(
-      `❌ Você não ofereceu uma marcação válida.\nUso correto: ${inlineCode('$' + data.name + ' <menção>')}`
+      `❌ Você não ofereceu uma marcação válida.\nUso correto: ${inlineCode(
+        '$' + data.name + ' <menção>'
+      )}`
     );
   const parsed = `${comando.replace(/\<|\>|\@|\!/g, '')}`.trim();
   const dados = await db.get(`${parsed}`);
@@ -30,7 +38,8 @@ export async function execute(msg, args) {
 
   const escolhido = dados?.chosenChar;
   const personagem = dados?.chars[escolhido];
-  if (!escolhido || !personagem) return msg.reply('O usuário não tem um personagem.');
+  if (!escolhido || !personagem)
+    return msg.reply('O usuário não tem um personagem.');
 
   // Código autorizado
   personagem.user = parsed;
@@ -43,7 +52,15 @@ function getLog() {
   const file = fs.readFileSync(path, 'utf-8');
   return yaml.parse(file);
 }
-async function newLog({user, name, xpLog, level, xpCount, attributePoints: ap, skills}) {
+async function newLog({
+  user,
+  name,
+  xpLog,
+  level,
+  xpCount,
+  attributePoints: ap,
+  skills
+}) {
   const log = getLog() ?? {[user]: {}};
   const info = await getCorrectInfo(xpCount);
   const newObj = {
@@ -55,7 +72,8 @@ async function newLog({user, name, xpLog, level, xpCount, attributePoints: ap, s
     LEVEL: level,
     'LEVEL CORRETO': info.lvlCorreto,
     'PONTOS DE ATRIBUTOS DISPONIVEIS': ap,
-    'SKILLS DIFF - ESSE NUMERO DEVE SER ZERO': Object.values(skills).reduce((a, b) => a + b, 0) - 36 - level * 2
+    'SKILLS DIFF - ESSE NUMERO DEVE SER ZERO':
+      Object.values(skills).reduce((a, b) => a + b, 0) - 36 - level * 2
   };
   log[user] = newObj;
   const fileToSave = yaml.stringify(log);

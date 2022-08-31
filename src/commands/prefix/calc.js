@@ -24,7 +24,11 @@ export async function execute(msg, args) {
 
   try {
     const result = eval(args);
-    msg.channel.send(`O resultado de \`${args.length >= 1900 ? args.slice(0, 1900) + '...' : args}\` é **${result}**`);
+    msg.channel.send(
+      `O resultado de \`${
+        args.length >= 1900 ? args.slice(0, 1900) + '...' : args
+      }\` é **${result}**`
+    );
   } catch {
     msg.channel.send('Não foi possível calcular a expressão.');
   }

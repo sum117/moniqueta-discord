@@ -29,9 +29,18 @@ const skillsArray = [
 const data = new SlashCommandBuilder()
   .setName('npc')
   .setDescription('Cria um npc')
-  .addStringOption(option => option.setName('nome').setDescription('Nome do npc').setRequired(true))
-  .addStringOption(option => option.setName('titulo').setDescription('Titulo do npc').setRequired(true))
-  .addStringOption(option => option.setName('aparencia').setDescription('Descrição do npc').setRequired(true))
+  .addStringOption(option =>
+    option.setName('nome').setDescription('Nome do npc').setRequired(true)
+  )
+  .addStringOption(option =>
+    option.setName('titulo').setDescription('Titulo do npc').setRequired(true)
+  )
+  .addStringOption(option =>
+    option
+      .setName('aparencia')
+      .setDescription('Descrição do npc')
+      .setRequired(true)
+  )
   .addStringOption(option =>
     option
       .setName('genero')
@@ -65,13 +74,26 @@ const data = new SlashCommandBuilder()
       .setDescription('Fantasma do npc')
       .setRequired(true)
   )
-  .addStringOption(option => option.setName('personalidade').setDescription('Personalidade do npc').setRequired(true))
-  .addNumberOption(option =>
-    option.setName('item').setDescription('O Id do item que será atribuído ao NPC').setRequired(true)
+  .addStringOption(option =>
+    option
+      .setName('personalidade')
+      .setDescription('Personalidade do npc')
+      .setRequired(true)
   )
-  .addAttachmentOption(option => option.setName('avatar').setDescription('Imagem do npc').setRequired(true))
+  .addNumberOption(option =>
+    option
+      .setName('item')
+      .setDescription('O Id do item que será atribuído ao NPC')
+      .setRequired(true)
+  )
   .addAttachmentOption(option =>
-    option.setName('icone-do-titulo').setDescription('Imagem do titulo do npc').setRequired(true)
+    option.setName('avatar').setDescription('Imagem do npc').setRequired(true)
+  )
+  .addAttachmentOption(option =>
+    option
+      .setName('icone-do-titulo')
+      .setDescription('Imagem do titulo do npc')
+      .setRequired(true)
   );
 skillsArray.map(skill =>
   data.addNumberOption(option =>
@@ -93,7 +115,9 @@ export {data};
 
 export async function execute(interaction) {
   if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild))
-    return interaction.reply('Você não tem permissão para executar esse comando.');
+    return interaction.reply(
+      'Você não tem permissão para executar esse comando.'
+    );
   const input = Object.keys(dictionary)
     .map(key => {
       return {
@@ -119,6 +143,10 @@ export async function execute(interaction) {
     })
     .reduce((acc, curr) => {
       acc[curr.name] = curr.value;
+      if (index === skillsArray.length - 1) {
+        delete acc['name'];
+        acc.vitalidade = interaction.options.getNumber('vitalidade');
+      }
       return acc;
     });
   input.title = {};
@@ -128,7 +156,10 @@ export async function execute(interaction) {
   input.avatar = interaction.options.getAttachment('avatar').url;
 
   const charCount = await db.get(`${interaction.user.id}.count`);
-  const itemChosen = await db.table('server_items').get(interaction.options.getNumber('item').toString());
+  const itemChosen = await db
+    .table('server_items')
+    .get(interaction.options.getNumber('item').toString());
+  itemChosen.quantia = 1;
   input.mochila[interaction.options.getNumber('item').toString()] = itemChosen;
   await db.set(`${interaction.user.id}.chars.${charCount + 1}`, input);
 

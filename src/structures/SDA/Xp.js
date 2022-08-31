@@ -1,5 +1,10 @@
 import {bold} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, SelectMenuBuilder} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  SelectMenuBuilder
+} from 'discord.js';
 
 import {db} from '../../db.js';
 import {statusBar} from '../../util';
@@ -31,7 +36,10 @@ export class Xp extends PlayCardBase {
       return {
         title: `Painel de Atributos de ${character.name}`,
         description: `Pontos disponiveis: ${character?.attributePoints ?? 0}`,
-        color: character.phantom === 'ceifador' ? 5592405 : assets.sum[character.sum].color,
+        color:
+          character.phantom === 'ceifador'
+            ? 5592405
+            : assets.sum[character.sum].color,
         fields: Object.entries(character.skills).map(([key, value]) => {
           return {
             name: friendlyDisplay(key),
@@ -51,14 +59,18 @@ export class Xp extends PlayCardBase {
       };
     };
     const staticPanel = panel();
-    let editField = staticPanel.fields.find(field => friendlyDisplay(skilltoEdit()) === field.name);
+    let editField = staticPanel.fields.find(
+      field => friendlyDisplay(skilltoEdit()) === field.name
+    );
     let option = interaction.message.components[0].components[0].options?.find(
       option => option.value === skilltoEdit()
     );
     switch (action) {
       case 'pick_skill':
         if (character.skills[pickedSkill()] === 117)
-          return await interaction.update({content: 'Você já possui o nível máximo nesta habilidade.'});
+          return await interaction.update({
+            content: 'Você já possui o nível máximo nesta habilidade.'
+          });
 
         staticPanel.footer.text = 'Editando o atributo de: ' + pickedSkill();
         let actionRows = interaction.message.components;
@@ -66,16 +78,25 @@ export class Xp extends PlayCardBase {
         actionRows[1].components = actionRows[1].components.map(component =>
           ButtonBuilder.from(component).setDisabled(false)
         );
-        return await interaction.update({embeds: [staticPanel], components: [...actionRows]});
+        return await interaction.update({
+          embeds: [staticPanel],
+          components: [...actionRows]
+        });
 
       case 'increment_attribute':
         if (character.attributePoints > 0) {
           character.attributePoints--;
           character.skills[skilltoEdit()]++;
-          option.description = 'Nivel Atual: ' + character.skills[skilltoEdit()];
-          staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
+          option.description =
+            'Nivel Atual: ' + character.skills[skilltoEdit()];
+          staticPanel.description = staticPanel.description.replace(
+            /\d+/g,
+            character.attributePoints
+          );
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
-          editField.value = `${bold(character.skills[skilltoEdit()])} ${statusBar(
+          editField.value = `${bold(
+            character.skills[skilltoEdit()]
+          )} ${statusBar(
             character.skills[skilltoEdit()],
             117,
             sortStatusBar(editField.name.split(' ')[1].trim().toLowerCase()),
@@ -83,19 +104,30 @@ export class Xp extends PlayCardBase {
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
+          return await interaction.update({
+            embeds: [staticPanel],
+            components: [...interaction.message.components]
+          });
         }
 
-        return await interaction.update({content: '❌ Você não possui pontos para aumentar os atributos.'});
+        return await interaction.update({
+          content: '❌ Você não possui pontos para aumentar os atributos.'
+        });
 
       case 'decrement_attribute':
         if (character.skills[skilltoEdit()] > 0) {
           character.attributePoints++;
           character.skills[skilltoEdit()]--;
-          option.description = 'Nivel Atual: ' + character.skills[skilltoEdit()];
-          staticPanel.description = staticPanel.description.replace(/\d+/g, character.attributePoints);
+          option.description =
+            'Nivel Atual: ' + character.skills[skilltoEdit()];
+          staticPanel.description = staticPanel.description.replace(
+            /\d+/g,
+            character.attributePoints
+          );
           staticPanel.footer.text = interaction.message.embeds[0].footer.text;
-          editField.value = `${bold(character.skills[skilltoEdit()])} ${statusBar(
+          editField.value = `${bold(
+            character.skills[skilltoEdit()]
+          )} ${statusBar(
             character.skills[skilltoEdit()],
             117,
             sortStatusBar(editField.name.split(' ')[1].trim().toLowerCase()),
@@ -103,9 +135,14 @@ export class Xp extends PlayCardBase {
             10
           )} **117**`;
           await updateDb(interaction.user.id, character);
-          return await interaction.update({embeds: [staticPanel], components: [...interaction.message.components]});
+          return await interaction.update({
+            embeds: [staticPanel],
+            components: [...interaction.message.components]
+          });
         }
-        return await interaction.update({content: '❌ Você não possui niveis nos atributos para diminuir.'});
+        return await interaction.update({
+          content: '❌ Você não possui niveis nos atributos para diminuir.'
+        });
       default:
         return await interaction.update({
           fetchReply: true,
@@ -168,11 +205,23 @@ export class Xp extends PlayCardBase {
       character.xpCount += count;
       character.attributePoints = character.attributePoints + 2;
       const msg = await interaction.channel.send(
-        `🎊 ${bold(character.name.toUpperCase())} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${
+        `🎊 ${bold(
+          character.name.toUpperCase()
+        )} SUBIU DE NÍVEL, PARABÉNS! 🎊\nNivel Atual: ${
           character.level - 1
-        }\nXP Total: ${totalXp}\nXP para o próximo nível: ${levels[character.level]}`
+        }\nXP Total: ${totalXp}\nXP para o próximo nível: ${
+          levels[character.level]
+        }`
       );
-      setTimeout(() => msg.delete().catch(err => console.log(`A mensagem de nível já foi deletada: ${err}`)), 10000);
+      setTimeout(
+        () =>
+          msg
+            .delete()
+            .catch(err =>
+              console.log(`A mensagem de nível já foi deletada: ${err}`)
+            ),
+        10000
+      );
     } else {
       character.xpLog = sentLetters;
       character.xpCount += count;
@@ -240,7 +289,10 @@ export async function fixBrokenLevels() {
           getCorrectInfo().then(async ({lvlCorreto}) => {
             char.level = lvlCorreto;
             const total = lvlCorreto * 2 + 36;
-            const skills = Object.values(char?.skills).reduce((a, b) => a + b, 0);
+            const skills = Object.values(char?.skills).reduce(
+              (a, b) => a + b,
+              0
+            );
 
             if (total > skills) char.attributePoints = total - skills;
 

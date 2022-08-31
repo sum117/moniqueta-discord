@@ -22,7 +22,10 @@ export async function execute(interaction, client) {
         '\n\n' +
         commands
           .filter(([, type]) => !type)
-          .map(([description], command) => inlineCode('/' + command) + ' ' + bold(description))
+          .map(
+            ([description], command) =>
+              inlineCode('/' + command) + ' ' + bold(description)
+          )
           .join('\n') +
         '\n\n' +
         bold('Comandos de Prefixo') +
@@ -32,7 +35,10 @@ export async function execute(interaction, client) {
             if (!type) return false;
             return true;
           })
-          .map(([description], command) => inlineCode(moniqueta.prefix + command) + ' ' + bold(description))
+          .map(
+            ([description], command) =>
+              inlineCode(moniqueta.prefix + command) + ' ' + bold(description)
+          )
           .join('\n')
     )
     .setColor(12340060)

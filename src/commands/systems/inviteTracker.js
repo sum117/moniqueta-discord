@@ -24,7 +24,9 @@ export async function execute(event, client, ...args) {
 
       const memberCount = member.guild.memberCount;
       try {
-        const usedInvite = newInvites.find(inv => cachedInvites.get(inv.code) < inv.uses);
+        const usedInvite = newInvites.find(
+          inv => cachedInvites.get(inv.code) < inv.uses
+        );
         console.log('Cached', [...cachedInvites.keys()]);
         console.log(
           'New',
@@ -35,9 +37,13 @@ export async function execute(event, client, ...args) {
         member.guild.channels.cache
           .get(channels.loginoutChannel)
           .send(
-            `🟩 O usuário ${userMention(member.user.id)} entrou através do código de convite \`${
+            `🟩 O usuário ${userMention(
+              member.user.id
+            )} entrou através do código de convite \`${
               usedInvite.code
-            }\`, gerado por ${userMention(usedInvite.inviterId)}. Agora somos ${bold(memberCount)}.`
+            }\`, gerado por ${userMention(
+              usedInvite.inviterId
+            )}. Agora somos ${bold(memberCount)}.`
           );
       } catch (err) {
         console.log(err);
@@ -51,7 +57,9 @@ export async function execute(event, client, ...args) {
       moniqueta.channels.cache
         .get(channels.loginoutChannel)
         .send(
-          `🟥 O usuário ${memberThatLeft.user.username}, de ID ${memberThatLeft.id} com \`${msToTime(
+          `🟥 O usuário ${memberThatLeft.user.username}, de ID ${
+            memberThatLeft.id
+          } com \`${msToTime(
             Date.now() - memberThatLeft.joinedTimestamp
           )}\` de servidor saiu.`
         );

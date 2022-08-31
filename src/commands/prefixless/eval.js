@@ -24,7 +24,12 @@ function walk(dir) {
           });
         })
       ).then(foldersContents => {
-        resolve(foldersContents.reduce((all, folderContents) => all.concat(folderContents), []));
+        resolve(
+          foldersContents.reduce(
+            (all, folderContents) => all.concat(folderContents),
+            []
+          )
+        );
       });
     });
   });
@@ -32,7 +37,8 @@ function walk(dir) {
 export const data = {
   event: 'messageCreate',
   name: 'Validar JavaScript',
-  description: 'Valida javascript desde que seja executada pelo dono da aplicação.'
+  description:
+    'Valida javascript desde que seja executada pelo dono da aplicação.'
 };
 export async function execute(_client, msg) {
   const evalChId = '1007568778328035408';

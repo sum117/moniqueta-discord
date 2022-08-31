@@ -1,4 +1,10 @@
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Formatters} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  Formatters
+} from 'discord.js';
 
 import {title} from '../../util';
 
@@ -20,7 +26,8 @@ export async function execute(msg) {
   if (!rival) return msg.reply('Você precisa mencionar alguém para jogar rps.');
   if (rival.id === client.user.id) {
     const possibleChoices = ['pedra', 'papel', 'tesoura'];
-    const choice = possibleChoices[Math.floor(Math.random() * possibleChoices.length)];
+    const choice =
+      possibleChoices[Math.floor(Math.random() * possibleChoices.length)];
     session.set(rival.id, choice);
   }
   const array = buttons('pedra', 'papel', 'tesoura');
@@ -37,7 +44,10 @@ export async function execute(msg) {
       {name: host.username, value: 'Aguardando escolha...', inline: true},
       {
         name: rival.username,
-        value: rival.id === client.user.id ? 'Moniqueta já escolheu!' : 'Aguardando escolha...',
+        value:
+          rival.id === client.user.id
+            ? 'Moniqueta já escolheu!'
+            : 'Aguardando escolha...',
         inline: true
       }
     );
@@ -47,7 +57,9 @@ export async function execute(msg) {
     components: [buttonRow],
     files: ['src/resources/rps.jpg']
   });
-  const filter = button => [host.id, rival.id].includes(button.user.id) && !session.get(button.user.id);
+  const filter = button =>
+    [host.id, rival.id].includes(button.user.id) &&
+    !session.get(button.user.id);
   const collector = game.createMessageComponentCollector({
     filter,
     time: 60 * 1000
@@ -73,12 +85,16 @@ export async function execute(msg) {
         const current = winConditions.get(button.customId);
 
         session.set(button.user.id, button.customId);
-        const results = `**${host.username}** escolheu: ${title(session.get(host.id))} \n**${
-          rival.username
-        }** escolheu: ${title(session.get(rival.id))}`;
+        const results = `**${host.username}** escolheu: ${title(
+          session.get(host.id)
+        )} \n**${rival.username}** escolheu: ${title(session.get(rival.id))}`;
         return button.update({
           content:
-            userMention(compare === current ? button.user.id : session.keys().next().value) + ' venceu!\n' + results,
+            userMention(
+              compare === current ? button.user.id : session.keys().next().value
+            ) +
+            ' venceu!\n' +
+            results,
           embeds: [],
           components: [],
           files: []
@@ -92,7 +108,11 @@ export async function execute(msg) {
       value: 'Opção selecionada!',
       inline: true
     };
-    embed.setFields(index === 1 ? [embed.data.fields[0], choice] : [choice, embed.data.fields[1]]);
+    embed.setFields(
+      index === 1
+        ? [embed.data.fields[0], choice]
+        : [choice, embed.data.fields[1]]
+    );
     button.update({embeds: [embed], files: []});
   });
   function buttons(options = [arguments]) {

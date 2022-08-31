@@ -26,15 +26,21 @@ export const data = {
  */
 export async function execute(interaction) {
   const {user, values, customId, component, channelId} = interaction;
-  if (![channels.rpRegistro, channels.adminFichaRegistro].includes(channelId)) return;
+  if (![channels.rpRegistro, channels.adminFichaRegistro].includes(channelId))
+    return;
 
   switch (interaction.type) {
     case InteractionType.MessageComponent:
       switch (channelId) {
         case channels.rpRegistro:
-          if (!interaction.customId.match(/soma|genero|purgatorio|item_inicial/)) return;
+          if (
+            !interaction.customId.match(/soma|genero|purgatorio|item_inicial/)
+          )
+            return;
           if (!sheet.get(user.id)) {
-            const newChoices = new Map([[customId, customId !== 'item_inicial' ? values[0] : values]]);
+            const newChoices = new Map([
+              [customId, customId !== 'item_inicial' ? values[0] : values]
+            ]);
             sheet.set(user.id, newChoices);
             return handleChoice();
           } else {
@@ -42,7 +48,10 @@ export async function execute(interaction) {
              * @type {Map}
              */
             const existingChoices = sheet.get(user.id);
-            existingChoices.set(customId, customId !== 'item_inicial' ? values[0] : values);
+            existingChoices.set(
+              customId,
+              customId !== 'item_inicial' ? values[0] : values
+            );
             sheet.set(user.id, existingChoices);
             const conditions = {
               notReaper:
@@ -57,7 +66,8 @@ export async function execute(interaction) {
             if (conditions.notScythe) {
               existingChoices.clear();
               return interaction.reply({
-                content: '❌ Você não pode escolher o Ceifador de Imprévia se não escolher a Foice de Ceifador.',
+                content:
+                  '❌ Você não pode escolher o Ceifador de Imprévia se não escolher a Foice de Ceifador.',
                 ephemeral: true
               });
             }
@@ -65,7 +75,8 @@ export async function execute(interaction) {
               existingChoices.clear();
               return interaction.reply({
                 ephemeral: true,
-                content: '❌ Você não pode escolher a Foice de Ceifador se não escolher o Ceifador de Imprévia.'
+                content:
+                  '❌ Você não pode escolher a Foice de Ceifador se não escolher o Ceifador de Imprévia.'
               });
             }
 
@@ -80,7 +91,14 @@ export async function execute(interaction) {
                     'Não utilize títulos aqui. Ex: "O Cavaleiro da Morte"',
                     128
                   ],
-                  [true, 'persoPersonalidade', 'Personalidade', TextInputStyle.Paragraph, 'Seja Interessante...', 4000],
+                  [
+                    true,
+                    'persoPersonalidade',
+                    'Personalidade',
+                    TextInputStyle.Paragraph,
+                    'Seja Interessante...',
+                    4000
+                  ],
                   [
                     true,
                     'persoFisico',
@@ -139,8 +157,14 @@ export async function execute(interaction) {
 
           switch (action) {
             case 'aprovar':
-              const approvedChar = await db.get(`${interaction.guildId}.pending.${trialUser.id}`);
-              await new PlayCardBase().create(interaction, channels.rpFichas, approvedChar);
+              const approvedChar = await db.get(
+                `${interaction.guildId}.pending.${trialUser.id}`
+              );
+              await new PlayCardBase().create(
+                interaction,
+                channels.rpFichas,
+                approvedChar
+              );
               /**
                * @type {Message}
                */
@@ -150,7 +174,9 @@ export async function execute(interaction) {
                   'POPULAÇÃO DE IMPREVIA (JOGADORES):\n\n' +
                   Object.entries(populacao.populacao)
                     .map(([soma, quantia]) => {
-                      return `${assets.sum[soma]?.emoji} ${title(soma)}: ${quantia}`;
+                      return `${assets.sum[soma]?.emoji} ${title(
+                        soma
+                      )}: ${quantia}`;
                     })
                     .join('\n')
               });
@@ -172,34 +198,49 @@ export async function execute(interaction) {
               });
               break;
             case 'contato':
-              const ticket = await interaction.guild.channels.create(`disputa-${trialUser.user.username}`, {
-                type: 'text',
-                parent: categories.arquivo,
-                topic: 'Disputa de Ficha de Personagem',
-                permissionOverwrites: [
-                  {
-                    id: trialUser.user.id,
-                    allow: ['sendMessages', 'viewChannel']
-                  },
-                  {
-                    id: interaction.guild.roles.everyone.id,
-                    deny: ['viewChannel']
-                  }
-                ]
-              });
+              const ticket = await interaction.guild.channels.create(
+                `disputa-${trialUser.user.username}`,
+                {
+                  type: 'text',
+                  parent: categories.arquivo,
+                  topic: 'Disputa de Ficha de Personagem',
+                  permissionOverwrites: [
+                    {
+                      id: trialUser.user.id,
+                      allow: ['sendMessages', 'viewChannel']
+                    },
+                    {
+                      id: interaction.guild.roles.everyone.id,
+                      deny: ['viewChannel']
+                    }
+                  ]
+                }
+              );
               await ticket.send({
                 content: `📩 Atenção, ${userMention(
                   trialUser.id
-                )}, uma disputa para a sua última ficha foi aberta por ${userMention(user.id)}!`
+                )}, uma disputa para a sua última ficha foi aberta por ${userMention(
+                  user.id
+                )}!`
               });
-              const contactButton = new ButtonBuilder(interaction.component).setDisabled(true);
+              const contactButton = new ButtonBuilder(
+                interaction.component
+              ).setDisabled(true);
               interaction.message.edit({
                 components: (() => {
-                  return [interaction.message.components[0].spliceComponents(-2, 1, contactButton)];
+                  return [
+                    interaction.message.components[0].spliceComponents(
+                      -2,
+                      1,
+                      contactButton
+                    )
+                  ];
                 })()
               });
               await interaction.reply(
-                `📩 Disputa aberta para ${trialUser.user.username} no canal ${channelMention(ticket.id)}`
+                `📩 Disputa aberta para ${
+                  trialUser.user.username
+                } no canal ${channelMention(ticket.id)}`
               );
               break;
           }
@@ -214,7 +255,9 @@ export async function execute(interaction) {
         });
       }
       const choices = sheet.get(user.id);
-      const canalDeAdmin = interaction.guild.channels.cache.get(channels.adminFichaRegistro);
+      const canalDeAdmin = interaction.guild.channels.cache.get(
+        channels.adminFichaRegistro
+      );
       const userInput = ((inputs = [['']]) => {
         const map = new Map();
         inputs.forEach(([mapKey, fieldCustomId]) =>
@@ -247,7 +290,11 @@ export async function execute(interaction) {
             })
             .setTitle(userInput.get('nome'))
             .setThumbnail(userInput.get('imagem'))
-            .setColor(choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color)
+            .setColor(
+              choices.get('purgatorio') === 'ceifador'
+                ? 5592405
+                : sum[choices.get('soma')].color
+            )
             .addFields(
               {
                 name: 'Soma',
@@ -256,7 +303,9 @@ export async function execute(interaction) {
                   ' ' +
                   title(
                     choices.get('purgatorio') === 'ceifador'
-                      ? 'Antigo ' + choices.get('soma').charAt(0).toUpperCase() + choices.get('soma').slice(1)
+                      ? 'Antigo ' +
+                          choices.get('soma').charAt(0).toUpperCase() +
+                          choices.get('soma').slice(1)
                       : choices.get('soma')
                   ),
                 inline: true
@@ -273,7 +322,10 @@ export async function execute(interaction) {
               },
               {
                 name: 'Fantasma',
-                value: assets.phantom[choices.get('purgatorio')] + ' ' + title(choices.get('purgatorio')),
+                value:
+                  assets.phantom[choices.get('purgatorio')] +
+                  ' ' +
+                  title(choices.get('purgatorio')),
                 inline: true
               }
             )
@@ -281,14 +333,17 @@ export async function execute(interaction) {
         userInput.delete('nome');
         userInput.forEach((value, key) => {
           const embed = new EmbedBuilder().setColor(
-            choices.get('purgatorio') === 'ceifador' ? 5592405 : sum[choices.get('soma')].color
+            choices.get('purgatorio') === 'ceifador'
+              ? 5592405
+              : sum[choices.get('soma')].color
           );
           if (key === 'imagem') {
             embed.setImage(value);
           } else {
             embed.setTitle(title(key)).setDescription(value);
 
-            const check = str => `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
+            const check = str =>
+              `${str.length > 1497 ? str.slice(0, 1497) + '...' : str}`;
             embed.data.description = check(embed.data.description);
           }
           array.push(embed);
@@ -296,9 +351,21 @@ export async function execute(interaction) {
         return array;
       })();
       const components = new ActionRowBuilder().addComponents(
-        new ButtonBuilder().setCustomId('aprovar').setLabel('Aprovado').setEmoji('✅').setStyle(ButtonStyle.Primary),
-        new ButtonBuilder().setCustomId('contato').setLabel('Disputar').setEmoji('💬').setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder().setCustomId('rejeitar').setLabel('Rejeitado').setEmoji('❌').setStyle(ButtonStyle.Danger)
+        new ButtonBuilder()
+          .setCustomId('aprovar')
+          .setLabel('Aprovado')
+          .setEmoji('✅')
+          .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
+          .setCustomId('contato')
+          .setLabel('Disputar')
+          .setEmoji('💬')
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder()
+          .setCustomId('rejeitar')
+          .setLabel('Rejeitado')
+          .setEmoji('❌')
+          .setStyle(ButtonStyle.Danger)
       );
       canalDeAdmin.send({
         content: `Ficha de ${user}`,
@@ -372,9 +439,18 @@ async function updatePopulation(interaction) {
  * @return {ModalBuilder} `ModalBuilder` Um objeto do tipo {@link ModalBuilder} que representa o formulário.
  */
 export function createForm(options) {
-  const form = new ModalBuilder().setCustomId('ficha').setTitle('Ficha de Personagem');
+  const form = new ModalBuilder()
+    .setCustomId('ficha')
+    .setTitle('Ficha de Personagem');
   const array = options.map(option => {
-    const [required = true, customId = '', label = '', style = '', placeholder = '', maxLength = 128] = option;
+    const [
+      required = true,
+      customId = '',
+      label = '',
+      style = '',
+      placeholder = '',
+      maxLength = 128
+    ] = option;
     return new TextInputBuilder()
       .setRequired(required)
       .setCustomId(customId)

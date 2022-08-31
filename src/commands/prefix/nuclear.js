@@ -14,7 +14,9 @@ export async function execute(msg) {
   }
   await msg.channel.send({
     content:
-      '☢️ Bomba Nuclear lançada por ' + msg.author.username + '. Ela irá detonar em 45 segundos. Nada mais importa...',
+      '☢️ Bomba Nuclear lançada por ' +
+      msg.author.username +
+      '. Ela irá detonar em 45 segundos. Nada mais importa...',
     files: [
       {
         attachment: './src/resources/bomba.gif',
@@ -27,7 +29,9 @@ export async function execute(msg) {
     ]
   });
   setTimeout(async () => {
-    const pobresCoitadas = await (await msg.channel.fetch()).messages.fetch({limit: 100});
+    const pobresCoitadas = await (
+      await msg.channel.fetch()
+    ).messages.fetch({limit: 100});
     await msg.channel.send('Detonando!');
     await msg.channel.bulkDelete(pobresCoitadas);
   }, 45 * 1000);

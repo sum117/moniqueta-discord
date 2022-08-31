@@ -4,7 +4,8 @@ import {channels, roles} from '../../util';
 export const data = {
   event: 'messageCreate',
   name: 'Script de entrada do servidor.',
-  description: 'Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.'
+  description:
+    'Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.'
 };
 /** @param {Message} msg */
 export async function execute(client, msg) {
@@ -19,14 +20,17 @@ export async function execute(client, msg) {
         msg.guild.channels.cache
           .get(channels.generalChannel)
           .send(
-            `${userMention(msg.author.id)} ganhou acesso à comunidade, ${roleMention(
+            `${userMention(
+              msg.author.id
+            )} ganhou acesso à comunidade, ${roleMention(
               roles.welcomeRole
             )}! Falem com ele!`
           );
       }
     } else {
       response = await msg.reply({
-        content: 'Você colocou o resultado incorreto. Se acha que isso é um erro, contate um administrador.'
+        content:
+          'Você colocou o resultado incorreto. Se acha que isso é um erro, contate um administrador.'
       });
     }
     setTimeout(

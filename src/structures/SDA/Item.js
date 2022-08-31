@@ -18,7 +18,15 @@ export class Item extends Combat {
   }
 
   static async create(item = {}) {
-    const {slot, nome, desc, base, tipo, multiplicador = {num: 0, tipo: ''}, valor} = item;
+    const {
+      slot,
+      nome,
+      desc,
+      base,
+      tipo,
+      multiplicador = {num: 0, tipo: ''},
+      valor
+    } = item;
     const serverItems = db.table('server_items');
 
     const id =
@@ -26,7 +34,16 @@ export class Item extends Combat {
         .map(object => object.id)
         .sort((a, b) => a - b)
         .pop() + 1;
-    const itemObject = {slot, nome, desc, base, tipo, multiplicador, valor, equipado: false};
+    const itemObject = {
+      slot,
+      nome,
+      desc,
+      base,
+      tipo,
+      multiplicador,
+      valor,
+      equipado: false
+    };
     await serverItems.set(`${id}`, itemObject);
     return await embedComponent(
       `✅ ${bold(nome)} criado com sucesso:\n\n${Object.entries(itemObject)
@@ -34,7 +51,11 @@ export class Item extends Combat {
         .map(
           ([key, value]) =>
             `${bold(title(key))}: ${title(
-              `${typeof value === 'object' ? `\n> ${value.num}\n> ${title(value.tipo)}` : value}`
+              `${
+                typeof value === 'object'
+                  ? `\n> ${value.num}\n> ${title(value.tipo)}`
+                  : value
+              }`
             )}`
         )
         .join('\n')}`
@@ -59,7 +80,11 @@ export class Item extends Combat {
         .map(
           ([key, value]) =>
             `${bold(title(key))}: ${title(
-              `${typeof value === 'object' ? `\n> ${value.num}\n> ${title(value.tipo)}` : value}`
+              `${
+                typeof value === 'object'
+                  ? `\n> ${value.num}\n> ${title(value.tipo)}`
+                  : value
+              }`
             )}`
         )
         .join('\n')}`
@@ -69,7 +94,11 @@ export class Item extends Combat {
     await sortItems();
     const serverItems = db.table('server_items');
     const items = await serverItems.all();
-    return await embedComponent(items.map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`).join('\n'));
+    return await embedComponent(
+      items
+        .map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`)
+        .join('\n')
+    );
   }
   static async give(id = '', givingMember, receivingUser, quantia = 1) {
     const serverItems = db.table('server_items');
@@ -78,23 +107,30 @@ export class Item extends Combat {
     const givingUserItems = (await getInventory(givingMember.user)).mochila;
     const givingUserItem = (await givingUserItems?.[id]) ?? {};
     if (givingMember.permissions.has('manageGuild')) givingUserItem.quantia = 1;
-    const {mochila: receivingUserItems, char: receivingUserChar} = await getInventory(receivingUser);
+    const {mochila: receivingUserItems, char: receivingUserChar} =
+      await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};
 
     if (!serverItem) return await embedComponent('❌ Item não encontrado');
 
-    if (givingUserItem?.quantia < 1) return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
+    if (givingUserItem?.quantia < 1)
+      return await embedComponent(`❌ Você não tem ${serverItem.nome}`);
     if (givingUserItem?.quantia < quantia)
-      return await embedComponent(`❌ Você não tem ${bold(quantia)} de ${bold(serverItem.nome)}`);
+      return await embedComponent(
+        `❌ Você não tem ${bold(quantia)} de ${bold(serverItem.nome)}`
+      );
 
     givingUserItem.quantia = givingUserItem.quantia - quantia;
     await setInventory(givingMember.user, id, givingUserItem);
-    await setInventory(receivingUser, id, {...serverItem, quantia: receivingUserItem.quantia + quantia});
+    await setInventory(receivingUser, id, {
+      ...serverItem,
+      quantia: receivingUserItem.quantia + quantia
+    });
 
     return await embedComponent(
-      `✅ ${bold(serverItem.nome)} adicionado ao inventário de ${bold(receivingUserChar.name)}. Ele foi dado por ${bold(
-        givingMember.user.username
-      )}`
+      `✅ ${bold(serverItem.nome)} adicionado ao inventário de ${bold(
+        receivingUserChar.name
+      )}. Ele foi dado por ${bold(givingMember.user.username)}`
     );
   }
   /**
@@ -107,8 +143,13 @@ export class Item extends Combat {
   static async equipPanel(interaction, action, user) {
     const charDb = await getInventory(user);
     const getEquipped = () =>
-      [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
-        .map(([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `)
+      [
+        ...Object.entries(charDb.char.equipamentos),
+        ...Object.entries(charDb.char.armas)
+      ]
+        .map(
+          ([key, item]) => `${assets.itens[key]} ${item.nome ? item.nome : ''} `
+        )
         .join('\n');
     const getUnequipped = () =>
       Object.entries(charDb.mochila)
@@ -134,7 +175,9 @@ export class Item extends Combat {
               },
               {
                 name: '🎒 Não equipados:',
-                value: getUnequipped() ? getUnequipped() : 'Nenhum item não equipado.',
+                value: getUnequipped()
+                  ? getUnequipped()
+                  : 'Nenhum item não equipado.',
                 inline: true
               }
             ]
@@ -147,7 +190,12 @@ export class Item extends Combat {
             new SelectMenuBuilder()
               .setCustomId('equipar_item')
               .setPlaceholder('Aguardando seleção de slot...')
-              .setOptions([new SelectMenuOptionBuilder().setLabel('nada').setValue('nada').setDescription('nada')])
+              .setOptions([
+                new SelectMenuOptionBuilder()
+                  .setLabel('nada')
+                  .setValue('nada')
+                  .setDescription('nada')
+              ])
               .setDisabled(true)
           )
         ]
@@ -156,10 +204,15 @@ export class Item extends Combat {
     const staticEmbed = msgObj();
     switch (action) {
       case 'selecionar_slot':
-        const selector = SelectMenuBuilder.from(interaction.message.components[2].components[0]);
+        const selector = SelectMenuBuilder.from(
+          interaction.message.components[2].components[0]
+        );
         const options = () =>
           Object.entries(charDb.mochila)
-            .filter(([, item]) => !item.equipado && interaction.customId.match(item.slot))
+            .filter(
+              ([, item]) =>
+                !item.equipado && interaction.customId.match(item.slot)
+            )
             .map(([id, item]) => {
               if (!item) return;
               return {
@@ -171,16 +224,27 @@ export class Item extends Combat {
             });
         selector.setDisabled(false);
         const unequipOptions = () =>
-          [...Object.entries(charDb.char.equipamentos), ...Object.entries(charDb.char.armas)]
-            .filter(([key, item]) => item.equipado && interaction.customId === key)
+          [
+            ...Object.entries(charDb.char.equipamentos),
+            ...Object.entries(charDb.char.armas)
+          ]
+            .filter(
+              ([key, item]) => item.equipado && interaction.customId === key
+            )
             .map(([id, item]) => {
               if (!item) return;
               return {key: id, item: item};
             });
         let newOptions = [
           {
-            label: `${unequipOptions().length >= 1 ? unequipOptions()[0].item.nome : 'Nada equipado'}`,
-            value: `desequipar_${unequipOptions()[0]?.key ?? 'none'}_${unequipOptions()[0]?.item.id ?? 'none'}`,
+            label: `${
+              unequipOptions().length >= 1
+                ? unequipOptions()[0].item.nome
+                : 'Nada equipado'
+            }`,
+            value: `desequipar_${unequipOptions()[0]?.key ?? 'none'}_${
+              unequipOptions()[0]?.item.id ?? 'none'
+            }`,
             description: 'Desequipar item do slot selecionado',
             emoji: '❌'
           }
@@ -195,7 +259,11 @@ export class Item extends Combat {
           });
         selector.setOptions(newOptions);
         selector.setPlaceholder(title(interaction.customId));
-        staticEmbed.components.splice(2, 1, new ActionRowBuilder().addComponents(selector));
+        staticEmbed.components.splice(
+          2,
+          1,
+          new ActionRowBuilder().addComponents(selector)
+        );
         return await interaction?.update({
           embeds: msgObj().embeds,
           components: staticEmbed.components
@@ -203,7 +271,8 @@ export class Item extends Combat {
       case 'equipar_item':
         const id = interaction.values[0];
         const item = charDb.mochila[interaction.values[0]];
-        if (id === 'nenhum_item') return await interaction?.update({content: '🥚 Pó Pó!'});
+        if (id === 'nenhum_item')
+          return await interaction?.update({content: '🥚 Pó Pó!'});
         // Desequipar item
         if (id.startsWith('desequipar')) {
           const slot = id.split('_')[1];
@@ -233,7 +302,10 @@ export class Item extends Combat {
         }
         // Msg de erro
         if (item.quantia < 1)
-          return interaction.update({content: '❌ Você não tem nenhum desse item sobrando.', ephemeral: true});
+          return interaction.update({
+            content: '❌ Você não tem nenhum desse item sobrando.',
+            ephemeral: true
+          });
         // Equipar item
         else {
           item.equipado = true;
@@ -244,12 +316,17 @@ export class Item extends Combat {
                 item.id = id;
                 armas.armaPrimaria = item;
                 await interaction.update({
-                  content: '✅ Você equipou ' + item.nome + ' no slot de Arma Primária.',
+                  content:
+                    '✅ Você equipou ' +
+                    item.nome +
+                    ' no slot de Arma Primária.',
                   ephemeral: true,
                   embeds: msgObj().embeds,
                   components: staticEmbed.components
                 });
-              } else if ([armas.armaPrimaria.id, armas.armaSecundaria.id].includes(id)) {
+              } else if (
+                [armas.armaPrimaria.id, armas.armaSecundaria.id].includes(id)
+              ) {
                 await interaction.update({
                   content: '❌ Você já equipou esse item.',
                   ephemeral: true,
@@ -260,7 +337,10 @@ export class Item extends Combat {
                 item.id = id;
                 armas.armaPrimaria = item;
                 await interaction.update({
-                  content: '✅ Você equipou ' + item.nome + ' no Slot de Arma Primária.',
+                  content:
+                    '✅ Você equipou ' +
+                    item.nome +
+                    ' no Slot de Arma Primária.',
                   ephemeral: true,
                   embeds: msgObj().embeds,
                   components: staticEmbed.components
@@ -269,7 +349,10 @@ export class Item extends Combat {
                 item.id = id;
                 armas.armaSecundaria = item;
                 await interaction.update({
-                  content: '✅ Você equipou ' + item.nome + ' no Slot de Arma Secundária.',
+                  content:
+                    '✅ Você equipou ' +
+                    item.nome +
+                    ' no Slot de Arma Secundária.',
                   ephemeral: true,
                   embeds: msgObj().embeds,
                   components: staticEmbed.components
@@ -297,7 +380,9 @@ export class Item extends Combat {
 
   static async fetchUser(interaction) {
     return await (async () => {
-      const userId = await db.get(`${interaction.guildId}.charMessages.${interaction.message.id}`);
+      const userId = await db.get(
+        `${interaction.guildId}.charMessages.${interaction.message.id}`
+      );
       const member = await interaction.guild.members.fetch({user: userId});
       return member.user;
     })();
@@ -305,7 +390,10 @@ export class Item extends Combat {
 }
 function generateButtons() {
   return Object.entries(assets.itens).map(([slot, emoji]) => {
-    return new ButtonBuilder().setCustomId(slot).setStyle(ButtonStyle.Primary).setEmoji(emoji);
+    return new ButtonBuilder()
+      .setCustomId(slot)
+      .setStyle(ButtonStyle.Primary)
+      .setEmoji(emoji);
   });
 }
 

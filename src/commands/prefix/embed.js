@@ -31,7 +31,10 @@ export async function execute(msg, args) {
   });
 
   const link = paragraphs.pop();
-  if (!link?.includes('http')) return msg.channel.send('❌ Você não informou um link no último elemento do parâmetro.');
+  if (!link?.includes('http'))
+    return msg.channel.send(
+      '❌ Você não informou um link no último elemento do parâmetro.'
+    );
 
   const embed = new EmbedBuilder()
     .setTitle(parsedTitle.join(' '))

@@ -1,5 +1,11 @@
 import {bold} from '@discordjs/builders';
-import {ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, userMention} from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  userMention
+} from 'discord.js';
 
 import {db} from '../../db.js';
 import {statusBar, title} from '../../util';
@@ -71,16 +77,23 @@ export class PlayCardBase {
           }`
         });
       else {
-        if (interaction.replied) await interaction.editReply({content: 'Carregando personagem...'});
+        if (interaction.replied)
+          await interaction.editReply({content: 'Carregando personagem...'});
         const currentChar = await db.get(`${user.id}.chars.${chosenChar}`);
-        if (currentChar?.phantom === 'ceifador' && !currentChar?.avatar.includes('https://i.imgur.com')) {
-          const getBase64 = data => Buffer.from(data, 'binary').toString('base64');
+        if (
+          currentChar?.phantom === 'ceifador' &&
+          !currentChar?.avatar.includes('https://i.imgur.com')
+        ) {
+          const getBase64 = data =>
+            Buffer.from(data, 'binary').toString('base64');
           const {ImgurClient} = imgur;
           const imgClient = new ImgurClient({
             clientId: process.env.IMGUR_CLIENT_ID,
             clientSecret: process.env.IMGUR_CLIENT_SECRET
           });
-          const rawAvatar = await (await axios({url: currentChar?.avatar, responseType: 'arraybuffer'})).data;
+          const rawAvatar = await (
+            await axios({url: currentChar?.avatar, responseType: 'arraybuffer'})
+          ).data;
           const firstBuffer = (
             await sharp(rawAvatar)
               .resize({
@@ -125,7 +138,17 @@ export class PlayCardBase {
    * @return {Promise<Message>} `Mensagem` - A mensagem confirmando que o personagem foi criado
    */
   async create({message, guild, user}, approvedChannelId, character = {}) {
-    const {name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila} = character;
+    const {
+      name,
+      gender,
+      personality,
+      appearance,
+      avatar,
+      sum,
+      phantom,
+      equipamentos,
+      mochila
+    } = character;
     const {members, channels} = guild;
 
     const userId = (() => {
@@ -134,7 +157,17 @@ export class PlayCardBase {
       else return firstMatch;
     })();
     const id = await db.get(`${userId}.count`);
-    const charObject = char(name, gender, personality, appearance, avatar, sum, phantom, equipamentos, mochila);
+    const charObject = char(
+      name,
+      gender,
+      personality,
+      appearance,
+      avatar,
+      sum,
+      phantom,
+      equipamentos,
+      mochila
+    );
     if (!id) {
       await db.set(`${userId}`, {
         chosenChar: 1,
@@ -151,7 +184,9 @@ export class PlayCardBase {
     const aprovador = user;
     const canalAprovados = await channels.fetch(approvedChannelId);
     return canalAprovados.send({
-      content: `Ficha de ${userMention(membro.user.id)}, aprovada por ${userMention(aprovador.id)}`,
+      content: `Ficha de ${userMention(
+        membro.user.id
+      )}, aprovada por ${userMention(aprovador.id)}`,
       embeds: [
         new EmbedBuilder()
           .setTitle(name)
@@ -168,7 +203,12 @@ export class PlayCardBase {
           .addFields(
             {
               name: 'Gênero',
-              value: gender === 'masculino' ? '♂️ Masculino' : gender === 'feminino' ? '♀️ Feminino' : '👽 Descubra',
+              value:
+                gender === 'masculino'
+                  ? '♂️ Masculino'
+                  : gender === 'feminino'
+                  ? '♀️ Feminino'
+                  : '👽 Descubra',
               inline: true
             },
             {
@@ -176,7 +216,11 @@ export class PlayCardBase {
               value: assets.phantom[phantom] + ' ' + title(phantom),
               inline: true
             },
-            {name: 'Soma', value: assets.sum[sum].emoji + ' ' + title(sum), inline: true}
+            {
+              name: 'Soma',
+              value: assets.sum[sum].emoji + ' ' + title(sum),
+              inline: true
+            }
           )
       ]
     });
@@ -208,14 +252,18 @@ export class PlayCardBase {
       case 'edit':
         return edit(await db.get(user.id + '.latestMessage.id'));
       case 'remove':
-        return remove(content ? content : await db.get(user.id + '.latestMessage.id'));
+        return remove(
+          content ? content : await db.get(user.id + '.latestMessage.id')
+        );
     }
 
     async function send(combat = false) {
       let combate;
       if (combat)
         combate = await (async () => {
-          const batalha = await db.table('batalha').get(`${msgSent.channelId}.${user.id}`);
+          const batalha = await db
+            .table('batalha')
+            .get(`${msgSent.channelId}.${user.id}`);
           if (!batalha) {
             const chosen = await db.get(`${user.id}.chosenChar`);
             await db.set(`${user.id}.chars.${chosen}.inCombat`, false);
@@ -225,23 +273,43 @@ export class PlayCardBase {
         })();
 
       const message = await channel.send({
-        [msgSent.mentions.users.size >= 1 ? 'content' : undefined]: msgSent.mentions.users
-          .map(mentionedUser => mentionedUser)
-          .join(','),
+        [msgSent.mentions.users.size >= 1 ? 'content' : undefined]:
+          msgSent.mentions.users.map(mentionedUser => mentionedUser).join(','),
         embeds: [
           {
-            [data?.title ? 'author' : phantom === 'ceifador' ? 'author' : undefined]: {
+            [data?.title
+              ? 'author'
+              : phantom === 'ceifador'
+              ? 'author'
+              : undefined]: {
               name: data?.title ? data.title.str : 'Ceifador de Imprévia',
-              icon_url: data?.title ? data.title.icon : 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
+              icon_url: data?.title
+                ? data.title.icon
+                : 'https://cdn.discordapp.com/emojis/1007356733812903986.webp'
             },
             title: `${
-              phantom && dead === 'ceifador' ? '💀 Morto: ' : dead ? `${'👻 Fantasma ' + title(phantom)} de ` : ''
-            }${phantom === 'ceifador' ? (gender === 'masculino' ? 'Padre ' + name : 'Madre ' + name) : name}`,
+              phantom && dead === 'ceifador'
+                ? '💀 Morto: '
+                : dead
+                ? `${'👻 Fantasma ' + title(phantom)} de `
+                : ''
+            }${
+              phantom === 'ceifador'
+                ? gender === 'masculino'
+                  ? 'Padre ' + name
+                  : 'Madre ' + name
+                : name
+            }`,
             thumbnail: {
               url: avatar
             },
-            image: attachment ? {url: `attachment://${attachment.name}`} : undefined,
-            color: phantom === 'ceifador' ? 5592405 : assets.sum?.[sum]?.color ?? 5592405,
+            image: attachment
+              ? {url: `attachment://${attachment.name}`}
+              : undefined,
+            color:
+              phantom === 'ceifador'
+                ? 5592405
+                : assets.sum?.[sum]?.color ?? 5592405,
             description: content.replace(/<@!?\d{17,20}>/g, ''),
             footer: {
               text: user.username,
@@ -295,7 +363,10 @@ export class PlayCardBase {
       return message;
     }
     async function edit(msgId) {
-      if (!msgId) throw new Error('Não foi possível encontrar a mensagem para ser editada');
+      if (!msgId)
+        throw new Error(
+          'Não foi possível encontrar a mensagem para ser editada'
+        );
       /**
        * @type {import('discord.js').Message}
        * @var msg
@@ -303,7 +374,10 @@ export class PlayCardBase {
       let msg = await channel.messages.fetch({message: msgId});
       let embed = EmbedBuilder.from(msg.embeds[0]);
       embed = embed.setDescription(content);
-      if (embed.data?.image?.url) embed.data.image.url = `attachment://${embed.image.url.split('/').pop()}`;
+      if (embed.data?.image?.url)
+        embed.data.image.url = `attachment://${embed.image.url
+          .split('/')
+          .pop()}`;
       await channel.messages.edit(msgId, {
         embeds: [embed]
       });
@@ -320,7 +394,8 @@ export class PlayCardBase {
         });
       }
 
-      if (msgId === (await db.get(user.id + '.latestMessage.id'))) db.delete(user.id + '.latestMessage');
+      if (msgId === (await db.get(user.id + '.latestMessage.id')))
+        db.delete(user.id + '.latestMessage');
       return channel.messages.delete(msgId);
     }
   }
@@ -332,9 +407,11 @@ export class PlayCardBase {
     const chosenCheck = await db.get(user.id + '.chosenChar');
     const list = Object.entries(await db.get(user.id + '.chars'))
       .map(([id, charToList]) => {
-        return `${bold(id)} : ${assets.sum?.[charToList.sum].emoji} ${assets.phantom?.[charToList.phantom]} ${
-          charToList?.name ?? 'Não encontrado.'
-        } ${chosenCheck.toString() === id.toString() ? ' ⭐' : ''}`;
+        return `${bold(id)} : ${assets.sum?.[charToList.sum].emoji} ${
+          assets.phantom?.[charToList.phantom]
+        } ${charToList?.name ?? 'Não encontrado.'} ${
+          chosenCheck.toString() === id.toString() ? ' ⭐' : ''
+        }`;
       })
       .join('\n');
     return interaction.reply({
@@ -362,7 +439,8 @@ export class PlayCardBase {
         return charId;
       })
       .join('\n');
-    if (!list.includes(id)) return interaction.reply('Esse personagem não existe.');
+    if (!list.includes(id))
+      return interaction.reply('Esse personagem não existe.');
     await db.set(user.id + '.chosenChar', id);
     const chosen = await this.character(interaction, user);
     const {avatar, name, sum, phantom} = chosen;
@@ -387,7 +465,16 @@ function char(
   avatar,
   sum,
   phantom,
-  equipamentos = {cabeça: {}, pescoço: {}, ombros: {}, maos: {}, peitoral: {}, cintura: {}, pernas: {}, pes: {}},
+  equipamentos = {
+    cabeça: {},
+    pescoço: {},
+    ombros: {},
+    maos: {},
+    peitoral: {},
+    cintura: {},
+    pernas: {},
+    pes: {}
+  },
   mochila = [{}]
 ) {
   const sumSkills = {

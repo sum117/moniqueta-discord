@@ -2,9 +2,15 @@ import {db} from '../db.js';
 import {channels} from './misc.js';
 export function updateMemberCounter(moniqueta, myGuild) {
   setInterval(async () => {
-    let memberCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.memberCounter);
-    let postCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.postCounter);
-    let charCounter = moniqueta.guilds.cache.get(myGuild).channels.cache.get(channels.charCounter);
+    let memberCounter = moniqueta.guilds.cache
+      .get(myGuild)
+      .channels.cache.get(channels.memberCounter);
+    let postCounter = moniqueta.guilds.cache
+      .get(myGuild)
+      .channels.cache.get(channels.postCounter);
+    let charCounter = moniqueta.guilds.cache
+      .get(myGuild)
+      .channels.cache.get(channels.charCounter);
     let totalChars = await (async () => {
       let database = await db.all();
       let total = database
@@ -23,10 +29,12 @@ export function updateMemberCounter(moniqueta, myGuild) {
     })();
 
     moniqueta.postCounter.forEach((time, index) => {
-      if (Date.now() - time > 8 * 3600 * 1000) moniqueta.postCounter = moniqueta.postCounter.splice(index, 1);
+      if (Date.now() - time > 8 * 3600 * 1000)
+        moniqueta.postCounter = moniqueta.postCounter.splice(index, 1);
     });
     moniqueta.memberCounter.forEach((time, user) => {
-      if (Date.now() - time > 8 * 3600 * 1000) moniqueta.memberCounter.delete(user);
+      if (Date.now() - time > 8 * 3600 * 1000)
+        moniqueta.memberCounter.delete(user);
     });
     memberCounter.edit({
       name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size)

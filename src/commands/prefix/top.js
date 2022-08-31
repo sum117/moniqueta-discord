@@ -14,7 +14,9 @@ export const data = {
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg) {
-  const members = (await msg.guild.members.fetch()).filter(member => !member.user.bot);
+  const members = (await msg.guild.members.fetch()).filter(
+    member => !member.user.bot
+  );
 
   const msgTop = await db.table('msgTop').all();
   let firstPlace;
@@ -24,7 +26,8 @@ export async function execute(msg) {
     .map((entry, index) => {
       switch (index) {
         case 0:
-          const getMember = userId => members.find(member => member.id === userId);
+          const getMember = userId =>
+            members.find(member => member.id === userId);
           firstPlace = getMember(entry.id);
           return `👑 ${userMention(entry.id)} - ${entry.value}`;
         case 1:

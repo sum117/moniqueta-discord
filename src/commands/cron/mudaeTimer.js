@@ -14,7 +14,12 @@ export function execute(client, timer, channel, role) {
     await timer.edit({
       name: isGreen ? '🔴 Mudae...' : '🟢 Mudae!'
     });
-    if (!isGreen) await channel.send(`${role ? `❤️ Hora da mudae, <@&${role}>!` : '❤️ Hora da mudae, pessoal!'}`);
+    if (!isGreen)
+      await channel.send(
+        `${
+          role ? `❤️ Hora da mudae, <@&${role}>!` : '❤️ Hora da mudae, pessoal!'
+        }`
+      );
     return isGreen;
   };
 

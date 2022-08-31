@@ -27,7 +27,14 @@ export async function execute(client, msg) {
   if (msg.author.bot) return;
   if (msg.content.match(/^(?:\/|\\|\(|\)|\[|\[|\])/))
     return setTimeout(
-      () => msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:26')),
+      () =>
+        msg
+          .delete()
+          .catch(() =>
+            console.log(
+              'A mensagem não foi apagada pois não existe: playcardSend.js:26'
+            )
+          ),
       3 * 60 * 1000
     );
   const editCheck = (await db.get(`${msg.author.id}.isEditting`)) ?? false;
@@ -39,7 +46,9 @@ export async function execute(client, msg) {
       return msg.reply(
         'É esperado que você saiba que o bot é incapaz de criar uma thread dentro de uma thread. Comandos que usam threads como filhos não funcionam dentro de um ambiente thread.'
       );
-    const webhook = check ? check : await msg.channel.createWebhook('moniquetaHook');
+    const webhook = check
+      ? check
+      : await msg.channel.createWebhook('moniquetaHook');
     await webhook.edit({
       name: msg.member.nickname ? msg.member.nickname : msg.author.username,
       avatar: msg.author.displayAvatarURL
@@ -57,7 +66,13 @@ export async function execute(client, msg) {
           ]
         : undefined
     });
-    return msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:52'));
+    return msg
+      .delete()
+      .catch(() =>
+        console.log(
+          'A mensagem não foi apagada pois não existe: playcardSend.js:52'
+        )
+      );
   }
 
   const char = new PlayCardBase();
@@ -71,20 +86,43 @@ export async function execute(client, msg) {
     );
 
     client.postCounter = [...client.postCounter, Date.now()];
-    await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
-    const {name, xpCount: xp, attributePoints: ap, xpLog: cache, level} = await char.character(msg, msg.author);
+    await msg
+      .delete()
+      .catch(() =>
+        console.log(
+          'A mensagem não foi apagada pois não existe: playcardSend.js:70'
+        )
+      );
+    const {
+      name,
+      xpCount: xp,
+      attributePoints: ap,
+      xpLog: cache,
+      level
+    } = await char.character(msg, msg.author);
     sent.content = `Mensagem enviada por ${msg.author.username} em ${msg.channel}.`;
-    await msg.guild.channels.cache.get('977090634466857030').send({content: sent.content, embeds: [sent.embeds?.[0]]});
+    await msg.guild.channels.cache
+      .get('977090634466857030')
+      .send({content: sent.content, embeds: [sent.embeds?.[0]]});
     await msg.guild.channels.cache
       .get('977098576075321374')
       .send(
-        `${bold(name)} de ${msg.author.username} enviou um post com ${bold(msg.content.length)} caracteres em ${
-          msg.channel
-        }\n${quote('Pontos de Atributos: ' + ap)}\n${quote('Cache de XP: ' + cache)}\n${quote(
+        `${bold(name)} de ${msg.author.username} enviou um post com ${bold(
+          msg.content.length
+        )} caracteres em ${msg.channel}\n${quote(
+          'Pontos de Atributos: ' + ap
+        )}\n${quote('Cache de XP: ' + cache)}\n${quote(
           'Level do Personagem: ' + level
-        )}\n${quote('XP Total: ' + xp)}\n${quote('TEMPO DE ENVIO EXATO: ' + `<t:${Math.floor(Date.now() / 1000)}:D>`)}`
+        )}\n${quote('XP Total: ' + xp)}\n${quote(
+          'TEMPO DE ENVIO EXATO: ' + `<t:${Math.floor(Date.now() / 1000)}:D>`
+        )}`
       )
-      .catch(() => new Error('Houve um erro ao salvar a mensagem de algum personagem: playcardSend.js:83'));
+      .catch(
+        () =>
+          new Error(
+            'Houve um erro ao salvar a mensagem de algum personagem: playcardSend.js:83'
+          )
+      );
     return await new Xp().passiveXp(msg, msg.content.length);
   } catch (error) {
     return msg.reply(
