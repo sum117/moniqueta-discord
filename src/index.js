@@ -201,6 +201,7 @@ moniqueta.on('ready', async moniqueta => {
 });
 moniqueta.on('error', e => {
   console.log(e);
+
   moniqueta.channels.cache.get(channels.errorChannel).send({
     content: `⚠️ Meu Deus, meu senhor, me ajuda, por favor.\n**Nome:**${e.name}\n**Stack:**${e.stack}`
   });

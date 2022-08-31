@@ -61,35 +61,37 @@ export async function execute(client, msg) {
   }
 
   const char = new PlayCardBase();
-  const sent = await char.interact(
-    msg,
-    'send',
-    msg.content,
-    msg.attachments.first() ? msg.attachments.first() : undefined
-  );
-  if (!sent)
-    return msg.reply(
-      '❌ Houve um erro ao executar seu playcard. É possível que ele não exista. Entre em contato com um administrador.'
+
+  try {
+    const sent = await char.interact(
+      msg,
+      'send',
+      msg.content,
+      msg.attachments.first() ? msg.attachments.first() : undefined
     );
 
-        client.postCounter = [...client.postCounter, Date.now()];
-	await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
-  const {name, xpCount: xp, attributePoints: ap, xpLog: cache, level} = await char.character(msg, msg.author);
-  sent.content = `Mensagem enviada por ${msg.author.username} em ${msg.channel}.`;
-  await msg.guild.channels.cache.get('977090634466857030').send({content: sent.content, embeds: [sent.embeds?.[0]]});
-  await msg.guild.channels.cache
-    .get('977098576075321374')
-    .send(
-      `${bold(name)} de ${msg.author.username} enviou um post com ${bold(msg.content.length)} caracteres em ${
-        msg.channel
-      }\n${quote('Pontos de Atributos: ' + ap)}\n${quote('Cache de XP: ' + cache)}\n${quote(
-        'Level do Personagem: ' + level
-      )}\n${quote('XP Total: ' + xp)}\n${quote('TEMPO DE ENVIO EXATO: ' + `<t:${Math.floor(Date.now() / 1000)}:D>`)}`
-    )
-    .catch(() => new Error('Houve um erro ao salvar a mensagem de algum personagem: playcardSend.js:83'));
-  return await new Xp().passiveXp(msg, msg.content.length);
+    client.postCounter = [...client.postCounter, Date.now()];
+    await msg.delete().catch(() => console.log('A mensagem não foi apagada pois não existe: playcardSend.js:70'));
+    const {name, xpCount: xp, attributePoints: ap, xpLog: cache, level} = await char.character(msg, msg.author);
+    sent.content = `Mensagem enviada por ${msg.author.username} em ${msg.channel}.`;
+    await msg.guild.channels.cache.get('977090634466857030').send({content: sent.content, embeds: [sent.embeds?.[0]]});
+    await msg.guild.channels.cache
+      .get('977098576075321374')
+      .send(
+        `${bold(name)} de ${msg.author.username} enviou um post com ${bold(msg.content.length)} caracteres em ${
+          msg.channel
+        }\n${quote('Pontos de Atributos: ' + ap)}\n${quote('Cache de XP: ' + cache)}\n${quote(
+          'Level do Personagem: ' + level
+        )}\n${quote('XP Total: ' + xp)}\n${quote('TEMPO DE ENVIO EXATO: ' + `<t:${Math.floor(Date.now() / 1000)}:D>`)}`
+      )
+      .catch(() => new Error('Houve um erro ao salvar a mensagem de algum personagem: playcardSend.js:83'));
+    return await new Xp().passiveXp(msg, msg.content.length);
+  } catch (error) {
+    return msg.reply(
+      'Você encontrou um erro. O seu personagem provavelmente não existe, ou o sistema não se comunicou com o Discord a tempo. Contate um administrador para ajudar no bot!'
+    );
+  }
 }
-
 async function handleWebhooks(msg) {
   const webhooks = await msg.channel.fetchWebhooks();
   if (webhooks.size > 6) {
