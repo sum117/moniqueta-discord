@@ -1,5 +1,6 @@
 import {EmbedBuilder, userMention} from 'discord.js';
 import {db} from '../../db.js';
+import {channels} from '../../util';
 export const data = {
   event: 'interactionCreate',
   type: 'buttonInteraction',
@@ -11,6 +12,7 @@ export const data = {
  * @param {Interaction} interaction A interação que instanciou o comando.
  */
 export async function execute(interaction) {
+  if (interaction.channelId !== channels.sdcPremiadosChannel) return;
   await interaction.deferUpdate();
   /**
    * @typedef Character
@@ -81,6 +83,7 @@ export async function execute(interaction) {
       content: '',
       embeds: [
         new EmbedBuilder()
+          .setAuthor(character.titulo)
           .setTitle(array[0])
           .setColor('#36393f')
           .setImage(character.imagem)
@@ -90,7 +93,7 @@ export async function execute(interaction) {
               'https://cdn.discordapp.com/attachments/982056667564896296/1014809210724298752/unknown.png'
           })
           .setDescription(
-            '📖 Você pode clicar no botão abaixo para sabe mais sobre o personagem.'
+            '📖 Você pode clicar no botão abaixo para saber mais sobre o personagem.'
           )
       ]
     });
@@ -110,10 +113,13 @@ function textSplit(text = '', maxLength = 1990) {
   let splitted = [],
     times = Math.ceil(text.length / maxLength);
 
-  for (let i = 0; i < times; i++) {
-    splitted.push(
-      text.substring(maxLength * i, text.lastIndexOf(' ', maxLength * (i + 1)))
+  for (let i = 0; i <= times; i++) {
+    const a = text.substring(
+      maxLength * i,
+      text.lastIndexOf(' ', maxLength * (i + 1))
     );
+    splitted.push(a);
   }
+  console.log(splitted);
   return splitted;
 }
