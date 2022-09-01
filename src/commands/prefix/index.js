@@ -7,3 +7,4 @@ export * as log from './log.js';
 export * as nuclear from './nuclear.js';
 export * as rps from './rps.js';
 export * as top from './top.js';
+export * as premiado from './premiado.js';
