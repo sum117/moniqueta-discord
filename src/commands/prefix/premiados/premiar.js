@@ -29,6 +29,7 @@ export async function execute(msg, args) {
   await db.table('sdc_premiados').set(args + '.referencia.premiado', true);
   let charCount = await db.get(targetUser.id + '.count');
   await db.set(targetUser.id + '.chars.' + ++charCount, char);
+  await db.set(targetUser.id + '.count', charCount);
   return msg.reply({
     content:
       'Personagem premiado com sucesso!\n Parabéns ' +
