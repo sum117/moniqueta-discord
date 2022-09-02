@@ -1,4 +1,5 @@
 import {EmbedBuilder, userMention} from 'discord.js';
+
 import {db} from '../../db.js';
 import {channels} from '../../util';
 export const data = {

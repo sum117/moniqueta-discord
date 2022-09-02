@@ -3,9 +3,9 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  Message,
   userMention
 } from 'discord.js';
+
 import {db} from '../../db';
 import {channels, delay} from '../../util';
 export const data = {

@@ -1,4 +1,5 @@
 import {PermissionFlagsBits, SlashCommandBuilder} from 'discord.js';
+
 import {db} from '../../db.js';
 
 const sumArray = [
