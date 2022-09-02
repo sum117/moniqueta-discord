@@ -135,9 +135,9 @@ export async function execute(msg) {
             } else await reply('💡 Anexe o icone do titulo (O último falhou):');
             break;
           case 'referencia':
-            const char = await db.get(
-              msg.author.id + 'chars.' + m.content.match(/\d+/)?.[0]
-            );
+            const regex = m.content.match(/\d+/)?.[0];
+            const char = await db.get(msg.author.id + '.chars.' + regex);
+            await msg.reply('❔ Referencia: ' + regex + ' ' + typeof regex);
             if (char) {
               delete char.value;
               char.authorId = msg.author.id;

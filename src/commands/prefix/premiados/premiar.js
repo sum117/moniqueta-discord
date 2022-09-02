@@ -9,9 +9,9 @@ export const data = {
  * @param {Message} msg A mensagem que iniciou o comando.
  */
 export async function execute(msg, args) {
-  if (args.length < 1)
+  if (args.length < 2)
     return msg.reply(
-      'Você precisa especificar um personagem: `premiar <Primeiro Nome do Personagem> <Menção do Alvo>`'
+      'Você precisa especificar um personagem e um usuário: `premiar <Primeiro Nome do Personagem> <Menção do Alvo>`'
     );
   args = args[0].trim();
   const targetUser = msg.mentions.users.first();
@@ -26,7 +26,7 @@ export async function execute(msg, args) {
     );
   if (char?.premiado) return msg.reply('Personagem já premiado.');
 
-  await db.table('sdc_premiados').set(args + '.premiado', true);
+  await db.table('sdc_premiados').set(args + '.referencia.premiado', true);
   let charCount = await db.get(targetUser.id + '.count');
   await db.set(targetUser.id + '.chars.' + ++charCount, char);
   return msg.reply({
@@ -42,7 +42,7 @@ export async function execute(msg, args) {
         },
         title: char.name,
         description: char.appearance,
-        color: '#36393f',
+        color: 3553599,
         image: {url: char.avatar}
       }
     ]
