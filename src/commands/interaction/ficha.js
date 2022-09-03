@@ -6,6 +6,7 @@ import {
   EmbedBuilder,
   InteractionType,
   ModalBuilder,
+  PermissionFlagsBits,
   TextInputBuilder,
   TextInputStyle
 } from 'discord.js';
@@ -206,11 +207,14 @@ export async function execute(interaction) {
                 permissionOverwrites: [
                   {
                     id: trialUser.user.id,
-                    allow: ['sendMessages', 'viewChannel']
+                    allow: [
+                      PermissionFlagsBits.SendMessages,
+                      PermissionFlagsBits.ViewChannel
+                    ]
                   },
                   {
                     id: interaction.guild.roles.everyone.id,
-                    deny: ['viewChannel']
+                    deny: [PermissionFlagsBits.ViewChannel]
                   }
                 ]
               });
