@@ -48,7 +48,7 @@ export async function execute(msg) {
   const embed = new EmbedBuilder()
     .setTitle('🏆 MENSAGENS - TOP 15 🏆')
     .setDescription(str)
-    .setColor('RANDOM')
+    .setColor('Random')
     .setTimestamp(Date.now())
     .setThumbnail(firstPlace.user.avatarURL({dynamic: true, size: 512}));
 

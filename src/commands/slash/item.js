@@ -1,4 +1,4 @@
-import {SlashCommandBuilder as SCB} from 'discord.js';
+import {PermissionFlagsBits, SlashCommandBuilder as SCB} from 'discord.js';
 
 import {Item} from '../../structures/SDA/Item.js';
 export const data = new SCB()
@@ -140,7 +140,7 @@ export async function execute(interaction) {
 
   switch (command) {
     case 'criar':
-      if (!interaction.memberPermissions.has('manageGuild'))
+      if (!interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild))
         return await interaction.reply(
           '❌ Você não tem permissão para criar itens.'
         );
@@ -169,7 +169,7 @@ export async function execute(interaction) {
       return await interaction.reply({embeds: [item]});
 
     case 'deletar':
-      if (!interaction.memberPermissions.has('manageGuild'))
+      if (!interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild))
         return interaction.reply('❌ Você não tem permissão para criar itens.');
       const idDelete = interaction.options.getString('id');
       const itemDeletado = await Item.delete(idDelete);
@@ -182,7 +182,9 @@ export async function execute(interaction) {
       return await interaction.reply({embeds: [itemMostrar]});
     case 'dar':
       const usuario = interaction.options.getUser('usuario');
-      const quantidade = interaction.memberPermissions.has('manageGuild')
+      const quantidade = interaction.memberPermissions.has(
+        PermissionFlagsBits.ManageGuild
+      )
         ? 1
         : interaction.options.getNumber('quantidade');
       const id = interaction.options.getString('id');
