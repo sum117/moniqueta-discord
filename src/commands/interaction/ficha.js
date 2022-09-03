@@ -233,7 +233,7 @@ export async function execute(interaction) {
               let actionRow = ActionRowBuilder.from(
                 interaction.message.components[0]
               );
-              actionRow.components.splice(-2, 1, contactButton.data);
+              actionRow.components.splice(-2, 1, contactButton);
               interaction.message.edit({
                 components: (() => {
                   return [actionRow];
