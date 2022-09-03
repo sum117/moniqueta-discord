@@ -3,6 +3,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ChannelType,
   EmbedBuilder,
   InteractionType,
   ModalBuilder,
@@ -201,7 +202,7 @@ export async function execute(interaction) {
             case 'contato':
               const ticket = await interaction.guild.channels.create({
                 name: `disputa-${trialUser.user.username}`,
-                type: 'text',
+                type: ChannelType.GuildText,
                 parent: categories.arquivo,
                 topic: 'Disputa de Ficha de Personagem',
                 permissionOverwrites: [
