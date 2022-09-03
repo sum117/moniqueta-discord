@@ -172,13 +172,14 @@ export async function execute(interaction) {
   input.title.icon = interaction.options.getAttachment('icone-do-titulo').url;
   input.avatar = interaction.options.getAttachment('avatar').url;
 
-  const charCount = await db.get(`${interaction.user.id}.count`);
+  let charCount = await db.get(`${interaction.user.id}.count`);
   const itemChosen = await db
     .table('server_items')
     .get(interaction.options.getNumber('item').toString());
   itemChosen.quantia = 1;
   input.mochila[interaction.options.getNumber('item').toString()] = itemChosen;
-  await db.set(`${interaction.user.id}.chars.${charCount + 1}`, input);
+  await db.add(`${interaction.user.id}.count`, 1);
+  await db.set(`${interaction.user.id}.chars.${++charCount}`, input);
 
   return interaction.reply('NPC criado com sucesso!');
 }

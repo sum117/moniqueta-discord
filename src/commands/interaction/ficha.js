@@ -198,24 +198,22 @@ export async function execute(interaction) {
               });
               break;
             case 'contato':
-              const ticket = await interaction.guild.channels.create(
-                `disputa-${trialUser.user.username}`,
-                {
-                  type: 'text',
-                  parent: categories.arquivo,
-                  topic: 'Disputa de Ficha de Personagem',
-                  permissionOverwrites: [
-                    {
-                      id: trialUser.user.id,
-                      allow: ['sendMessages', 'viewChannel']
-                    },
-                    {
-                      id: interaction.guild.roles.everyone.id,
-                      deny: ['viewChannel']
-                    }
-                  ]
-                }
-              );
+              const ticket = await interaction.guild.channels.create({
+                name: `disputa-${trialUser.user.username}`,
+                type: 'text',
+                parent: categories.arquivo,
+                topic: 'Disputa de Ficha de Personagem',
+                permissionOverwrites: [
+                  {
+                    id: trialUser.user.id,
+                    allow: ['sendMessages', 'viewChannel']
+                  },
+                  {
+                    id: interaction.guild.roles.everyone.id,
+                    deny: ['viewChannel']
+                  }
+                ]
+              });
               await ticket.send({
                 content: `📩 Atenção, ${userMention(
                   trialUser.id

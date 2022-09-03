@@ -374,7 +374,7 @@ export class PlayCardBase {
       let embed = EmbedBuilder.from(msg.embeds[0]);
       embed = embed.setDescription(content);
       if (embed.data?.image?.url)
-        embed.data.image.url = `attachment://${embed.image.url
+        embed.data.image.url = `attachment://${embed.data.image.url
           .split('/')
           .pop()}`;
       await channel.messages.edit(msgId, {
