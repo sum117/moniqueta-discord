@@ -1,4 +1,4 @@
-import {codeBlock, inlineCode} from '@discordjs/builders';
+import {codeBlock, inlineCode, PermissionFlagsBits} from 'discord.js';
 import fs from 'fs';
 import yaml from 'yaml';
 
@@ -17,7 +17,7 @@ export const data = {
 /** @param {Message} msg A mensagem que executou este comando*/
 export async function execute(msg, args) {
   // Argumentos raiz e erros.
-  if (!msg.member.permissions.has('manageGuild'))
+  if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild))
     return msg.reply(
       '❌ Você não pode usar esse comando pois não é um administrador.'
     );

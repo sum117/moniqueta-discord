@@ -226,18 +226,17 @@ export async function execute(interaction) {
                   user.id
                 )}!`
               });
-              const contactButton = new ButtonBuilder(
+
+              const contactButton = ButtonBuilder.from(
                 interaction.component
               ).setDisabled(true);
+              let actionRow = ActionRowBuilder.from(
+                interaction.message.components[0]
+              );
+              actionRow.components.splice(-2, 1, contactButton.data);
               interaction.message.edit({
                 components: (() => {
-                  return [
-                    interaction.message.components[0].spliceComponents(
-                      -2,
-                      1,
-                      contactButton
-                    )
-                  ];
+                  return [actionRow];
                 })()
               });
               await interaction.reply(

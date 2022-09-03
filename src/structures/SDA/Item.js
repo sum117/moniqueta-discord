@@ -3,6 +3,7 @@ import {
   bold,
   ButtonBuilder,
   ButtonStyle,
+  PermissionFlagsBits,
   SelectMenuBuilder,
   SelectMenuOptionBuilder
 } from 'discord.js';
@@ -108,7 +109,8 @@ export class Item extends Combat {
 
     const givingUserItems = (await getInventory(givingMember.user)).mochila;
     const givingUserItem = (await givingUserItems?.[id]) ?? {};
-    if (givingMember.permissions.has('manageGuild')) givingUserItem.quantia = 1;
+    if (givingMember.permissions.has(PermissionFlagsBits.ManageGuild))
+      givingUserItem.quantia = 1;
     const {mochila: receivingUserItems, char: receivingUserChar} =
       await getInventory(receivingUser);
     const receivingUserItem = (await receivingUserItems?.[id]) ?? {};

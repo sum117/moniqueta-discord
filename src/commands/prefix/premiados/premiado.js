@@ -3,6 +3,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  PermissionFlagsBits,
   userMention
 } from 'discord.js';
 
@@ -48,7 +49,7 @@ export async function execute(msg) {
    * @param {Message} msg A mensagem que iniciou o comando.
    * @param {Character} character O personagem que será enviado.
    */
-  if (!msg.member.permissions.has('ManageGuild')) return;
+  if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild)) return;
   try {
     return prompt();
   } catch (e) {
