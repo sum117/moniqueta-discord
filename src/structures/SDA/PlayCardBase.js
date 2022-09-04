@@ -405,7 +405,9 @@ export class PlayCardBase {
     const {avatar, sum, phantom} = data;
 
     const chosenCheck = await db.get(user.id + '.chosenChar');
-    const list = Object.entries(await db.get(user.id + '.chars'))
+    const characters = await db.get(`${user.id}.chars`);
+    if (!characters) return interaction.reply('Você não possui personagens.');
+    const list = Object.entries(characters)
       .map(([id, charToList]) => {
         return `${bold(id)} : ${assets.sum?.[charToList.sum].emoji} ${
           assets.phantom?.[charToList.phantom]
@@ -414,6 +416,18 @@ export class PlayCardBase {
         }`;
       })
       .join('\n');
+    const displayCharacter = characters[chosenCheck];
+    const possibleIndexes = Object.keys(characters);
+    const index = possibleIndexes.findIndex(i => i === displayCharacter.id);
+    const nextIndex = possibleIndexes?.[index + 1] ?? possibleIndexes[0];
+
+    const button = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`list.${user.id}.${nextIndex}`)
+        .setLabel('Perfis')
+        .setEmoji('👤')
+        .setStyle('Primary')
+    );
     return interaction.reply({
       content: 'Exibindo personagens de ' + user.username,
       embeds: [
@@ -429,7 +443,8 @@ export class PlayCardBase {
             })
           }
         }
-      ]
+      ],
+      components: [button]
     });
   }
   async choose(interaction, id) {
