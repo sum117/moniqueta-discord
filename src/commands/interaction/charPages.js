@@ -52,7 +52,9 @@ export async function execute(interaction) {
       .setLabel('➡️')
       .setStyle(ButtonStyle.Primary)
   );
-  const hasMoreThanOne = possibleIndexes.length === 1;
+  const hasOne = possibleIndexes.length === 1;
+  let emojiToDisplay = assets.sum[displayCharacter.sum].emoji;
+  emojiToDisplay = emojiToDisplay.match(/\d+/)?.[0];
   const embed = new EmbedBuilder()
     .setAuthor({
       name: 'Personagens de ' + title(target.user.username),
@@ -61,12 +63,17 @@ export async function execute(interaction) {
     .setColor(assets.sum[displayCharacter.sum].color)
     .setDescription(displayCharacter.appearance)
     .setImage(displayCharacter.avatar)
+    .setThumbnail(
+      emojiToDisplay
+        ? `https://cdn.discordapp.com/emojis/${emojiToDisplay}.png?size=512`
+        : null
+    )
     .setFooter({
       text: 'Este personagem pertence à ordem ' + title(displayCharacter.sum)
     })
     .setTitle(displayCharacter.name);
   interaction.update({
     embeds: [embed],
-    components: !hasMoreThanOne ? [buttons] : []
+    components: !hasOne ? [buttons] : []
   });
 }
