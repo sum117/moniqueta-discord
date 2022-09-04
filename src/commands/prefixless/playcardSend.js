@@ -10,6 +10,7 @@ export const data = {
   name: 'Enviar Playcard',
   description: 'Envia um playcard para o canal de playcards.'
 };
+
 /**
  *
  * @param {Client} client
@@ -25,7 +26,7 @@ export async function execute(client, msg) {
 
   if (!categories.rpCategories.includes(checkIfThread)) return;
   if (msg.author.bot) return;
-  if (msg.content.match(/^(?:\/|\\|\(|\)|\[|\[|\])/))
+  if (msg.content.match(/^[\/\\()\[\]]/))
     return setTimeout(
       () =>
         msg
@@ -40,7 +41,7 @@ export async function execute(client, msg) {
   const editCheck = (await db.get(`${msg.author.id}.isEditting`)) ?? false;
   if (editCheck) return;
 
-  if (msg.content.match(/^\!/) && msg.member.permissions.has('MANAGE_GUILD')) {
+  if (msg.content.match(/^!/) && msg.member.permissions.has('MANAGE_GUILD')) {
     const check = await handleWebhooks(msg);
     if (msg.channel.isThread())
       return msg.reply(
@@ -130,6 +131,7 @@ export async function execute(client, msg) {
     );
   }
 }
+
 async function handleWebhooks(msg) {
   const webhooks = await msg.channel.fetchWebhooks();
   if (webhooks.size > 6) {

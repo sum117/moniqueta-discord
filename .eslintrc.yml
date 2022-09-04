@@ -3,10 +3,10 @@ env:
   es2021: true
   node: true
 extends: eslint:recommended
-plugins: 
- - unused-imports
- - simple-import-sort
- - only-warn
+plugins:
+  - unused-imports
+  - simple-import-sort
+  - only-warn
 overrides: []
 parserOptions:
   ecmaVersion: latest
@@ -20,11 +20,10 @@ rules:
     - error
   unused-imports/no-unused-vars:
     - warn
-    - 
-     vars: all
-     varsIgnorePattern: ^_
-     args: after-used
-     argsIgnorePattern: ^_
+    - vars: all
+      varsIgnorePattern: ^_
+      args: after-used
+      argsIgnorePattern: ^_
   no-unused-vars:
     - off
   no-useless-escape:

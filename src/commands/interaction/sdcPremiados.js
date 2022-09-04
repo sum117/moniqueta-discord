@@ -2,6 +2,7 @@ import {EmbedBuilder, userMention} from 'discord.js';
 
 import {db} from '../../db.js';
 import {channels} from '../../util';
+
 export const data = {
   event: 'interactionCreate',
   type: 'buttonInteraction',
@@ -9,6 +10,7 @@ export const data = {
   description:
     'Faz o display de algumas informações sobre um personagem em leilão'
 };
+
 /**
  * @param {Interaction} interaction A interação que instanciou o comando.
  */

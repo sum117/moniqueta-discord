@@ -3,6 +3,7 @@ import {Combat} from '../../structures/SDA/Combat.js';
 import {Interaction} from '../../structures/SDA/Interaction.js';
 import {Item} from '../../structures/SDA/Item.js';
 import {Xp} from '../../structures/SDA/Xp.js';
+
 export const data = {
   event: 'interactionCreate',
   type: 'buttonInteraction',
@@ -12,6 +13,7 @@ export const data = {
 let interactionPanel = new Map();
 let target;
 let user;
+
 /** @param {import('discord.js').ButtonInteraction} interaction - O botão que inicializou este comando. */
 export async function execute(interaction) {
   if (interaction.customId === 'interact') {

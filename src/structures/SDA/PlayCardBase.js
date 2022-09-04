@@ -1,11 +1,11 @@
 import axios from 'axios';
 import {
   ActionRowBuilder,
+  bold,
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  userMention,
-  bold
+  userMention
 } from 'discord.js';
 import imgur from 'imgur';
 import sharp from 'sharp';
@@ -65,7 +65,6 @@ export const assets = {
 };
 
 export class PlayCardBase {
-  /** @param {Interaction} interaction  */
   constructor() {
     this.character = async (interaction, user) => {
       const chosenChar = await db.get(`${user.id}.chosenChar`);
@@ -107,14 +106,13 @@ export class PlayCardBase {
           const composition = Buffer.from(reaperIcon(getBase64(firstBuffer)));
 
           const attachment = await sharp(composition).png().toBuffer();
-          const link = (
+          currentChar.avatar = (
             await imgClient.upload({
               image: attachment,
               title: 'icon_ceifador_' + currentChar?.name.replace(/ /g, '_'),
               description: 'Icone do ceifador de ' + currentChar?.name
             })
           ).data.link;
-          currentChar.avatar = link;
           await db.set(`${user.id}.chars.${chosenChar}`, currentChar);
           return currentChar;
         }
@@ -227,7 +225,7 @@ export class PlayCardBase {
 
   /**
    *
-   * @param {Message} msgSent | A mensagem ou comando que iniciou o comando
+   * @param {CommandInteraction} msgSent | A mensagem ou comando que iniciou o comando
    * @param {('edit'|'remove'|'send')} action A ação escolhida para a classe.
    * @param {AttachmentBuilder} attachment A imagem que será usada para a ação.
    * @param {string} content O conteúdo do post.
@@ -361,6 +359,7 @@ export class PlayCardBase {
       await db.set(`${guildId}.charMessages.${message.id}`, user.id);
       return message;
     }
+
     async function edit(msgId) {
       if (!msgId)
         throw new Error(
@@ -381,6 +380,7 @@ export class PlayCardBase {
         embeds: [embed]
       });
     }
+
     async function remove(msgId) {
       const messageToCheck = await db.get(`${guildId}.charMessages.${msgId}`);
       if (!msgId) {
@@ -398,6 +398,7 @@ export class PlayCardBase {
       return channel.messages.delete(msgId);
     }
   }
+
   async list(interaction, targetUserId) {
     const {user} = await interaction.guild.members.fetch({user: targetUserId});
     const data = await this.character(interaction, user);
@@ -447,6 +448,7 @@ export class PlayCardBase {
       components: [button]
     });
   }
+
   async choose(interaction, id) {
     const {user} = interaction;
     const list = Object.entries(await db.get(user.id + '.chars'))
@@ -472,6 +474,7 @@ export class PlayCardBase {
     });
   }
 }
+
 function char(
   name,
   gender,

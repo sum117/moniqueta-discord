@@ -15,6 +15,7 @@ import {
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {categories, channels, title} from '../../util';
+
 const {sum} = assets;
 const sheet = new Map();
 export const data = {
@@ -23,6 +24,7 @@ export const data = {
   description:
     'Gera uma ficha de personagem para a avaliação pelos administradores ao preencher o formulário no canal de fichas.'
 };
+
 /**
  * @param {ModalSubmitInteraction | SelectMenuInteraction} interaction A interação que iniciou o comando.
  */
@@ -130,6 +132,7 @@ export async function execute(interaction) {
             }
             return handleChoice();
           }
+
           function handleChoice() {
             const optionLabel = `${title(
               component.options.find(option => option.value === values[0]).label

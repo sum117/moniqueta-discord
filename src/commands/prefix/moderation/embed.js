@@ -1,5 +1,6 @@
 import {codeBlock, userMention} from '@discordjs/builders';
 import {EmbedBuilder} from 'discord.js';
+
 export const data = {
   event: 'messageCreate',
   kind: 'regular',
@@ -13,7 +14,7 @@ export async function execute(msg, args) {
   if (paragraphs.length < 2) {
     return msg.reply(
       '❌Você o que é preciso para a execução deste comando! Tente: ' +
-        codeBlock('$embed <Descrição do Canal>\n<Link de Imagem>')
+        codeBlock('$embed <Descrição>\n<Link>')
     );
   }
   /**
@@ -24,7 +25,7 @@ export async function execute(msg, args) {
   /** @type {Array<String>} @var parsedTitle Array que virá da função ForEach com a string capitalizada.*/
   const parsedTitle = [];
   unparsedTitle.forEach(word => {
-    if (word.match(/^d((o|a)s?|e)$/)) return parsedTitle.push(word);
+    if (word.match(/^d(([oa])s?|e)$/)) return parsedTitle.push(word);
 
     const newWord = word.charAt(0).toUpperCase() + word.slice(1);
     return parsedTitle.push(newWord);
@@ -40,7 +41,7 @@ export async function execute(msg, args) {
     .setTitle(parsedTitle.join(' '))
     .setDescription(paragraphs.join('\n'))
     .setImage(link)
-    .setColor('RANDOM')
+    .setColor('Random')
     .setAuthor({
       iconURL: msg.guild.iconURL({dynamic: true, size: 1024}),
       name: msg.channel.parent.name.slice(1).replace(/\| RP/, '')

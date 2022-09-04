@@ -10,6 +10,7 @@ import YAML from 'yaml';
 import {db} from '../../db.js';
 import {assets, PlayCardBase} from '../../structures/SDA/PlayCardBase.js';
 import {delay} from '../../util';
+
 export const data = new SCB()
   .setName('playcard')
   .setDescription('Interage com todas as funções do playcard.')
@@ -99,14 +100,14 @@ export async function execute(interaction) {
         return await interaction.editReply({
           content: 'Você não editou a mensagem a tempo.'
         });
-      } else return;
+      }
     });
   } else if (interaction.options.getSubcommand() === 'remover') {
     await interaction.deferReply({ephemeral: true});
     const MsgToRemove = interaction.options.getString('link');
     const match = MsgToRemove
       ? MsgToRemove.match(
-          /(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
+          /https:\/\/discord\.com\/channels\/(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
         )
       : null;
     await char.interact(
@@ -114,18 +115,18 @@ export async function execute(interaction) {
       'remove',
       match?.groups.msg ? match?.groups.msg : undefined
     );
-    interaction.editReply({
+    await interaction.editReply({
       content: 'Mensagem removida com sucesso!'
     });
   } else if (interaction.options.getSubcommand() === 'listar') {
-    char.list(
+    await char.list(
       interaction,
       interaction.options.getUser('user')
         ? interaction.options.getUser('user').id
         : interaction.user.id
     );
   } else if (interaction.options.getSubcommand() === 'escolher') {
-    char.choose(interaction, interaction.options.getString('id'));
+    await char.choose(interaction, interaction.options.getString('id'));
   } else if (interaction.options.getSubcommand() === 'top') {
     let topChar;
     const characters = await db.all();

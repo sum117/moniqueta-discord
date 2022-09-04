@@ -9,11 +9,13 @@ import {
 
 import {db} from '../../../db';
 import {channels, delay} from '../../../util';
+
 export const data = {
   name: 'Gerador de Premiados',
   kind: 'regular',
   description: 'Gera um personagem aleatório para o SDC'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
  */
@@ -55,6 +57,7 @@ export async function execute(msg) {
   } catch (e) {
     console.log(e);
   }
+
   async function prompt(
     character = {
       afiliacao: '',
@@ -160,7 +163,10 @@ export async function execute(msg) {
               collector.stop();
               await delay(2);
               return resolve(loading);
-            } else await reply('💡 Anexe a imagem (A último falhou):');
+            } else {
+              await reply('💡 Anexe a imagem (A último falhou):');
+              break;
+            }
           default:
             character[prompts[index]] = m.content;
             index++;

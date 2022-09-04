@@ -3,6 +3,7 @@ export const data = {
   kind: 'regular',
   description: 'Calcula uma expressão matemática'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.

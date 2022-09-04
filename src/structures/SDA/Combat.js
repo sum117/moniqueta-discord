@@ -8,13 +8,10 @@ import {title} from '../../util';
 import {PlayCardBase} from './PlayCardBase.js';
 
 export class Combat extends PlayCardBase {
-  /**
-   *
-   * @param {ButtonInteraction} interaction
-   */
   constructor() {
     super();
   }
+
   async init(interaction, target, userId) {
     const {Combate} = YAML.parse(
       fs.readFileSync('./src/structures/SDA/falas.yaml', 'utf8')
@@ -258,6 +255,7 @@ export class Combat extends PlayCardBase {
       'vencouraged'
     );
   }
+
   setHealth(batalha, targetId, value) {
     return (batalha.db[targetId].saude =
       batalha.db[targetId].saude + (value ? value : 0));
@@ -312,6 +310,7 @@ export class Combat extends PlayCardBase {
       });
     }
   }
+
   async executionPanel(
     interaction,
     origem,
@@ -377,6 +376,7 @@ export class Combat extends PlayCardBase {
       await setCombatState(userId, personagemAtualOrigem, false);
       if (!collected) return handleExecutar();
     });
+
     async function handleExecutar(btn) {
       await btn.message.edit({
         content: `${bold(origem.name)} executou ${bold(
@@ -458,10 +458,12 @@ export class Combat extends PlayCardBase {
       });
   }
 }
+
 // ------------------------------------------------ Database functions and helpers ------------------------------------------------
 async function setCombatToken(userId, bool) {
   await db.set(`${userId}.latestMessage.token`, bool);
 }
+
 /**
  * Função que define o estado de combate de um personagem
  * @param {object} target O usuário que está sendo administrado
@@ -479,14 +481,15 @@ async function deleteDb(interaction, target) {
 async function updateDb(interaction, batalha) {
   await db.table('batalha').set(`${interaction.channelId}`, batalha.db);
 }
+
 /**
  * Uma função que retorna um calculo de dano baseado no ataque do personagem e na defesa do oponente
  * @param {object} origem - O personagem que ataca
  * @param {object} alvo - O personagem que é atacado
- * @param {string} actionOrigem - Ação do personagem que ataca
  * @param {string} actionAlvo - Ação do personagem que é atacado
  * @param {number} dadoOrigem - Dado do personagem que ataca
  * @param {number} dadoAlvo - Dado do personagem que é atacado
+ * @param esquivas - O número de esquivas que o personagem que é atacado possui
  * @returns Um calculo de dano ou um objeto com dados sobre a batalha.
  */
 function calculo(
@@ -518,8 +521,7 @@ function calculo(
           payback: 'defesa_perfeita'
         };
       else {
-        const handleEscudo =
-          alvo.armas?.armaSecundaria?.tipo === 'escudo' ? true : false;
+        const handleEscudo = alvo.armas?.armaSecundaria?.tipo === 'escudo';
 
         if (handleEscudo) {
           const escudoBase = itemComRng(

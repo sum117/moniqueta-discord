@@ -6,9 +6,9 @@ export const data = {
   name: '☢️ Bomba Nuclear',
   description: 'ELE VAI DAR PURGE, ELE VAI DAR PURGE!'
 };
+
 /**
  * @param {Message} msg A mensagem que deu inicio ao comando
- * @param {Number} number  O numero de iterações.
  */
 export async function execute(msg) {
   if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild)) {

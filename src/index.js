@@ -20,6 +20,7 @@ import {
   token,
   updateMemberCounter
 } from './util';
+
 export const moniqueta = new Client({
   intents: [
     GatewayIntentBits.MessageContent,
@@ -88,7 +89,7 @@ moniqueta.on('ready', async moniqueta => {
       if (
         member.user.username.startsWith('SDA •') ||
         member.presence?.activities[0]?.state?.match(
-          /https\:\/\/discord\.sumserver\.xyz/
+          /https:\/\/discord\.sumserver\.xyz/
         )
       ) {
         await member.roles.add(roles.xpBoostRole);
@@ -243,6 +244,7 @@ process.on('unhandledRejection', e => {
 });
 
 moniqueta.login(token);
+
 /**
  *
  * @param {string} channelId O id do canal

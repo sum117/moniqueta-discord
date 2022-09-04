@@ -21,6 +21,7 @@ export class Interaction extends PlayCardBase {
     this.interaction = interaction;
     this.target = target;
   }
+
   async panel(action) {
     // Quando o usuário clica no botão, um painel é aberto com as opções de interação.
     const {interaction, target} = this;
@@ -110,17 +111,7 @@ export class Interaction extends PlayCardBase {
   async profile() {
     const {interaction, target} = this;
     const db = await this.character(interaction, target);
-    const {
-      name,
-      avatar,
-      sum,
-      appearance,
-      gender,
-      phantom,
-      skills,
-      equipamentos,
-      armas
-    } = db;
+    const {name, avatar, sum, appearance, gender, phantom, skills} = db;
     const xpLog = db?.xpLog ?? 1;
     const totalXp = db?.xpCount ?? 0;
     const level = db?.level ?? 1;
@@ -192,6 +183,7 @@ export class Interaction extends PlayCardBase {
         }
       );
   }
+
   async comment() {
     const {interaction, target} = this;
     const {user} = interaction;
@@ -230,16 +222,15 @@ export class Interaction extends PlayCardBase {
 
       async function sendMessage() {
         await db.set(`${user.id}.isEditting`, false);
-        return (
-          await threadChannel.members.add(target.id),
-          await webhook.send({
-            threadId: threadChannel.id,
-            content: userMention(target.id) + '\n' + quote(msg.content)
-          }),
-          await threadChannel.setLocked(true),
-          await threadChannel.setArchived(true)
-        );
+        await threadChannel.members.add(target.id);
+        await webhook.send({
+          threadId: threadChannel.id,
+          content: userMention(target.id) + '\n' + quote(msg.content)
+        });
+        await threadChannel.setLocked(true);
+        await threadChannel.setArchived(true);
       }
+
       async function handleWebhooks() {
         const webhooks = await msg.channel.fetchWebhooks();
         if (msg.channel.isThread())
@@ -253,6 +244,7 @@ export class Interaction extends PlayCardBase {
       }
     });
   }
+
   async charEditor() {
     const {interaction, target} = this;
     const {id: userId} = interaction.user;

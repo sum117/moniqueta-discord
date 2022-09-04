@@ -1,6 +1,7 @@
 import {PermissionFlagsBits, SlashCommandBuilder as SCB} from 'discord.js';
 
 import {Item} from '../../structures/SDA/Item.js';
+
 export const data = new SCB()
   .setName('item')
   .setDescription('interage com quase tudo dos itens dos playcards')

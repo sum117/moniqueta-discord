@@ -1,5 +1,6 @@
 import {db} from '../db.js';
 import {channels} from './misc.js';
+
 export function updateMemberCounter(moniqueta, myGuild) {
   setInterval(async () => {
     let memberCounter = moniqueta.guilds.cache
@@ -13,7 +14,7 @@ export function updateMemberCounter(moniqueta, myGuild) {
       .channels.cache.get(channels.charCounter);
     let totalChars = await (async () => {
       let database = await db.all();
-      let total = database
+      return database
         .filter(({_id, value}) => value?.chars !== undefined)
         .map(({_id, value}) => {
           let values = Object.values(value.chars);
@@ -25,7 +26,6 @@ export function updateMemberCounter(moniqueta, myGuild) {
         })
         .flat()
         .reduce((a, b) => a + b, 0);
-      return total;
     })();
 
     moniqueta.postCounter.forEach((time, index) => {

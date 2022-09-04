@@ -8,6 +8,7 @@ export const data = {
   description:
     'Transforma uma imagem em um icone com uma borda de cor especificada pelo usuário.'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.

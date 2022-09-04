@@ -2,12 +2,14 @@ import {channelMention, userMention} from '@discordjs/builders';
 import {AttachmentBuilder} from 'discord.js';
 
 import {bulkEmoji, channels} from '../../util';
+
 export const data = {
   event: 'messageCreate',
   name: 'Media Moderator',
   description:
     'Um comando automático do servidor que coloca as mensagens em seus devidos lugares.'
 };
+
 export function execute(client, msg) {
   if (
     msg.channelId === channels.generalChannel &&

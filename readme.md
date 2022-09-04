@@ -42,9 +42,11 @@
 
 ### 🤖 Bot
 
-1. Token de Bot do Discord - **[Guia](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**
+1. Token de Bot do Discord
+   - **[Guia](https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot)**
 2. Node.js 16+
-3. Se estiver utilizando Windows, você deve instalar o Visual Studio Build Tools com a extensão para C++ (Por conta do banco de dados padrão da Moniqueta).
+3. Se estiver utilizando Windows, você deve instalar o Visual Studio Build Tools com a extensão para C++ (Por conta do
+   banco de dados padrão da Moniqueta).
 
 ### 🌐 Web App
 
@@ -58,7 +60,10 @@
 
 Para começar a desenvolver a moniqueta, é relativamente simples:
 
-> ⚠️ **Importante: Se você estiver usando Windows para instalar a Moniqueta com o banco de dados padrão é possível que você tenha que fazer algumas [configurações adicionais](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/troubleshooting.md#Windows).**
+> ⚠️ **Importante: Se você estiver usando Windows para instalar a Moniqueta com o banco de dados padrão é possível que
+> você tenha que fazer
+> algumas [configurações adicionais](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/troubleshooting.md#Windows)
+> .**
 
 ```sh
 git clone https://github.com/sum117/Moniqueta-Discord.js
@@ -66,7 +71,8 @@ cd Moniqueta-Discord.js
 npm install
 ```
 
-Após a instalação, você pode tentar rodar o bot com o comando `npm run moniqueta` ou `npm run devMoniqueta` para atualização automática.
+Após a instalação, você pode tentar rodar o bot com o comando `npm run moniqueta` ou `npm run devMoniqueta` para
+atualização automática.
 
 <br>
 
@@ -78,7 +84,8 @@ Após a instalação, você pode tentar rodar o bot com o comando `npm run moniq
 
 Crie um arquivo `config.json` e preencha os valores respectivos:
 
-> ⚠️ **Nunca dê commit no seu token de bot do Discord, adicione o `config.json` ao arquivo `.gitignore` do seu projeto!**
+> ⚠️ **Nunca dê commit no seu token de bot do Discord, adicione o `config.json` ao arquivo `.gitignore` do seu
+> projeto!**
 
 ```json
 {
@@ -123,7 +130,8 @@ Crie um arquivo `config.json` e preencha os valores respectivos:
 <hr/>
 No momento a Moniqueta está em desenvolvimento, e possui os seguintes comandos:
 
-> ⚠️ **Nota: O prefixo padrão é $, e Moniqueta tem alguns [Comandos de Slash](https://support.discord.com/hc/pt-br/articles/1500000368501-Slash-Commands-FAQ) já prontos.**
+> ⚠️ **Nota: O prefixo padrão é $, e Moniqueta tem
+> alguns [Comandos de Slash](https://support.discord.com/hc/pt-br/articles/1500000368501-Slash-Commands-FAQ) já prontos.**
 
 - ⌨️ Use as ferramentas do playcard!
 
@@ -135,7 +143,8 @@ No momento a Moniqueta está em desenvolvimento, e possui os seguintes comandos:
 
   `/playcard remove` Deleta a última mensagem enviada pelo usuário.
 
-  `/playcard remove <link de mensagem do Discord>` Remove uma mensagem especificada com link caso ela pertença ao usuário.
+  `/playcard remove <link de mensagem do Discord>` Remove uma mensagem especificada com link caso ela pertença ao
+  usuário.
 
 - 📋 Copie e cole mensagens e todos os seus conteúdos com links!
 
@@ -152,11 +161,11 @@ No momento a Moniqueta está em desenvolvimento, e possui os seguintes comandos:
   `$nuclear`
 
   <video
-        width="320"
-        height="180"
-        src="https://user-images.githubusercontent.com/75037449/178625069-a661d585-d22a-42cb-b680-7c35cce49345.mp4"
-        type="video/mp4"
-    />
+  width="320"
+  height="180"
+  src="https://user-images.githubusercontent.com/75037449/178625069-a661d585-d22a-42cb-b680-7c35cce49345.mp4"
+  type="video/mp4"
+  />
 
 - 🪨✂️🧻 Jogue Pedra, Papel e Tesoura com a Moniqueta ou com seus amigos!
 

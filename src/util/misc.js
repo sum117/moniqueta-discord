@@ -1,5 +1,6 @@
 import 'dotenv/config';
-export const [prefix, token] = await import('./config.json', {
+
+export const [prefix, token] = await import('../../config.json', {
   assert: {type: 'json'}
 })
   .then(config => {

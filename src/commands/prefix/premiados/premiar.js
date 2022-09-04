@@ -1,12 +1,14 @@
-import {Message} from 'discord.js';
 import {db} from '../../../db.js';
+
 export const data = {
   name: 'premiar',
   kind: 'regular',
   description: 'Premia um personagem'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
+ * @param args Os argumentos do comando.
  */
 export async function execute(msg, args) {
   if (args.length < 2)

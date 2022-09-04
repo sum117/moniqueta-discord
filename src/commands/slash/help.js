@@ -1,12 +1,13 @@
-import {bold, inlineCode} from '@discordjs/builders';
-import {SlashCommandBuilder} from '@discordjs/builders';
+import {bold, inlineCode, SlashCommandBuilder} from '@discordjs/builders';
 import {EmbedBuilder} from 'discord.js';
+
 export const data = new SlashCommandBuilder()
   .setName('help')
   .setDescription('Mostra todos os comandos disponíveis na moniqueta.');
 
 /**
  * @param {CommandInteraction} interaction
+ * @param client O cliente do Discord.
  */
 export async function execute(interaction, client) {
   const moniqueta = client;
@@ -32,8 +33,7 @@ export async function execute(interaction, client) {
         '\n\n' +
         commands
           .filter(([, type]) => {
-            if (!type) return false;
-            return true;
+            return type;
           })
           .map(
             ([description], command) =>
@@ -51,7 +51,7 @@ export async function execute(interaction, client) {
     .setFooter({
       text: '💘 Eu estou em construção, tenha paciência!'
     });
-  return await interaction.reply({
+  return interaction.reply({
     content: 'Todos os comandos atualmente disponíveis em mim: ',
     embeds: [embed]
   });

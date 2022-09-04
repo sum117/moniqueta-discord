@@ -6,6 +6,7 @@ export const data = {
   description:
     'Copia e cola as mensagens para serem usadas em outros canais ou por outros bots.'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
@@ -16,7 +17,7 @@ export async function execute(msg, args) {
   }
   for (const messageToCopy of args) {
     const matches = messageToCopy.match(
-      /(?:https:\/\/discord\.com\/channels\/)(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
+      /https:\/\/discord\.com\/channels\/(?<guild>\d+)\/(?<channel>\d+)\/(?<msg>\d+)/
     );
     if (!matches)
       return msg.reply('❌ Uma das Mensagens é inválida: ' + messageToCopy);

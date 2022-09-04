@@ -5,6 +5,7 @@ import yaml from 'yaml';
 import {db} from '../../../db.js';
 import {levels} from '../../../structures/SDA/levels.js';
 import {delay} from '../../../util';
+
 const path = './detached_zone/dbLog.yaml';
 
 export const data = {
@@ -14,7 +15,9 @@ export const data = {
   description: 'Adquira o log puro de algum jogador do servidor.'
 };
 
-/** @param {Message} msg A mensagem que executou este comando*/
+/** @param {Message} msg A mensagem que executou este comando
+ * @param args Os argumentos passados para este comando
+ */
 export async function execute(msg, args) {
   // Argumentos raiz e erros.
   if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild))
@@ -32,7 +35,7 @@ export async function execute(msg, args) {
         '$' + data.name + ' <menção>'
       )}`
     );
-  const parsed = `${comando.replace(/\<|\>|\@|\!/g, '')}`.trim();
+  const parsed = `${comando.replace(/[<>@!]/g, '')}`.trim();
   const dados = await db.get(`${parsed}`);
   if (!dados) return msg.reply('O usuário não tem um personagem.');
 
@@ -52,6 +55,7 @@ function getLog() {
   const file = fs.readFileSync(path, 'utf-8');
   return yaml.parse(file);
 }
+
 async function newLog({
   user,
   name,
@@ -80,6 +84,7 @@ async function newLog({
   fs.writeFileSync(path, fileToSave);
   return yaml.stringify(newObj);
 }
+
 async function getCorrectInfo(xpCount) {
   return new Promise(resolve => {
     Object.values(levels).reduce((a, b, i) => {

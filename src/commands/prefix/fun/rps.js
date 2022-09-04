@@ -115,6 +115,7 @@ export async function execute(msg) {
     );
     button.update({embeds: [embed], files: []});
   });
+
   function buttons(options = [arguments]) {
     const emojis = {
       pedra: '🪨',

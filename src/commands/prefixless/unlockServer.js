@@ -1,13 +1,17 @@
 import {roleMention, userMention} from '@discordjs/builders';
 
 import {channels, roles} from '../../util';
+
 export const data = {
   event: 'messageCreate',
   name: 'Script de entrada do servidor.',
   description:
     'Desbloqueia o servidor quando o usuário digita o número 18, que corresponde à resposta do questionário.'
 };
-/** @param {Message} msg */
+
+/** @param client O cliente do Discord.
+ * @param msg A mensagem enviada pelo usuário.
+ * */
 export async function execute(client, msg) {
   if (msg.channelId === channels.entranceChannel && !msg.author.bot) {
     let response;

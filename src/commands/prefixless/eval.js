@@ -34,22 +34,24 @@ function walk(dir) {
     });
   });
 }
+
 export const data = {
   event: 'messageCreate',
   name: 'Validar JavaScript',
   description:
     'Valida javascript desde que seja executada pelo dono da aplicação.'
 };
+
 export async function execute(_client, msg) {
   const evalChId = '1007568778328035408';
   const botOwnerId = '969062359442280548';
-  if (msg.channelId != evalChId) return;
-  if (msg.author.id != botOwnerId) return;
+  if (msg.channelId !== evalChId) return;
+  if (msg.author.id !== botOwnerId) return;
 
   const evaluate = async str => `${eval(str)}`;
   let content = msg.content.replace(/```js|```/g, '');
 
-  if (content == 'ls') {
+  if (content === 'ls') {
     let tree = await walk('src');
     const depthCount = str => str.match(/\//gm).length;
     tree = tree

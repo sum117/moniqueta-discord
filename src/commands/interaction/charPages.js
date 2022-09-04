@@ -4,9 +4,10 @@ import {
   ButtonStyle,
   EmbedBuilder
 } from 'discord.js';
-import {title} from '../../util/index.js';
+
 import {db} from '../../db.js';
 import {assets} from '../../structures/SDA/PlayCardBase.js';
+import {title} from '../../util/index.js';
 
 export const data = {
   event: 'interactionCreate',

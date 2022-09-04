@@ -1,14 +1,15 @@
 import {bold, Colors, userMention} from 'discord.js';
 
 import {db} from '../../../db.js';
+
 export const data = {
   name: 'mestres',
   kind: 'regular',
   description: 'Cria um top de mestres'
 };
+
 /**
  * @param {Message} msg A mensagem que iniciou o comando.
- * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg) {
   msg.reply({
@@ -22,6 +23,7 @@ export async function execute(msg) {
     ]
   });
 }
+
 async function getTop() {
   const adminArray = [
     '317070060290179072',
@@ -48,7 +50,7 @@ async function getTop() {
     const bVal = Object.values(b)[0];
     return bVal - aVal;
   });
-  let top = letters
+  return letters
     .map((entry, index) => {
       index++;
       const id = Object.keys(entry)[0];
@@ -56,5 +58,4 @@ async function getTop() {
       return `${index}. ${userMention(id)} - ${bold(xp + ' XP')}`;
     })
     .join('\n');
-  return top;
 }
