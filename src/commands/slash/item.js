@@ -1,6 +1,16 @@
-import {PermissionFlagsBits, SlashCommandBuilder as SCB} from 'discord.js';
+import {
+  ActionRowBuilder,
+  bold,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  PermissionFlagsBits,
+  SlashCommandBuilder as SCB
+} from 'discord.js';
+import {db} from '../../db.js';
 
 import {Item} from '../../structures/SDA/Item.js';
+import {title} from '../../util/index.js';
 
 export const data = new SCB()
   .setName('item')
@@ -142,9 +152,7 @@ export async function execute(interaction) {
   switch (command) {
     case 'criar':
       if (!interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild))
-        return await interaction.reply(
-          '❌ Você não tem permissão para criar itens.'
-        );
+        return interaction.reply('❌ Você não tem permissão para criar itens.');
       const slot = interaction.options.getString('slot');
       const nome = interaction.options.getString('nome');
       const desc = interaction.options.getString('desc');
@@ -167,7 +175,7 @@ export async function execute(interaction) {
         valor
       });
 
-      return await interaction.reply({embeds: [item]});
+      return interaction.reply({embeds: [item]});
 
     case 'deletar':
       if (!interaction.memberPermissions.has(PermissionFlagsBits.ManageGuild))
@@ -175,12 +183,12 @@ export async function execute(interaction) {
       const idDelete = interaction.options.getString('id');
       const itemDeletado = await Item.delete(idDelete);
 
-      return await interaction.reply({embeds: [itemDeletado]});
+      return interaction.reply({embeds: [itemDeletado]});
     case 'mostrar':
       const idMostrar = interaction.options.getString('id');
       const itemMostrar = await Item.show(idMostrar);
 
-      return await interaction.reply({embeds: [itemMostrar]});
+      return interaction.reply({embeds: [itemMostrar]});
     case 'dar':
       const usuario = interaction.options.getUser('usuario');
       const quantidade = interaction.memberPermissions.has(
@@ -196,8 +204,34 @@ export async function execute(interaction) {
         quantidade
       );
 
-      return await interaction.reply({embeds: [itemDado]});
+      return interaction.reply({embeds: [itemDado]});
     case 'listar':
-      return await interaction.reply({embeds: [await Item.list()]});
+      const buttons = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`item.listar.0`)
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji('⬅️'),
+        new ButtonBuilder()
+          .setCustomId(`item.listar.1`)
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji('➡️')
+      );
+      let itens = await db.table('server_items').all();
+      itens = itens.map(
+        item => `ID ${bold(item.id)}: ${title(item.value.nome)}`
+      );
+      itens;
+      const embed = new EmbedBuilder()
+        .setAuthor({
+          name: `🎒 Itens do ${interaction.guild.name} 🎒`
+        })
+        .setDescription(itens.slice(0, 10).join('\n'))
+        .setFooter({
+          text: `Página 1 de ${Math.ceil(itens.length / 10)}`
+        });
+      return interaction.reply({
+        embeds: [embed],
+        components: [buttons]
+      });
   }
 }

@@ -92,17 +92,6 @@ export class Item extends Combat {
     );
   }
 
-  static async list() {
-    await sortItems();
-    const serverItems = db.table('server_items');
-    const items = await serverItems.all();
-    return await embedComponent(
-      items
-        .map(object => `ID ${bold(object.id)}: ${title(object.value.nome)}`)
-        .join('\n')
-    );
-  }
-
   static async give(id = '', givingMember, receivingUser, quantia = 1) {
     const serverItems = db.table('server_items');
     const serverItem = await serverItems.get(id);
