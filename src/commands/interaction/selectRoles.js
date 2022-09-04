@@ -1,4 +1,4 @@
-import {ComponentType, InteractionType} from 'discord.js';
+import { InteractionType} from 'discord.js';
 
 import {channels} from '../../util';
 

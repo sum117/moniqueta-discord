@@ -1,10 +1,10 @@
-import {codeBlock, inlineCode} from '@discordjs/builders';
+import {codeBlock, inlineCode, PermissionFlagsBits} from 'discord.js';
 import fs from 'fs';
 import yaml from 'yaml';
 
-import {db} from '../../db.js';
-import {levels} from '../../structures/SDA/levels.js';
-import {delay} from '../../util';
+import {db} from '../../../db.js';
+import {levels} from '../../../structures/SDA/levels.js';
+import {delay} from '../../../util';
 const path = './detached_zone/dbLog.yaml';
 
 export const data = {
@@ -17,7 +17,7 @@ export const data = {
 /** @param {Message} msg A mensagem que executou este comando*/
 export async function execute(msg, args) {
   // Argumentos raiz e erros.
-  if (!msg.member.permissions.has('manageGuild'))
+  if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild))
     return msg.reply(
       '❌ Você não pode usar esse comando pois não é um administrador.'
     );

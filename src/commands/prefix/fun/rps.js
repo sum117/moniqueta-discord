@@ -6,7 +6,7 @@ import {
   Formatters
 } from 'discord.js';
 
-import {title} from '../../util';
+import {title} from '../../../util';
 
 const {userMention} = Formatters;
 

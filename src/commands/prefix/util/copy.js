@@ -1,3 +1,5 @@
+import {PermissionFlagsBits} from 'discord.js';
+
 export const data = {
   name: 'Copiar Mensagem',
   kind: 'regular',
@@ -9,7 +11,7 @@ export const data = {
  * @param {String} args Os argumentos enviados pelo bot para a execução do comando.
  */
 export async function execute(msg, args) {
-  if (!msg.member.permissions.has('manageGuild')) {
+  if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
     return msg.reply('❌ Você não tem permissão para usar este comando.');
   }
   for (const messageToCopy of args) {

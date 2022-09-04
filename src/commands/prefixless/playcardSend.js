@@ -48,7 +48,7 @@ export async function execute(client, msg) {
       );
     const webhook = check
       ? check
-      : await msg.channel.createWebhook('moniquetaHook');
+      : await msg.channel.createWebhook({name: 'moniquetaHook'});
     await webhook.edit({
       name: msg.member.nickname ? msg.member.nickname : msg.author.username,
       avatar: msg.author.displayAvatarURL

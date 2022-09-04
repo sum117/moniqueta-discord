@@ -1,3 +1,5 @@
+import {PermissionFlagsBits} from 'discord.js';
+
 export const data = {
   event: 'messageCreate',
   kind: 'regular',
@@ -9,7 +11,7 @@ export const data = {
  * @param {Number} number  O numero de iterações.
  */
 export async function execute(msg) {
-  if (!msg.member.permissions.has('manageGuild')) {
+  if (!msg.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
     return msg.reply('❌ Apenas administradores podem usar bombas nucleares.');
   }
   await msg.channel.send({

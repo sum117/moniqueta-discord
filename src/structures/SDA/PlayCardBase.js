@@ -1,4 +1,5 @@
 import {bold} from '@discordjs/builders';
+import axios from 'axios';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -6,13 +7,11 @@ import {
   EmbedBuilder,
   userMention
 } from 'discord.js';
-
-import {db} from '../../db.js';
-import {statusBar, title} from '../../util';
-import axios from 'axios';
 import imgur from 'imgur';
 import sharp from 'sharp';
 
+import {db} from '../../db.js';
+import {statusBar, title} from '../../util';
 import {reaperIcon} from './icons';
 
 export const assets = {
@@ -375,7 +374,7 @@ export class PlayCardBase {
       let embed = EmbedBuilder.from(msg.embeds[0]);
       embed = embed.setDescription(content);
       if (embed.data?.image?.url)
-        embed.data.image.url = `attachment://${embed.image.url
+        embed.data.image.url = `attachment://${embed.data.image.url
           .split('/')
           .pop()}`;
       await channel.messages.edit(msgId, {

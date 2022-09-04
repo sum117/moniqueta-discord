@@ -3,9 +3,11 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  ChannelType,
   EmbedBuilder,
   InteractionType,
   ModalBuilder,
+  PermissionFlagsBits,
   TextInputBuilder,
   TextInputStyle
 } from 'discord.js';
@@ -198,24 +200,25 @@ export async function execute(interaction) {
               });
               break;
             case 'contato':
-              const ticket = await interaction.guild.channels.create(
-                `disputa-${trialUser.user.username}`,
-                {
-                  type: 'text',
-                  parent: categories.arquivo,
-                  topic: 'Disputa de Ficha de Personagem',
-                  permissionOverwrites: [
-                    {
-                      id: trialUser.user.id,
-                      allow: ['sendMessages', 'viewChannel']
-                    },
-                    {
-                      id: interaction.guild.roles.everyone.id,
-                      deny: ['viewChannel']
-                    }
-                  ]
-                }
-              );
+              const ticket = await interaction.guild.channels.create({
+                name: `disputa-${trialUser.user.username}`,
+                type: ChannelType.GuildText,
+                parent: categories.arquivo,
+                topic: 'Disputa de Ficha de Personagem',
+                permissionOverwrites: [
+                  {
+                    id: trialUser.user.id,
+                    allow: [
+                      PermissionFlagsBits.SendMessages,
+                      PermissionFlagsBits.ViewChannel
+                    ]
+                  },
+                  {
+                    id: interaction.guild.roles.everyone.id,
+                    deny: [PermissionFlagsBits.ViewChannel]
+                  }
+                ]
+              });
               await ticket.send({
                 content: `📩 Atenção, ${userMention(
                   trialUser.id
@@ -223,18 +226,17 @@ export async function execute(interaction) {
                   user.id
                 )}!`
               });
-              const contactButton = new ButtonBuilder(
+
+              const contactButton = ButtonBuilder.from(
                 interaction.component
               ).setDisabled(true);
+              let actionRow = ActionRowBuilder.from(
+                interaction.message.components[0]
+              );
+              actionRow.components.splice(-2, 1, contactButton);
               interaction.message.edit({
                 components: (() => {
-                  return [
-                    interaction.message.components[0].spliceComponents(
-                      -2,
-                      1,
-                      contactButton
-                    )
-                  ];
+                  return [actionRow];
                 })()
               });
               await interaction.reply(
