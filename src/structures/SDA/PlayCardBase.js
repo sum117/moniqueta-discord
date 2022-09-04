@@ -1,11 +1,11 @@
-import {bold} from '@discordjs/builders';
 import axios from 'axios';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
-  userMention
+  userMention,
+  bold
 } from 'discord.js';
 import imgur from 'imgur';
 import sharp from 'sharp';
@@ -415,6 +415,7 @@ export class PlayCardBase {
         }`;
       })
       .join('\n');
+
     const displayCharacter = characters[chosenCheck];
     const possibleIndexes = Object.keys(characters);
     const index = possibleIndexes.findIndex(i => i === displayCharacter.id);
@@ -425,7 +426,7 @@ export class PlayCardBase {
         .setCustomId(`list.${user.id}.${nextIndex}`)
         .setLabel('Perfis')
         .setEmoji('👤')
-        .setStyle('Primary')
+        .setStyle(ButtonStyle.Primary)
     );
     return interaction.reply({
       content: 'Exibindo personagens de ' + user.username,

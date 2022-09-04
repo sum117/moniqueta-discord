@@ -2,8 +2,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder,
-  Interaction
+  EmbedBuilder
 } from 'discord.js';
 import {title} from '../../util/index.js';
 import {db} from '../../db.js';
@@ -30,11 +29,12 @@ export async function execute(interaction) {
   const displayCharacter = characters[interaction.customId.split('.')[2]];
 
   const possibleIndexes = Object.keys(characters);
-  const index = possibleIndexes.findIndex(i => i === displayCharacter.id);
-  const nextIndex = possibleIndexes[index + 1] || possibleIndexes[0];
+  const index = possibleIndexes.findIndex(
+    i => i === interaction.customId.split('.')[2]
+  );
+  const nextIndex = possibleIndexes?.[index + 1] ?? possibleIndexes[0];
   const previousIndex =
-    possibleIndexes[index - 1] || possibleIndexes[possibleIndexes.length - 1];
-
+    possibleIndexes?.[index - 1] ?? possibleIndexes[possibleIndexes.length - 1];
   if (!displayCharacter)
     return interaction.reply({
       content: 'Personagem não encontrado.',
@@ -45,13 +45,14 @@ export async function execute(interaction) {
     new ButtonBuilder()
       .setCustomId(`list.${target.id}.${previousIndex}`)
       .setLabel('⬅️')
-      .setStyle('Primary'),
+      .setStyle(ButtonStyle.Primary),
 
     new ButtonBuilder()
       .setCustomId(`list.${target.id}.${nextIndex}`)
       .setLabel('➡️')
-      .setStyle('Primary')
+      .setStyle(ButtonStyle.Primary)
   );
+  const hasMoreThanOne = possibleIndexes.length === 1;
   const embed = new EmbedBuilder()
     .setAuthor({
       name: 'Personagens de ' + title(target.user.username),
@@ -64,5 +65,8 @@ export async function execute(interaction) {
       text: 'Este personagem pertence à ordem ' + title(displayCharacter.sum)
     })
     .setTitle(displayCharacter.name);
-  interaction.update({embeds: [embed], components: [buttons]});
+  interaction.update({
+    embeds: [embed],
+    components: !hasMoreThanOne ? [buttons] : []
+  });
 }
