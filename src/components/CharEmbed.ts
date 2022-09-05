@@ -1,21 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prisma } from '../../prisma/prisma.js';
-
-export const sumAssets = {
-  austera: { color: 10517508, emoji: '<:Austeros:982077481702027344>' },
-  perserata: { color: 550020, emoji: '<:Perserata:982078451513184306>' },
-  insanata: { color: 11535364, emoji: '<:Insanata:982078436166221874>' },
-  equinocio: { color: 562180, emoji: '<:Equinocio:982082685889564772>' },
-  oscuras: { color: 3146828, emoji: '<:Oscuras:982082685835051078>' },
-  ehrantos: { color: 15236108, emoji: '<:Ehrantos:982082685793087578>' },
-  melancus: { color: 328708, emoji: '<:Melancus:982082685801472060>' },
-  observata: { color: 16777215, emoji: '<:Observata:982082685864378418>' },
-  invidia: { color: 547996, emoji: '<:Invidia:982082685503696967>' },
-  subtrato: { color: 8355711, emoji: '<:subtratos:1007714304319033394>' },
-  humano: { color: 16493758, emoji: '<:humanos:1009521051115466843>' },
-} as { [key: string]: { color: number; emoji: string } };
-
+import { sumAssets } from '../resources';
 export class CharEmbed extends EmbedBuilder {
   message: Message;
   constructor(message: Message) {
@@ -72,9 +58,9 @@ export class CharEmbed extends EmbedBuilder {
       include: {
         chosenChar: {
           include: {
-            armas: true,
-            equipamentos: true,
-            mochila: true,
+            weapons: true,
+            equipment: true,
+            backpack: true,
             skills: true,
             title: true,
           },
@@ -89,7 +75,7 @@ export class CharEmbed extends EmbedBuilder {
         .setTimestamp(Date.now());
       if (user?.chosenChar?.title)
         this.setAuthor({
-          name: user.chosenChar.title.title,
+          name: user.chosenChar.title.name,
           iconURL: user.chosenChar.title.iconURL,
         });
     }

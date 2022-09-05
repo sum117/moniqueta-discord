@@ -1,0 +1,304 @@
+export const phrases = {
+  Combate: {
+    perserata: {
+      hp: {
+        self: [
+          'Sem ti, o mundo nunca ficará livre da Terra Fosca! És condenado a viver, não desista!',
+          'Aceitarás tal humilhação, Perserata?! Mostre para este iniciante quem verdadeiramente conhece estas terras!',
+          'Não é hora de grunhir, Perserata! Mantenha-se de pé, e divague fora da terra os seus pecados!',
+          'Sidera te chama, mas não é tua hora! Lute, LUTE PERSERATA!',
+        ],
+        inimigo: [
+          'Estão com o fio na navalha. Execute-os, em nome de Sidera!',
+          'Está na hora, Perserata. Mostre-o que tu não és o único a pagar por pecados nestas terras!',
+          'Tire-o da própria miséria, Perserata! Ele mesmo cedeu-se este destino!',
+          'Não tenha misericórdia. Eles não teriam para contigo, profano Perserata!',
+        ],
+      },
+      vigor: {
+        self: [
+          'Tua energia está prestes a abandonar-te, Perserata. Permaneça de pé!',
+          'Não fraqueje, Perserata, mostre para eles tua resiliência!',
+          'Ainda consegues mostra-los que sem energia és tão forte quanto!',
+          'Perserata! Enquanto riem de tua fadiga, entrega-os o inferno!',
+        ],
+        inimigo: [
+          'Tu os vê cansados? Não são páreos para ti.',
+          'O inimigo não suporta ficar de pé perante um verdadeiro filho do Profano!',
+          'O inimigo está esgotado. Hora de removê-lo do plano de Imprévia!',
+          'É tua chance. Acabe com ele agora, Perserata!',
+        ],
+      },
+    },
+    invidia: {
+      hp: {
+        self: [
+          'Você é perfeito... inaceitável curvar-se diante um impuro. RECOMPONHA-SE E ASCENDA!',
+          'Se for para morrer, leve dezenas consigo. Um Invidiano não morre em vão.',
+          'Fraco... é assim que você quer ser visto? Levante-se e morra como um herói de verdade, ou morra como um lixo.',
+          'Revide, estraçalhe... Destrua quem lhe causou tamanha dor.',
+        ],
+        inimigo: [
+          'Você terá pena do seu inimigo? Seja impiedoso e o execute rapidamente, não há misericordia para inferiores.',
+          'Diante de seu poder, os menores sucumbirão.',
+          'Não ouse hesitar... a justiça só poderá ser trazida através do sangue do seu inimigo.',
+          'Não lamente por formigas, a brincadeira acabou.',
+        ],
+      },
+      vigor: {
+        self: [
+          'Seu éter está acabando... Não lamente, enquanto seu corpo estiver inteiro, a batalha não estará acabada.',
+          'Com ou sem éter, o inimigo sucumbirá de um jeito ou de outro.',
+          'Persista... não se abale. Escolhas difíceis requerem fortes determinações, um Invidiano não desiste.',
+          'Recuar não é uma opção, essa batalha só se encerrará quando um chegar ao chão, e com certeza não será você.',
+        ],
+        inimigo: [
+          'Ele está esgotado! Aproveite das desvantagens dele e o destrua, avante, Invidiano!',
+          'Por quanto tempo pretende deixá-lo viver...? Esmague-o imediatamente.',
+          'Menores lamentarão por não terem sido abençoados de nascerem com o éter.',
+          'Uma sombra nunca será mais forte que uma luz... O extermine em seu momento de fraqueza.',
+        ],
+      },
+    },
+    oscuras: {
+      hp: {
+        self: [
+          'Cortes, perfurações e queimaduras não são suficiente para te elimitar, Guerreiro.',
+          'A essa altura o oponente já se mostrou digno de conhecer a tua verdadeira força. Mostre a ele sem exitar!',
+          'Oscuro está olhando para seus esforços... Faça o oponente sentir o que você sente!',
+          'Está na hora de fazer os céus e a terra tremerem, Guerreiro.',
+        ],
+        inimigo: [
+          'A vitória não parece estar muito distante agora.',
+          'Já decidiu se vai matá-lo ou deixá-lo viver, Soma?',
+          'Pobre Soma, achou mesmo que teria o mínimo de chance contra os Oscuras.',
+          'A lâmina imbuída por ira corta mais fundo...',
+        ],
+      },
+      vigor: {
+        self: [
+          'Agora não vai dar! Parece que teremos que voltar à antiguidade! Use somente a tua arma.',
+          'Sua Energia Somática está baixa, mas o fogo que incendeia a tua alma não tem limites!',
+          'O que Oscuro faria nessa situação? Hahah, com certeza avançaria sem parar!',
+          'Ei! Vai com calma, Guerreiro! Sua Energia Somática não consegue acompanhar esse ritmo.',
+        ],
+        inimigo: [
+          'Ele está no limite, mas mesmo assim, não baixe a guarda.',
+          'Aparentemente seu oponente não treinou o suficiente. Ou é você quem treinou demais?',
+          'É... parece que ele não vai durar muito.',
+          'Ele está um passo de ceder, está na hora de por um fim nisso.',
+        ],
+      },
+    },
+    ehrantos: {
+      hp: {
+        self: [
+          'Consegue escutar o som do ponteiro? Seu badalar final está chegando, não deixe isso tornar a luta entediante! !',
+          'Avante, eterno, avante em direção a eles... a fé o guiará até o final de sua vida.',
+          'O paraiso, os céus infinitos que se entrelaçam... Não é hora de vê-lo.',
+          'Mostre a eles que os Deuses escolheram as pessoas certas para aniquilar infieis...',
+        ],
+        inimigo: [
+          'Tolos... desperdiçaram sua última vantagem. Domine-os, heresia não será tolerada!!!',
+          'O próprio sangue nas próprias mãos, e mesmo assim continua sob controle. Não o subestime, mate-o rápido.',
+          'Mais um será enviado para o paraiso... ou retornará a vida, como uma mera e transparente alma penada. Garanta sua salvação!',
+          'Castigue até os últimos suspiros, sua pontífice está olhando seus esforços contados pelos Deuses...',
+        ],
+      },
+      vigor: {
+        self: [
+          'Deusa maldita! Primeiro rouba nossos precursores e terras, e agora rouba nossas energias! Mate-com as próprias mãos!',
+          'Paciência, eterno, paciência! Seu chamado pelos deuses há de vir, mate-o enquanto eles assistem!',
+          'Mostre como a fé não limita o homem, mas o fortifica como nunca. Com ou sem energia, castigue.',
+          'Não é a hora de recuar, morra lutando e com fé até em seus últimos momentos! Mostre a vontade de Deus!',
+        ],
+        inimigo: [
+          'O INFERNO TEM UM NOVO PRETENDENTE!!!',
+          'O som do relógio deles abaixou, o badalar está fraco. Estão ficando fracos, mate todos eles.',
+          'São imperfeitos, medíocres. Seguidores pagãs de uma assassina sem escrúpulos. Acabe com eles, antes que se recuperem.',
+          'Você foi escolhido, filho eterno, para salvar a todos. Todos desse chão um dia verde, banhado por sangue profano de uma deusa caida. Não desperdice a chance, mande-o para o caminho dos precursores.',
+        ],
+      },
+    },
+    melancus: {
+      hp: {
+        self: [
+          'Enquanto você respirar ainda há esperança. Ceife, Melancus!',
+          'As coisas estão ficando cada vez mais divertidas... você não acha?',
+          'Adiante, não envergonhe o nome de Zho!',
+          'Se levante! É Por Cadunt, é por Sidera!',
+        ],
+        inimigo: [
+          'Sua hora está chegando, herege.',
+          'Você está diante da coisa mais poderosa que o mundo tem a oferecer...',
+          'Você não será poupado!',
+          'Seu sangue alimenta essa lâmina e enche nossas almas de determinação.',
+        ],
+      },
+      vigor: {
+        self: [
+          'Zho está te iluminando! Adiante!.',
+          'Não vai ser isso que vai impedir você de ceifar!',
+          'É por Zho e pelo povo, não se renda.',
+          'Não é a exaustão que vai te parar, adiante!',
+        ],
+        inimigo: [
+          'Vou te por pra dormir pela eternidade.',
+          'Zho, essa alma logo será tua.',
+          'Zho está prestes a devorar essa alma pobre...',
+          'Suas visceras expostas são a minha diversão!',
+        ],
+      },
+    },
+    equinocio: {
+      hp: {
+        self: [
+          'Uma besta encurralada...',
+          'Você sente os instintos tomando conta.',
+          'Sem descanso para os amaldiçoados.',
+          'Engula seu ego.',
+        ],
+        inimigo: [
+          'Sua vingança está próxima!',
+          'Empurre a vantagem!',
+          'Termine isso agora!',
+          'A batalha está acabando.',
+        ],
+      },
+      vigor: {
+        self: [
+          'Sem munição!',
+          'Recarregue!',
+          'Click, click!',
+          'Seu Hex acabou',
+        ],
+        inimigo: [
+          'Hah, irônico.',
+          'Me pergunto como eles se sentem.',
+          'Parece que o jogo virou.',
+          'Não podem reagir, está acabado!',
+        ],
+      },
+    },
+    observata: {
+      hp: {
+        self: [
+          'Não tenha medo, Observata. Trindade te espera. Lute até a última gota de tua essência!',
+          'O teu fim está próximo. Leve-os contigo, faça a sua parte, Observata!',
+          'Não irás cair. Não podes! Observata, Trindade assiste-te!',
+          'Perdura! O que será do Talismã sem tua força?! Teus aliados dependem de ti!',
+        ],
+        inimigo: [
+          'Entrega-o, Observata, a misericórdia de Trindade!',
+          'O fim chegou para os teus irmãos defeituosos. Livra-te deles!',
+          'O bárbaro fraqueja, o Observata permanece intacto. Nenhuma novidade, Soldado de Trindade!',
+          'Não os deixa fugir. Covardes são piores do que mortos-vivos!',
+        ],
+      },
+      vigor: {
+        self: [
+          'Observata, fique de pé, não envergonhe nossa senhora!',
+          'Irás sucumbir perante uma Soma Fosca?! Foste criado indigno?!',
+          'Permanece em solo, Observata! Sem ti, o que será de Delusia?!',
+          'Não te tornes a vergonha das Chamas Brancas! Lute, Observata!',
+        ],
+        inimigo: [
+          'Como esperado! Ele não aguentará por muito tempo. Acabe com ele, Observata!',
+          'Permitirás que ele descanse? Entrega-o a fúria de Delusia!',
+          'Este não serve nem para lavar chão! Limpe Imprévia da presença dele!',
+          'Ele está prestes a cair. É o destino dos como ele! Ajude-o a concretizá-lo',
+        ],
+      },
+    },
+    austera: {
+      hp: {
+        self: [
+          'Até o último suspiro, Austero! Fostes criado para este destino inevitável!',
+          'Mesmo em derrota, mostra a honra e a força de um Austero! Que eles jamais desejem enfrentar outro como tu!',
+          'Pela grande ordem, levanta-te! Sem ti, eles transformarão o mundo em cinzas!',
+          'Só descansarás em Sidera! Pelo que é lícito, pelo que é justo, vai até o fim, Austero!',
+        ],
+        inimigo: [
+          'Ele fraqueja perante a ti! Coloca-o no lugar dele, em nome de Austera!',
+          'Teu inimigo está prestes a cair! Tenha misericórdia se for justo, ou execute-o se for lícito!',
+          'Em tuas mãos a vida dessa soma que te enfrenta está! Entrega-a o julgamento de Austera!',
+          'A batalha está chegando ao fim, Austero! Afasta-os do pecado original!',
+        ],
+      },
+      vigor: {
+        self: [
+          'Austero! Não há tempo para descansar agora! Suporta teu próprio peso!',
+          'Teu corpo está te abandonando, mas a ordem dourada está do teu lado. Luta, Austero!',
+          'Mostra a eles do que ainda eres capaz sem fôlego, Austero de Inferna!',
+          'O Talismã te assiste em teus tempos difíceis! Agora no cansaço, o dê orgulho!',
+        ],
+        inimigo: [
+          'Teu inimigo está sem fôlego. Se te convém, deixa-o respirar e derrota-o em igualdade!',
+          'O opositor não é mais capaz de manter-se de pé sozinho! Dá-lhe a chance de render-se.',
+          'Quem duela contigo não aguenta mais. Mostra-te impenetrável, Austero!',
+          'O fim se aproxima para teu rival. Mostrá-o as consequências de lutar contra um Austero!',
+        ],
+      },
+    },
+    humano: {
+      hp: {
+        self: [
+          'Vai mesmo morrer neste planeta?! Você não pode cair agora!',
+          'Os alienígenas nunca vão saber como é sangrar! Não os dê o prazer de te ver morrer!',
+          'Eles não sentem o suficiente para saber como você está sofrendo! Dê-lhes um gostinho!',
+          'Os somáticos não merecem seu sangue e suas lágrimas! Mostre-lhes o que é ser humano!',
+        ],
+        inimigo: [
+          'Mais um somático para a vala. Pode colocar no seu cheque!',
+          'Está na hora de você ir para o inferno, somático!',
+          'Alice está fazendo de tudo para sairmos daqui. Não a decepcione e acabe com eles!',
+          'Com uma pistola seria melhor, mas você não tem uma. Então, use suas próprias mãos e execute esse somático de merda!',
+        ],
+      },
+      vigor: {
+        self: [
+          'Eles também sentem cansaço. Você não está perdido, permaneça lutando, Masôriano!',
+          'Não deixe seu cansaço vencer! Você não é um somático, você sabe o que é prevalecer!',
+          'Quantos da sua espécie não já cometeram milagres? Você também pode! Permaneça de pé!',
+          'Desde que nasceu luta contra a fadiga, não desista agora, Masôriano!',
+        ],
+        inimigo: [
+          'Ele está prestes a cair de cansaço, Masôriano! Dê-lhe um soco e acabe com ele!',
+          'O inimigo fraqueja. Mostre-o o poder de ter pulmões, Masôriano!',
+          'Parece que o alienígena vai desmaiar de cansaço. Bote-o para dormir, Masôriano!',
+          'Está bambeando de cansaço, o somático. Aposto que Sidera pôs isso nele por sadismo. Livre-o do sofrimento, Masôriano!',
+        ],
+      },
+    },
+    subtrato: {
+      hp: {
+        self: [
+          'Vai mesmo morrer neste planeta?! Você não pode cair agora!',
+          'Os alienígenas nunca vão saber como é sangrar! Não os dê o prazer de te ver morrer!',
+          'Eles não sentem o suficiente para saber como você está sofrendo! Dê-lhes um gostinho!',
+          'Os somáticos não merecem seu sangue e suas lágrimas! Mostre-lhes o que é ser humano!',
+        ],
+        inimigo: [
+          'Mais um somático para a vala. Pode colocar no seu cheque!',
+          'Está na hora de você ir para o inferno, somático!',
+          'Alice está fazendo de tudo para sairmos daqui. Não a decepcione e acabe com eles!',
+          'Com uma pistola seria melhor, mas você não tem uma. Então, use suas próprias mãos e execute esse somático de merda!',
+        ],
+      },
+      vigor: {
+        self: [
+          'Eles também sentem cansaço. Você não está perdido, permaneça lutando, Masôriano!',
+          'Não deixe seu cansaço vencer! Você não é um somático, você sabe o que é prevalecer!',
+          'Quantos da sua espécie não já cometeram milagres? Você também pode! Permaneça de pé!',
+          'Desde que nasceu luta contra a fadiga, não desista agora, Masôriano!',
+        ],
+        inimigo: [
+          'Ele está prestes a cair de cansaço, Masôriano! Dê-lhe um soco e acabe com ele!',
+          'O inimigo fraqueja. Mostre-o o poder de ter pulmões, Masôriano!',
+          'Parece que o alienígena vai desmaiar de cansaço. Bote-o para dormir, Masôriano!',
+          'Está bambeando de cansaço, o somático. Aposto que Sidera pôs isso nele por sadismo. Livre-o do sofrimento, Masôriano!',
+        ],
+      },
+    },
+  },
+};
