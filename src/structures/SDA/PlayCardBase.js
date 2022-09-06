@@ -97,7 +97,7 @@ export class PlayCardBase {
               .resize({
                 width: 512,
                 height: 512,
-                fit: 'fill'
+                fit: 'cover'
               })
               .png()
               .toBuffer()

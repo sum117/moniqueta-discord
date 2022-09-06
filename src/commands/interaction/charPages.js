@@ -44,16 +44,16 @@ export async function execute(interaction) {
 
   const buttons = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId(`list.${target.id}.${previousIndex}`)
+      .setCustomId(`list.${target.id}.${previousIndex}.previous`)
       .setLabel('⬅️')
       .setStyle(ButtonStyle.Primary),
 
     new ButtonBuilder()
-      .setCustomId(`list.${target.id}.${nextIndex}`)
+      .setCustomId(`list.${target.id}.${nextIndex}.next`)
       .setLabel('➡️')
       .setStyle(ButtonStyle.Primary)
   );
-  const hasOne = possibleIndexes.length === 1;
+  const hasOne = possibleIndexes.length <= 1;
   let emojiToDisplay = assets.sum[displayCharacter.sum].emoji;
   emojiToDisplay = emojiToDisplay.match(/\d+/)?.[0];
   const embed = new EmbedBuilder()

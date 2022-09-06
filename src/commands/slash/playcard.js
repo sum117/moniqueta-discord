@@ -170,7 +170,7 @@ export async function execute(interaction) {
             topChar = {
               avatar: entry?.char.avatar,
               name: entry?.char.name,
-              color: assets.sum[entry?.char.sum]?.color ?? 'RANDOM',
+              color: assets.sum[entry?.char.sum]?.color ?? 'Random',
               frases: Combate[entry?.char.sum].hp.inimigo,
               emoji: assets.sum[entry?.char.sum].emoji
             };
