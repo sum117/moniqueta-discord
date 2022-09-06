@@ -1,6 +1,6 @@
 import { EmbedBuilder } from 'discord.js';
 import type { Message } from 'discord.js';
-import { prisma } from '../../prisma/prisma.js';
+import { getChar } from '../../prisma';
 import { sumAssets } from '../resources';
 export class CharEmbed extends EmbedBuilder {
   message: Message;
@@ -15,8 +15,7 @@ export class CharEmbed extends EmbedBuilder {
     this.message = message;
   }
   public async profile() {
-    const user = await this._fetch();
-    const char = user?.chosenChar;
+    const char = await this._fetch();
     this.setTitle(`Exibindo perfil de ${char?.name}`).addFields(
       {
         name: 'Personalidade',
@@ -50,36 +49,21 @@ export class CharEmbed extends EmbedBuilder {
     this.setDescription(this.message.content);
     return this;
   }
-  private async _fetch(id = this.message.author.id) {
-    const user = await prisma.user.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        chosenChar: {
-          include: {
-            weapons: true,
-            equipment: true,
-            backpack: true,
-            skills: true,
-            title: true,
-          },
-        },
-      },
-    });
-    if (user?.chosenChar) {
-      const { name, avatar, sum } = user?.chosenChar;
+  private async _fetch(message = this.message) {
+    const char = await getChar(message);
+    if (char) {
+      const { name, avatar, sum } = char;
       this.setTitle(name)
         .setThumbnail(avatar)
         .setColor(sumAssets[sum].color)
         .setTimestamp(Date.now());
-      if (user?.chosenChar?.title)
+      if (char?.title)
         this.setAuthor({
-          name: user.chosenChar.title.name,
-          iconURL: user.chosenChar.title.iconURL,
+          name: char.title.name,
+          iconURL: char.title.iconURL,
         });
     }
 
-    return user;
+    return char;
   }
 }

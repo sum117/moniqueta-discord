@@ -1,38 +1,30 @@
 import { On, Discord, Guard } from 'discordx';
 import type { ArgsOf } from 'discordx';
-import type { EmbedBuilder, Message } from 'discord.js';
+import {
+  EmbedBuilder,
+  Message,
+  userMention,
+  ReplyMessageOptions,
+} from 'discord.js';
 import { CharEmbed } from '../../components';
-import { ReplyMessageOptions } from 'discord.js';
-import { isAllowedParent } from '../../guards';
-
+import { isAllowedParent, hasCharacter } from '../../guards';
+import { handleUserPost } from '../../../prisma';
+import { Util } from '../../util/Util.js';
 @Discord()
 export class Post {
   @On({ event: 'messageCreate' })
-  @Guard(isAllowedParent)
-  async createPost([message]: ArgsOf<'messageCreate'>) {
+  @Guard(hasCharacter, isAllowedParent(['1016689271207383102']))
+  public async createPost([message]: ArgsOf<'messageCreate'>) {
     const embed = await new CharEmbed(message).post();
     const reply = {} as ReplyMessageOptions;
-    this._handleAttachment(message, reply, embed);
+    Util.handleAttachment(message, reply, embed);
     reply.embeds = [embed];
-    await message.channel.send(reply);
-    return message.delete().catch((err) => console.log(err));
-  }
-  public _handleAttachment(
-    message: Message,
-    reply: ReplyMessageOptions,
-    embed: EmbedBuilder,
-  ) {
-    const attachment = message.attachments.first();
-    if (attachment) {
-      const attachmentName = attachment.url.split('/').pop();
-      embed.setImage('attachment://' + attachmentName);
-      reply.embeds = [embed];
-      reply.files = [
-        {
-          attachment: attachment.attachment,
-          name: attachmentName,
-        },
-      ];
+    const sentPostMessage = await message.channel.send(reply);
+    await handleUserPost(message, sentPostMessage);
+    try {
+      await message.delete();
+    } catch {
+      return;
     }
   }
 }
