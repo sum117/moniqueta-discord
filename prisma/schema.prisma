@@ -14,10 +14,17 @@ model User {
   chosenChar Char?  @relation("chosenChar")
   chars      Char[]
 
-  chosenCharId  Int    @default(1)
-  lastMessageId String
+  chosenCharId   Int              @default(1)
+  ServerMessages ServerMessages[] @relation("user")
+  lastMessageId  String
 
   @@index([lastMessageId, chosenCharId])
+}
+
+model ServerMessages {
+  messageId String  @id @unique
+  author    User?   @relation("user", fields: [authorId], references: [id])
+  authorId  String?
 }
 
 model Char {
