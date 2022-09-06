@@ -27,11 +27,12 @@ export const data = new SCB()
             {name: 'arma', value: 'arma'},
             {name: 'cabeça', value: 'cabeça'},
             {name: 'pescoço', value: 'pescoço'},
-            {name: 'ombros', value: 'maos'},
+            {name: 'ombros', value: 'ombros'},
             {name: 'peitoral', value: 'peitoral'},
             {name: 'cintura', value: 'cintura'},
             {name: 'pernas', value: 'pernas'},
-            {name: 'pes', value: 'pes'}
+            {name: 'pes', value: 'pes'},
+            {name: 'maos', value: 'maos'}
           )
           .setDescription('O slot onde o item vai ficar alocado')
       )
