@@ -1,11 +1,6 @@
 import { On, Discord, Guard } from 'discordx';
 import type { ArgsOf } from 'discordx';
-import {
-  EmbedBuilder,
-  Message,
-  userMention,
-  ReplyMessageOptions,
-} from 'discord.js';
+import { ReplyMessageOptions } from 'discord.js';
 import { CharEmbed } from '../../components';
 import { isAllowedParent, hasCharacter } from '../../guards';
 import { handleUserPost } from '../../../prisma';
