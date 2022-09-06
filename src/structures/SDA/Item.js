@@ -280,7 +280,7 @@ export class Item extends Combat {
           const slot = id.split('_')[1];
           if (slot === 'none') return;
           const itemId = id.split('_')[2];
-          const item = charDb.mochila[itemId];
+          let item = charDb.mochila[itemId];
 
           item.equipado = false;
           if (!slot.startsWith('arma')) {
