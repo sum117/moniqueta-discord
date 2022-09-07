@@ -10,7 +10,8 @@
   --green-300: #00b37e;
   --green-500: #00875f;
 
-  --red-500: #f75a68;
+  --red-500: #ff6b6b;
+  --yellow-500: #ffe66d;
 }
 
 :focus {
@@ -25,7 +26,7 @@ a:focus {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  overflow-anchor: initial;
+  overflow-anchor: 100vh;
 }
 ::-webkit-scrollbar {
   width: 10px;

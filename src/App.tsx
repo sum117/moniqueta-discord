@@ -5,6 +5,7 @@ import {Sidebar} from './components/Sidebar/Sidebar';
 import {BlogDetails} from './components/BlogDetails/BlogDetails';
 import {useState} from 'react';
 import {CharForm} from './components/CharForm/CharForm';
+import { Writer } from './pages/Writer/Writer';
 export function App() {
   const [login, setLogin] = useState(false);
   if (!login) handleLogin();
@@ -19,6 +20,7 @@ export function App() {
           <Route path="/tradutor" element={<Tradutor />} />
           <Route path="/discord" element={<Discord />} />
           <Route path="/char-form" element={<CharForm />} />
+          <Route path="/writer" element={<Writer/>}/>
         </Routes>
       </div>
     </Router>
