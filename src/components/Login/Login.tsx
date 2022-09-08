@@ -1,7 +1,8 @@
 import styles from './Login.module.css';
-import {FaBook, FaPeopleCarry, FaHandHoldingHeart} from 'react-icons/fa';
+import {FaBook, FaHandHoldingHeart, FaPeopleCarry} from 'react-icons/fa';
 import {useFetch} from '../../script/useFetch';
 import {Avatar} from '../Avatar/Avatar';
+
 export function LoggedInComponent() {
   type LoginData = {
     data: {
@@ -38,6 +39,14 @@ export function LoggedInComponent() {
         )}
       </article>
       <Avatar user_object={sessionStorage.getItem('user_object') as string} />
+      <div className={styles.loggedInTools}>
+        <header>Agora você pode usar as ferramentas de logado!</header>
+        <h1>
+          O site está em desenvolvimento. Por favor, aguarde novas atualizações!
+          <br />
+          Feito com muito amor pela equipe do Masôria 💘!
+        </h1>
+      </div>
     </>
   );
 }
