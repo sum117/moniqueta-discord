@@ -5,7 +5,7 @@ import {Sidebar} from './components/Sidebar/Sidebar';
 import {BlogDetails} from './components/BlogDetails/BlogDetails';
 import {useState} from 'react';
 import {CharForm} from './components/CharForm/CharForm';
-import { Writer } from './pages/Writer/Writer';
+import {Writer} from './pages/Writer/Writer';
 export function App() {
   const [login, setLogin] = useState(false);
   if (!login) handleLogin();
@@ -20,7 +20,7 @@ export function App() {
           <Route path="/tradutor" element={<Tradutor />} />
           <Route path="/discord" element={<Discord />} />
           <Route path="/char-form" element={<CharForm />} />
-          <Route path="/writer" element={<Writer/>}/>
+          <Route path="/writer" element={<Writer />} />
         </Routes>
       </div>
     </Router>
@@ -45,10 +45,10 @@ export function App() {
     if (!window.location.href.includes('code')) return;
     const data = {
       client_id: '987919485367369749',
-      client_secret: 'umaeJ0_itADBpFXnLoWJhzRQlJd8EBuh',
+      client_secret: import.meta.env.DISCORD_CLIENT_SECRET,
       grant_type: 'authorization_code',
       code: window.location.href.split('=')[1],
-      redirect_uri: 'http://localhost:5173/login'
+      redirect_uri: 'https://moniqueta.sumserver.xyz/login'
     };
     let apiEndpoint = 'https://discord.com/api/oauth2/';
     let access_token = window.sessionStorage.getItem('access_token') as unknown;
@@ -86,7 +86,7 @@ export function App() {
             'user_object',
             JSON.stringify({user: userJSON, guilds: guildJSON})
           );
-          window.location.href = 'http://localhost:5173';
+          window.location.href = 'https://moniqueta.sumserver.xyz';
         });
       });
     });
