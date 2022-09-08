@@ -1,74 +1,82 @@
 .card {
-  background-color: hsl(0, 0%, 15%);
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin: 0 5rem 30rem 5rem;
-  gap: 0.5rem;
-  border-color: var(--green-500);
-  border-style: solid;
-  border-radius: 8px;
-  max-height: 30vh;
-  width: 30vw;
-  text-overflow: ellipsis;
-  overflow: hidden;
+    background-color: hsl(0, 0%, 15%);
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin: 0 5rem 0 5rem;
+    gap: 0.5rem;
+    border-color: var(--green-500);
+    border-style: solid;
+    border-radius: 8px;
+    max-height: 30vh;
+    width: 30vw;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
+
 .card:hover {
-  scale: 1.1;
+    scale: 1.1;
 }
+
 .card .desktopContainer {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
 .card .desc {
-  max-inline-size: 40ch;
+    max-inline-size: 40ch;
 }
+
 .card .avatar {
-  width: 128px;
-  height: 128px;
-  overflow: hidden;
-  border: 5px solid var(--green-500);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-  border-radius: 0.5rem;
-  display: inline-block;
-  max-inline-size: 100%;
-  margin-top: calc(0px - 1.5rem - 6px);
-  margin-left: 0.5rem;
+    width: 128px;
+    height: 128px;
+    overflow: hidden;
+    border: 5px solid var(--green-500);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    border-radius: 0.5rem;
+    display: inline-block;
+    max-inline-size: 100%;
+    margin-top: calc(0px - 1.5rem - 6px);
+    margin-left: 0.5rem;
 }
+
 .card .banner {
-  width: 100%;
-  height: 80px;
-  object-fit: cover;
-  border-bottom: solid var(--green-500);
-  padding: 0;
-  margin: 0;
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-bottom: solid var(--green-500);
+    padding: 0;
+    margin: 0;
 }
+
 .card span {
-  font-weight: 100;
-  color: var(--gray-400);
-  font-size: 0.6rem;
-  margin-left: 0.5rem;
-  margin-bottom: 0.5rem;
+    font-weight: 100;
+    color: var(--gray-400);
+    font-size: 0.6rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 @media (max-width: 768px) {
-  .card {
-    width: 92vw;
-    margin: 0 1rem;
-    padding: 0;
-  }
-  .card .avatar {
-    margin: calc(1px - 3rem) auto auto;
-  }
-  .card .desc {
-    text-align: center;
-    margin: auto;
-  }
-  .card span {
-    text-align: center;
-    padding-bottom: 1rem;
-  }
+    .card {
+        width: 92vw;
+        margin: 0 1rem;
+        padding: 0;
+    }
+
+    .card .avatar {
+        margin: calc(1px - 3rem) auto auto;
+    }
+
+    .card .desc {
+        text-align: center;
+        margin: auto;
+    }
+
+    .card span {
+        text-align: center;
+        padding-bottom: 1rem;
+    }
 }

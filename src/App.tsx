@@ -1,18 +1,19 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import {Home, Faq, Tradutor, Discord} from './pages';
+import {Discord, Faq, Home, Tradutor} from './pages';
 import styles from './App.module.css';
 import {Sidebar} from './components/Sidebar/Sidebar';
 import {BlogDetails} from './components/BlogDetails/BlogDetails';
 import {useState} from 'react';
 import {CharForm} from './components/CharForm/CharForm';
-import { Writer } from './pages/Writer/Writer';
+import {Writer} from './pages/Writer/Writer';
+
 export function App() {
   const [login, setLogin] = useState(false);
   if (!login) handleLogin();
   return (
     <Router>
       <div className={styles.wrapper}>
-        <Sidebar />
+        <Sidebar isLoggedIn={login} />
         <Routes>
           <Route path="/" element={<Home IsLoggedIn={login} />} />
           <Route path="/faq" element={<Faq />} />
@@ -20,11 +21,12 @@ export function App() {
           <Route path="/tradutor" element={<Tradutor />} />
           <Route path="/discord" element={<Discord />} />
           <Route path="/char-form" element={<CharForm />} />
-          <Route path="/writer" element={<Writer/>}/>
+          <Route path="/writer" element={<Writer />} />
         </Routes>
       </div>
     </Router>
   );
+
   function handleLogin() {
     type userObject = {
       user: {

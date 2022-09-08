@@ -1,5 +1,7 @@
 import {
+  FaAddressCard,
   FaAutoprefixer,
+  FaBook,
   FaDiscord,
   FaDoorOpen,
   FaHome,
@@ -8,7 +10,7 @@ import {
 import styles from './Sidebar.module.css';
 import {Link} from 'react-router-dom';
 
-export function Sidebar() {
+export function Sidebar({isLoggedIn}: {[_key: string]: boolean}) {
   return (
     <div className={styles.sidebar}>
       <Link to="/">
@@ -25,9 +27,21 @@ export function Sidebar() {
       <Link to="/faq">
         <SidebarIcon icon={<FaQuestion size="28" />} />
       </Link>
-      <a href="https://discord.com/api/oauth2/authorize?client_id=987919485367369749&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=guilds%20identify">
-        <SidebarIcon icon={<FaDoorOpen size="28" />} />
-      </a>
+      {!isLoggedIn && (
+        <a href="https://discord.com/api/oauth2/authorize?client_id=987919485367369749&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=guilds%20identify">
+          <SidebarIcon icon={<FaDoorOpen size="28" />} />
+        </a>
+      )}
+      {isLoggedIn && (
+        <>
+          <Link to="/writer">
+            <SidebarIcon icon={<FaBook size="28" />} />
+          </Link>
+          <Link to="/char-form">
+            <SidebarIcon icon={<FaAddressCard size="28" />} />
+          </Link>
+        </>
+      )}
     </div>
   );
 }
