@@ -25,7 +25,7 @@ export function Sidebar() {
       <Link to="/faq">
         <SidebarIcon icon={<FaQuestion size="28" />} />
       </Link>
-      <a href="https://discord.com/api/oauth2/authorize?client_id=987919485367369749&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=guilds%20identify">
+      <a href="https://discord.com/api/oauth2/authorize?client_id=987919485367369749&redirect_uri=https%3A%2F%2Fmoniqueta.sumserver.xyz%2Flogin&response_type=code&scope=identify%20guilds">
         <SidebarIcon icon={<FaDoorOpen size="28" />} />
       </a>
     </div>

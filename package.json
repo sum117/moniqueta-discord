@@ -10,7 +10,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "echo 'moniqueta.sumserver.xyz' > ./dist/CNAME && gh-pages -d dist -b gh-pages",
     "prettier": "prettier --write ."
   },
   "dependencies": {
