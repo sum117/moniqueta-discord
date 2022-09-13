@@ -229,3 +229,26 @@ Combate:
         - O inimigo fraqueja. Mostre-o o poder de ter pulmões, Masôriano!
         - Parece que o alienígena vai desmaiar de cansaço. Bote-o para dormir, Masôriano!
         - Está bambeando de cansaço, o somático. Aposto que Sidera pôs isso nele por sadismo. Livre-o do sofrimento, Masôriano!
+  precursor:
+    hp:
+      self:
+        - Luta até o fim precursor, o arquiteto não se decepcionará!
+        - O arquiteto não permitirá que você morra aqui, precursor!
+        - Precursor... lembre-se de que o arquiteto está do seu lado!
+        - Resiste, precursor! O arquiteto está com você!
+      inimigo:
+        - Elimine-o para a gloria do arquiteto, precursor!
+        - O inimigo fraqueja, precursor... acabe com ele!
+        - Sidera depende de você, não deixe os humanos passarem!
+        - Desde que você esteja de pé, os humanos não prevalecerão!
+    vigor:
+      self:
+        - O cansaço é temporário, mas a vitória é eterna, precursor!
+        - Um precursor não é um humano, não desista!
+        - Não deixe os humanos se aproveitarem de sua fraqueza, precursor!
+        - Abra seus diversos olhos, você é o que tudo vê, não um humano blasfemo!
+      inimigo:
+        - Execute-o e livre o arquiteto de preocupações com essa praga humana, precursor!
+        - Se você mostrar piedade, ele se multiplicará, precursor. Livre o universo desse vírus.
+        - É só mais um humano, precursor. Acabe com ele!
+        - Está na hora de você mostrar o que é um precursor para este humano ingrato.

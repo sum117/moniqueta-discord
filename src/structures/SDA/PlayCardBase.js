@@ -53,7 +53,8 @@ export const assets = {
     },
     invidia: {color: 547996, emoji: '<:Invidia:982082685503696967>'},
     subtrato: {color: 8355711, emoji: '<:subtratos:1007714304319033394>'},
-    humano: {color: 16493758, emoji: '<:humanos:1009521051115466843>'}
+    humano: {color: 16493758, emoji: '<:humanos:1009521051115466843>'},
+    precursor: {color: 13814504, emoji: '<:precursor:1017940224388628490>'}
   },
   phantom: {
     azul: '<:fantasmaAzul:982092065523507290>',

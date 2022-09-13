@@ -13,7 +13,8 @@ const sumArray = [
   'insanata',
   'observata',
   'humano',
-  'subtrato'
+  'subtrato',
+  'precursor'
 ];
 const phantomArray = ['branco', 'vermelho', 'azul', 'ceifador', 'tempo'];
 const genderArray = ['masculino', 'feminino', 'descubra'];
@@ -96,6 +97,9 @@ const data = new SlashCommandBuilder()
       .setName('icone-do-titulo')
       .setDescription('Imagem do titulo do npc')
       .setRequired(true)
+  )
+  .addUserOption(option =>
+    option.setName('dono').setDescription('Dono do npc').setRequired(true)
   );
 skillsArray.map(skill =>
   data.addNumberOption(option =>
@@ -120,6 +124,7 @@ export async function execute(interaction) {
     return interaction.reply(
       'Você não tem permissão para executar esse comando.'
     );
+  const user = interaction.options.getUser('dono');
   const input = Object.keys(dictionary)
     .map(key => {
       return {
@@ -172,14 +177,14 @@ export async function execute(interaction) {
   input.title.icon = interaction.options.getAttachment('icone-do-titulo').url;
   input.avatar = interaction.options.getAttachment('avatar').url;
 
-  let charCount = await db.get(`${interaction.user.id}.count`);
+  let charCount = await db.get(`${user.id}.count`);
   const itemChosen = await db
     .table('server_items')
     .get(interaction.options.getNumber('item').toString());
   itemChosen.quantia = 1;
   input.mochila[interaction.options.getNumber('item').toString()] = itemChosen;
-  await db.add(`${interaction.user.id}.count`, 1);
-  await db.set(`${interaction.user.id}.chars.${++charCount}`, input);
+  await db.add(`${user.id}.count`, 1);
+  await db.set(`${user.id}.chars.${++charCount}`, input);
 
   return interaction.reply('NPC criado com sucesso!');
 }
