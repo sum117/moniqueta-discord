@@ -7,7 +7,7 @@ import { Slash, SlashGroup, SlashOption, Discord } from 'discordx';
 import { getLastMessageId } from '../../../prisma';
 import { Util } from '../../util/Util.js';
 
-enum ErrorMessages {
+enum ErrorMessage {
   NoUser = 'Usuário não encontrado no banco de dados. Você talvez nem tenha um personagem.',
   NoLastMessage = 'Você não possui nenhum post no canal atual, ou ele foi deletado.',
   NoLastEmbed = 'O último post não possui um embed, ou ele foi deletado.',
@@ -18,7 +18,7 @@ enum ErrorMessages {
   description: 'Grupo de comandos para o sistema de playcard.',
 })
 @SlashGroup('playcard')
-export class Edit {
+export class Playcard {
   @Slash({
     name: 'editar',
     description: 'Edita o último post do Playcard.',
@@ -52,15 +52,15 @@ export class Edit {
     if (!interaction.channel) return;
 
     const user = await getLastMessageId(interaction);
-    if (!user) throw new Error(ErrorMessages.NoUser);
+    if (!user) throw new Error(ErrorMessage.NoUser);
 
     const lastMessage = await interaction.channel?.messages.fetch(
       user.lastMessageId,
     );
-    if (!lastMessage) throw new Error(ErrorMessages.NoLastMessage);
+    if (!lastMessage) throw new Error(ErrorMessage.NoLastMessage);
 
     const lastEmbed = lastMessage.embeds?.[0];
-    if (!lastEmbed) throw new Error(ErrorMessages.NoLastEmbed);
+    if (!lastEmbed) throw new Error(ErrorMessage.NoLastEmbed);
 
     return {
       embed: lastEmbed,
