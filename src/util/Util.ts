@@ -30,4 +30,14 @@ export class Util {
       reply.content = mentions.join(',');
     }
   }
+  public static delay = (ms: number): Promise<void> =>
+    new Promise((res) => setTimeout(res, ms));
+
+  public static titleCase = (str: string): string => {
+    return str
+      .toLowerCase()
+      .split(' ')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
 }
