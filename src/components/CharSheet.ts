@@ -58,6 +58,12 @@ enum GenderOptionValue {
   LGBTQP = 'lgbtqp',
   NotSpecified = 'any',
 }
+enum GenderOptionEmoji {
+  Male = '♂️',
+  Female = '♀️',
+  LGBTQP = '🏳️‍🌈',
+  NotSpecified = '👤',
+}
 enum ErrorMessage {
   BrokenOption = 'Opção inválida encontrada na hora de gerar os seletores somáticos.',
   SheetAlreadyExists = 'Já existe um criador de fichas nesse canal. Para criar outro, primeiro exclua o anterior, administrador.',
@@ -142,16 +148,20 @@ export class CharSheet {
         .addOptions([
           new SelectMenuOptionBuilder()
             .setLabel(GenderOptionLabel.Male)
-            .setValue(GenderOptionValue.Male),
+            .setValue(GenderOptionValue.Male)
+            .setEmoji(GenderOptionEmoji.Male),
           new SelectMenuOptionBuilder()
             .setLabel(GenderOptionLabel.Female)
-            .setValue(GenderOptionValue.Female),
+            .setValue(GenderOptionValue.Female)
+            .setEmoji(GenderOptionEmoji.Female),
           new SelectMenuOptionBuilder()
             .setLabel(GenderOptionLabel.LGBTQP)
-            .setValue(GenderOptionValue.LGBTQP),
+            .setValue(GenderOptionValue.LGBTQP)
+            .setEmoji(GenderOptionEmoji.LGBTQP),
           new SelectMenuOptionBuilder()
             .setLabel(GenderOptionLabel.NotSpecified)
-            .setValue(GenderOptionValue.NotSpecified),
+            .setValue(GenderOptionValue.NotSpecified)
+            .setEmoji(GenderOptionEmoji.NotSpecified),
         ]),
     ];
     const row = selectors.map((selector) =>
