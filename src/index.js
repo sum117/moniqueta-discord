@@ -36,7 +36,6 @@ export const moniqueta = new Client({
 });
 moniqueta.commands = new Collection();
 moniqueta.memberCounter = new Collection();
-moniqueta.postCounter = [];
 moniqueta.inviteCodeUses = new Collection();
 moniqueta.guildInvites = new Collection();
 moniqueta.prefix = await prefix;
@@ -255,27 +254,27 @@ moniqueta.login(token);
  * @param {Array<object>} options As novas opções do componente
  * @returns {Promise<Message>} A mensagem editada
  */
-async function changeComponentOptions(
-  channelId = '',
-  messageId = '',
-  actionRow = 0,
-  customId = '',
-  placeHolder = '',
-  options = [{}]
-) {
-  const message = await moniqueta.channels.cache
-    .get(channelId)
-    .messages.fetch(messageId);
-  const component = message.components[actionRow].setComponents(
-    new SelectMenuBuilder()
-      .setCustomId(customId)
-      .setMaxValues(2)
-      .setMinValues(1)
-      .setPlaceholder(placeHolder)
-      .addOptions(options)
-  );
-  return message.edit({
-    content: message.content,
-    components: [...message.components.slice(-4, 3), component]
-  });
-}
+// async function changeComponentOptions(
+//  channelId = '',
+//  messageId = '',
+//  actionRow = 0,
+ // customId = '',
+ // placeHolder = '',
+ // options = [{}]
+// ) {
+ // const message = await moniqueta.channels.cache
+   // .get(channelId)
+   // .messages.fetch(messageId);
+ // const component = message.components[actionRow].setComponents(
+   // new SelectMenuBuilder()
+    //  .setCustomId(customId)
+    //  .setMaxValues(2)
+    //  .setMinValues(1)
+    //  .setPlaceholder(placeHolder)
+    //  .addOptions(options)
+ // );
+  //return message.edit({
+   // content: message.content,
+    //components: [...message.components.slice(-4, 3), component]
+  //});
+//}

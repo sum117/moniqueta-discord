@@ -7,8 +7,8 @@ import {
   PermissionFlagsBits,
   SlashCommandBuilder as SCB
 } from 'discord.js';
-import {db} from '../../db.js';
 
+import {db} from '../../db.js';
 import {Item} from '../../structures/SDA/Item.js';
 import {title} from '../../util/index.js';
 
@@ -209,11 +209,11 @@ export async function execute(interaction) {
     case 'listar':
       const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-          .setCustomId(`item.listar.0`)
+          .setCustomId('item.listar.0')
           .setStyle(ButtonStyle.Primary)
           .setEmoji('⬅️'),
         new ButtonBuilder()
-          .setCustomId(`item.listar.1`)
+          .setCustomId('item.listar.1')
           .setStyle(ButtonStyle.Primary)
           .setEmoji('➡️')
       );

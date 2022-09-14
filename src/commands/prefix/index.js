@@ -8,6 +8,6 @@ export * as mestres from './tops/mestres.js';
 export * as top from './tops/top.js';
 export * as calc from './util/calc.js';
 export * as copy from './util/copy.js';
+export * as debug from './util/debug.js';
 export * as hi from './util/hi.js';
 export * as icon from './util/icon.js';
-export * as debug from './util/debug.js';

@@ -1,11 +1,11 @@
-import {db} from '../../db.js';
 import {
-  bold,
   ActionRowBuilder,
-  EmbedBuilder,
+  bold,
   ButtonBuilder,
-  ButtonStyle
-} from 'discord.js';
+  ButtonStyle,
+  EmbedBuilder} from 'discord.js';
+
+import {db} from '../../db.js';
 import {title} from '../../util';
 export const data = {
   event: 'interactionCreate',

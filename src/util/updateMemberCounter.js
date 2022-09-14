@@ -6,10 +6,7 @@ export function updateMemberCounter(moniqueta, myGuild) {
     let memberCounter = moniqueta.guilds.cache
       .get(myGuild)
       .channels.cache.get(channels.memberCounter);
-    let postCounter = moniqueta.guilds.cache
-      .get(myGuild)
-      .channels.cache.get(channels.postCounter);
-    let charCounter = moniqueta.guilds.cache
+        let charCounter = moniqueta.guilds.cache
       .get(myGuild)
       .channels.cache.get(channels.charCounter);
     let totalChars = await (async () => {
@@ -28,21 +25,14 @@ export function updateMemberCounter(moniqueta, myGuild) {
         .reduce((a, b) => a + b, 0);
     })();
 
-    moniqueta.postCounter.forEach((time, index) => {
-      if (Date.now() - time > 8 * 3600 * 1000)
-        moniqueta.postCounter = moniqueta.postCounter.splice(index, 1);
-    });
-    moniqueta.memberCounter.forEach((time, user) => {
+        moniqueta.memberCounter.forEach((time, user) => {
       if (Date.now() - time > 8 * 3600 * 1000)
         moniqueta.memberCounter.delete(user);
     });
     memberCounter.edit({
       name: memberCounter.name.replace(/\d+/, moniqueta.memberCounter.size)
     });
-    postCounter.edit({
-      name: postCounter.name.replace(/\d+/, moniqueta.postCounter.length)
-    });
-    charCounter.edit({
+        charCounter.edit({
       name: charCounter.name.replace(/\d+/, totalChars)
     });
   }, 10 * 60 * 1000);
