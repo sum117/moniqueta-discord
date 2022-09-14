@@ -1,8 +1,7 @@
 import {
   Client,
   Collection,
-  GatewayIntentBits,
-  SelectMenuBuilder
+  GatewayIntentBits
 } from 'discord.js';
 
 import {mudaeTimer} from './commands/cron';
