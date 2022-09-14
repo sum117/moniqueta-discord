@@ -17,25 +17,25 @@
   "dependencies": {
     "@discordx/importer": "^1.1.10",
     "@discordx/pagination": "^3.0.0",
-    "@prisma/client": "^4.2.1",
+    "@prisma/client": "^4.3.1",
     "bufferutil": "^4.0.6",
     "discord.js": "^14.3.0",
-    "discordx": "^11.1.9",
+    "discordx": "^11.2.0",
     "reflect-metadata": "^0.1.13",
     "utf-8-validate": "^5.0.9"
   },
   "devDependencies": {
-    "@types/node": "^18.7.13",
-    "dotenv": "^16.0.1",
-    "eslint": "^8.22.0",
+    "@types/node": "^18.7.18",
+    "dotenv": "^16.0.2",
+    "eslint": "^8.23.1",
     "eslint-plugin-only-warn": "^1.0.3",
-    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "nodemon": "^2.0.19",
     "prettier": "^2.7.1",
-    "prisma": "^4.2.1",
+    "prisma": "^4.3.1",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.2"
+    "typescript": "^4.8.3"
   },
   "engines": {
     "node": ">=16.0.0",
