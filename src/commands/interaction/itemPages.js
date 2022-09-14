@@ -3,7 +3,8 @@ import {
   bold,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder} from 'discord.js';
+  EmbedBuilder
+} from 'discord.js';
 
 import {db} from '../../db.js';
 import {title} from '../../util';

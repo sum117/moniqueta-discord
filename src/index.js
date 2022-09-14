@@ -258,23 +258,23 @@ moniqueta.login(token);
 //  channelId = '',
 //  messageId = '',
 //  actionRow = 0,
- // customId = '',
- // placeHolder = '',
- // options = [{}]
+// customId = '',
+// placeHolder = '',
+// options = [{}]
 // ) {
- // const message = await moniqueta.channels.cache
-   // .get(channelId)
-   // .messages.fetch(messageId);
- // const component = message.components[actionRow].setComponents(
-   // new SelectMenuBuilder()
-    //  .setCustomId(customId)
-    //  .setMaxValues(2)
-    //  .setMinValues(1)
-    //  .setPlaceholder(placeHolder)
-    //  .addOptions(options)
- // );
-  //return message.edit({
-   // content: message.content,
-    //components: [...message.components.slice(-4, 3), component]
-  //});
+// const message = await moniqueta.channels.cache
+// .get(channelId)
+// .messages.fetch(messageId);
+// const component = message.components[actionRow].setComponents(
+// new SelectMenuBuilder()
+//  .setCustomId(customId)
+//  .setMaxValues(2)
+//  .setMinValues(1)
+//  .setPlaceholder(placeHolder)
+//  .addOptions(options)
+// );
+//return message.edit({
+// content: message.content,
+//components: [...message.components.slice(-4, 3), component]
+//});
 //}
