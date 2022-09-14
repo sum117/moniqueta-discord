@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function getLastMessageId(interaction: CommandInteraction) {
-  return await prisma.user.findUnique({
+  return prisma.user.findUnique({
     where: {
       id: interaction.user.id,
     },
