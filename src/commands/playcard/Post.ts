@@ -5,21 +5,18 @@ import { CharEmbed } from '../../components';
 import { isAllowedParent, hasCharacter } from '../../guards';
 import { handleUserPost } from '../../../prisma';
 import { Util } from '../../util/Util.js';
+import { allowedRoleplayParents } from '../../resources';
 @Discord()
-export class Post {
+export class Playcard {
   @On({ event: 'messageCreate' })
-  @Guard(hasCharacter, isAllowedParent(['1016689271207383102']))
-  public async createPost([message]: ArgsOf<'messageCreate'>) {
+  @Guard(hasCharacter, isAllowedParent(allowedRoleplayParents))
+  public async post([message]: ArgsOf<'messageCreate'>) {
     const embed = await new CharEmbed(message).post();
     const reply = {} as ReplyMessageOptions;
     Util.handleAttachment(message, reply, embed);
     reply.embeds = [embed];
     const sentPostMessage = await message.channel.send(reply);
     await handleUserPost(message, sentPostMessage);
-    try {
-      await message.delete();
-    } catch {
-      return;
-    }
+    if (message.deletable) await message.delete();
   }
 }

@@ -2,14 +2,15 @@ import { Slash, SlashGroup, SlashOption, Discord } from 'discordx';
 import type { CommandInteraction } from 'discord.js';
 import { handleUserPost } from '../../../prisma';
 
-enum ErrorMessages {
+enum ErrorMessage {
   InvalidContent = 'Conteúdo inválido!',
   UnknownMessage = 'Mensagem desconhecida!',
   NotMessageAuthor = 'Você não pode deletar essa mensagem pois ela não pertence a você.',
+  CannotFetch = 'Não foi possível buscar a mensagem.',
 }
 @Discord()
 @SlashGroup('playcard')
-export class RemovePost {
+export class Playcard {
   @Slash({ name: 'remover', description: 'Deleta um post seu.' })
   async remove(
     @SlashOption({
@@ -25,12 +26,12 @@ export class RemovePost {
       /(?:https:\/\/(?:canary\.)?discord\.com\/channels\/\d+\/\d+\/)?(?<messageId>\d+)/;
     const messageToFetch = msgToDelete.match(regex)?.groups?.messageId;
     if (!messageToFetch)
-      return interaction.editReply(ErrorMessages.InvalidContent);
+      return interaction.editReply(ErrorMessage.InvalidContent);
     const fetchedMessage = await interaction.channel?.messages
       .fetch(messageToFetch)
-      .catch(() => null);
+      .catch((err) => console.log(ErrorMessage.CannotFetch + '\n' + err));
     if (!fetchedMessage)
-      return interaction.editReply(ErrorMessages.UnknownMessage);
+      return interaction.editReply(ErrorMessage.UnknownMessage);
 
     const isUserMessageAuthor = await handleUserPost(
       interaction,
@@ -38,8 +39,8 @@ export class RemovePost {
       'delete',
     );
     if (isUserMessageAuthor) {
-      await fetchedMessage.delete();
+      if (fetchedMessage.deletable) await fetchedMessage.delete();
       return interaction.editReply('Mensagem deletada.');
-    } else return interaction.editReply(ErrorMessages.NotMessageAuthor);
+    } else return interaction.editReply(ErrorMessage.NotMessageAuthor);
   }
 }
