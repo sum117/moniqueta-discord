@@ -6,6 +6,7 @@
     "rootDir": ".",
     "moduleResolution": "Node",
     "sourceMap": true,
+    "strict": true,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
