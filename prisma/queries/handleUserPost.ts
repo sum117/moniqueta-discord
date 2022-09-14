@@ -48,14 +48,14 @@ export async function handleUserPost(
           messageId: sentPostMessage.id,
         },
       });
-      const { lastMessageId } = await prisma.user.findUnique({
+      const { lastMessageId } = (await prisma.user.findUnique({
         where: {
           id: arg.user.id,
         },
         select: {
           lastMessageId: true,
         },
-      });
+      })) ?? { lastMessageId: null };
       const isLastMessage = lastMessageId === sentPostMessage.id;
       if (lastMessageId)
         await prisma.user.update({
