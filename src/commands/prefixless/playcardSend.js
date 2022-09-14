@@ -86,7 +86,6 @@ export async function execute(client, msg) {
       msg.attachments.first() ? msg.attachments.first() : undefined
     );
 
-    client.postCounter = [...client.postCounter, Date.now()];
     await msg
       .delete()
       .catch(() =>
