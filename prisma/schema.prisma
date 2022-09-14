@@ -21,6 +21,13 @@ model User {
   @@index([lastMessageId, chosenCharId])
 }
 
+model ServerComponents {
+  componentId Int    @id @default(autoincrement())
+  instance    String @unique
+  channelId   String @unique
+  messageId   String @unique
+}
+
 model ServerMessages {
   messageId String  @id @unique
   author    User?   @relation("user", fields: [authorId], references: [id])
