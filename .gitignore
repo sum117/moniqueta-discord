@@ -9,3 +9,4 @@ dbManagement.js
 queries.sql
 dbLog.yaml
 detached_zone/*
+.idea
