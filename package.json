@@ -12,6 +12,7 @@
     "start": "node build/main.js",
     "watch": "nodemon --exec ts-node-esm src/main.ts",
     "prisma": "npx prisma migrate dev --name init",
+    "studio": "npx prisma studio --port 23532",
     "update": "npx npm-check-updates -u"
   },
   "dependencies": {

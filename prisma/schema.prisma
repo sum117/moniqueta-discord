@@ -8,15 +8,14 @@ datasource db {
 }
 
 model User {
-  id        String  @id @unique
-  isEditing Boolean
+  id String @id @unique
 
-  chosenChar Char?  @relation("chosenChar")
-  chars      Char[]
-
-  chosenCharId   Int              @default(1)
+  chosenChar     Char?            @relation("chosenChar")
+  chars          Char[]
   ServerMessages ServerMessages[] @relation("user")
-  lastMessageId  String
+
+  chosenCharId  Int     @default(1)
+  lastMessageId String?
 
   @@index([lastMessageId, chosenCharId])
 }
@@ -26,22 +25,28 @@ model ServerComponents {
   instance    String @unique
   channelId   String @unique
   messageId   String @unique
+
+  @@index([channelId, messageId, instance])
 }
 
 model ServerMessages {
   messageId String  @id @unique
   author    User?   @relation("user", fields: [authorId], references: [id])
   authorId  String?
+
+  @@index([authorId])
 }
 
 model Char {
   id              Int      @id @default(autoincrement())
   name            String
+  isApproved      Boolean  @default(false)
   sum             String
   phantom         String
   personality     String
   gender          String
   appearance      String
+  ability         String
   avatar          String
   kills           Int      @default(0)
   expTotal        Int      @default(0)
@@ -51,7 +56,7 @@ model Char {
   money           Int      @default(0)
   createdAt       DateTime @default(now())
 
-  user      User       @relation(fields: [userId], references: [id])
+  author    User       @relation(fields: [authorId], references: [id])
   chosenBy  User?      @relation("chosenChar", fields: [chosenById], references: [id])
   weapons   Weapons?   @relation(fields: [weaponsId], references: [id])
   equipment Equipment? @relation(fields: [equipmentsId], references: [id])
@@ -59,7 +64,7 @@ model Char {
   skills    Skills?    @relation(fields: [skillsId], references: [id])
   title     Title?     @relation(fields: [titleId], references: [id])
 
-  userId       String
+  authorId     String
   chosenById   String? @unique
   weaponsId    Int?    @unique
   equipmentsId Int?    @unique
@@ -67,7 +72,7 @@ model Char {
   skillsId     Int?    @unique
   titleId      Int?
 
-  @@index([userId, chosenById, titleId, skillsId, backpackId, equipmentsId, weaponsId])
+  @@index([authorId, chosenById, titleId, skillsId, backpackId, equipmentsId, weaponsId])
 }
 
 model Title {

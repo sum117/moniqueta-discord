@@ -1,5 +1,6 @@
-import { CommandInteraction } from 'discord.js';
-import { PrismaClient } from '@prisma/client';
+import {CommandInteraction} from "discord.js";
+import {PrismaClient} from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 export async function getLastMessageId(interaction: CommandInteraction) {

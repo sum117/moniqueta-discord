@@ -1,13 +1,14 @@
-import { CommandInteraction, Message } from 'discord.js';
-import { PrismaClient } from '@prisma/client';
+import {CommandInteraction, Message} from "discord.js";
+import {PrismaClient} from "@prisma/client";
+
 const prisma = new PrismaClient();
 
 export async function handleUserPost(
-  arg: Message | CommandInteraction,
-  sentPostMessage: Message,
-  method: 'create' | 'delete' = 'create',
+    arg: Message | CommandInteraction,
+    sentPostMessage: Message,
+    method: "create" | "delete" = "create"
 ) {
-  if (method === 'create' && arg instanceof Message) {
+  if (method === "create" && arg instanceof Message) {
     await prisma.user.update({
       where: {
         id: arg.author.id,
@@ -36,7 +37,7 @@ export async function handleUserPost(
         authorId: arg.author.id,
       },
     });
-  } else if (method === 'delete' && arg instanceof CommandInteraction) {
+  } else if (method === "delete" && arg instanceof CommandInteraction) {
     const toDelete = await prisma.serverMessages.findUnique({
       where: {
         messageId: sentPostMessage.id,
