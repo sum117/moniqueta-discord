@@ -4,44 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6cee5f5f-3f6b-4a3c-a5bb-f69bc469e632" name="Changes" comment="fix bug">
-      <change afterPath="$PROJECT_DIR$/src/components/CharSheet/CharSheetEnums.ts" afterDir="false" />
+    <list default="true" id="6cee5f5f-3f6b-4a3c-a5bb-f69bc469e632" name="Changes" comment="added charSheet component and its enums&#10;misc: prettier format">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/eslintrc.yml" beforeDir="false" afterPath="$PROJECT_DIR$/eslintrc.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prettierrc.yml" beforeDir="false" afterPath="$PROJECT_DIR$/prettierrc.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/dev.db" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/queries/getChar.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/queries/getChar.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/queries/getLastMessageId.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/queries/getLastMessageId.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/queries/handleServerComponent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/queries/handleServerComponent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/queries/handleUserPost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/queries/handleUserPost.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/schema.prisma" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/admin/generateCharSheet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/admin/generateCharSheet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/choices.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/choices.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/context.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/context.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/menu.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/simple command.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/simple command.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/slash + button.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/slash + button.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/slash group.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/slash group.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/native-commands/slashes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/native-commands/slashes.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/playcard/Edit.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/playcard/Edit.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/playcard/Post.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/playcard/Post.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/commands/playcard/RemovePost.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/commands/playcard/RemovePost.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CharEmbed.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CharEmbed.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/CharSheet.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/CharSheet/CharSheet.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guards/hasCharacter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guards/hasCharacter.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guards/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guards/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guards/isAdmin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guards/isAdmin.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guards/isAllowedParent.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guards/isAllowedParent.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/guards/isNotBot.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/guards/isNotBot.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/json/allowedRoleplayParents.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/json/allowedRoleplayParents.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/json/levels.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/json/levels.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/json/phantomAssets.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/json/phantomAssets.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/resources/json/phrases.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/resources/json/phrases.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/util/Util.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/util/Util.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,33 +58,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/jvcal/Documents/code/Moniqueta-Discord.js&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;C:\\Users\\jvcal\\Documents\\code\\Moniqueta-Discord.js\\node_modules\\prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/home/sum117/IdeaProjects/moniqueta-discord/node_modules/typescript/lib&quot;,
-    &quot;ts.rename.search.for.dynamic.occurrences&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/jvcal/Documents/code/Moniqueta-Discord.js",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "prettierjs.PrettierConfiguration.Package": "C:\\Users\\jvcal\\Documents\\code\\Moniqueta-Discord.js\\node_modules\\prettier",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "ts.external.directory.path": "/home/sum117/IdeaProjects/moniqueta-discord/node_modules/typescript/lib",
+    "ts.rename.search.for.dynamic.occurrences": "true",
+    "typescript.add.unambiguous.imports.on.the.fly": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/util" />
+      <recent name="$PROJECT_DIR$/prisma/queries/Char" />
       <recent name="$PROJECT_DIR$/src/commands/playcard/CharModal" />
       <recent name="$PROJECT_DIR$/src/commands/playcard" />
       <recent name="$PROJECT_DIR$/src/components" />
-      <recent name="$PROJECT_DIR$/src/CharSheet/" />
-      <recent name="$PROJECT_DIR$" />
     </key>
     <key name="es6.move.members.recent.items">
+      <recent name="$PROJECT_DIR$/src/util/ErrorMessage.ts" />
+      <recent name="$PROJECT_DIR$/src/util/errorMessage.ts" />
+      <recent name="$PROJECT_DIR$/src/commands/playcard/util/ErrorMessage.ts" />
+      <recent name="$PROJECT_DIR$/src/commands/playcard/ErrorMessage.ts" />
       <recent name="$PROJECT_DIR$/src/components/CharSheetEnums.ts" />
     </key>
   </component>
@@ -157,8 +127,8 @@
     <recent_temporary>
       <list>
         <item itemvalue="npm.watch" />
-        <item itemvalue="npm.prisma" />
         <item itemvalue="npm.studio" />
+        <item itemvalue="npm.prisma" />
       </list>
     </recent_temporary>
   </component>
@@ -188,7 +158,12 @@
       <workItem from="1663582285935" duration="89000" />
       <workItem from="1663583127503" duration="5663000" />
       <workItem from="1663589300061" duration="4592000" />
-      <workItem from="1663596450012" duration="5943000" />
+      <workItem from="1663596450012" duration="6483000" />
+      <workItem from="1663616276718" duration="911000" />
+      <workItem from="1663618524004" duration="11000" />
+      <workItem from="1663618550882" duration="8000" />
+      <workItem from="1663664863657" duration="16445000" />
+      <workItem from="1663764355563" duration="4805000" />
     </task>
     <task id="LOCAL-00001" summary="Front-end progress">
       <created>1661802454123</created>
@@ -225,7 +200,42 @@
       <option name="project" value="LOCAL" />
       <updated>1663608147379</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="added charSheet component and its enums&#10;misc: prettier format">
+      <created>1663608290078</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1663608290078</updated>
+    </task>
+    <task id="LOCAL-00007" summary="added essential prisma queries">
+      <created>1663768899318</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1663768899318</updated>
+    </task>
+    <task id="LOCAL-00008" summary="changed query name and organized rest with folder">
+      <created>1663768979040</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1663768979040</updated>
+    </task>
+    <task id="LOCAL-00009" summary="moved error messages to their own file &amp; misc">
+      <created>1663769098496</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1663769098496</updated>
+    </task>
+    <task id="LOCAL-00010" summary="made accept, deny and discuss sheet with their respective db entries">
+      <created>1663769144285</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1663769144285</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,12 +268,19 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <MESSAGE value="Front-end progress" />
     <MESSAGE value="fix bug" />
     <MESSAGE value="added modal receive and send to CharModal&#10;TODO: handle" />
-    <option name="LAST_COMMIT_MESSAGE" value="added modal receive and send to CharModal&#10;TODO: handle" />
+    <MESSAGE value="added charSheet component and its enums&#10;misc: prettier format" />
+    <MESSAGE value="added essential prisma queries" />
+    <MESSAGE value="changed query name and organized rest with folder" />
+    <MESSAGE value="moved error messages to their own file &amp; misc" />
+    <MESSAGE value="made accept, deny and discuss sheet with their respective db entries" />
+    <option name="LAST_COMMIT_MESSAGE" value="made accept, deny and discuss sheet with their respective db entries" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="REFORMAT_BEFORE_PROJECT_COMMIT" value="true" />
+    <option name="REARRANGE_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
