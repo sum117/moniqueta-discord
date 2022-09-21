@@ -17,7 +17,6 @@ import {HandleServerComponent} from "../../../prisma";
 import {Util} from "../../util/Util";
 import {
     ComponentMessage,
-    ErrorMessage,
     GenderOptionEmoji,
     GenderOptionLabel,
     GenderOptionValue,
@@ -29,6 +28,7 @@ import {
     SelectorCustomId,
     SelectorPlaceholder,
 } from "./CharSheetEnums";
+import {ErrorMessage} from "../../util/ErrorMessage";
 
 export class CharSheet {
     channelId: string;

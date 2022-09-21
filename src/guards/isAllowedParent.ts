@@ -1,9 +1,6 @@
 import {CommandInteraction, Snowflake, TextChannel} from "discord.js";
 import {ArgsOf, GuardFunction} from "discordx";
-
-enum ErrorMessage {
-    NotAllowedParent = "Você não pode usar esse comando aqui!",
-}
+import {ErrorMessage} from "../util/ErrorMessage";
 
 export function isAllowedParent(channels: Snowflake[]) {
     const guard: GuardFunction<ArgsOf<"messageCreate"> | CommandInteraction> = async (arg, _client, next) => {

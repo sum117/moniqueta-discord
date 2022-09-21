@@ -1,13 +1,7 @@
 import {Discord, Slash, SlashGroup, SlashOption} from "discordx";
 import type {CommandInteraction} from "discord.js";
 import {handleUserPost} from "../../../prisma";
-
-enum ErrorMessage {
-    InvalidContent = "Conteúdo inválido!",
-    UnknownMessage = "Mensagem desconhecida!",
-    NotMessageAuthor = "Você não pode deletar essa mensagem pois ela não pertence a você.",
-    CannotFetch = "Não foi possível buscar a mensagem.",
-}
+import {ErrorMessage} from "../../util/ErrorMessage";
 
 @Discord()
 @SlashGroup("playcard")
@@ -40,7 +34,7 @@ export class Playcard {
             "delete"
         );
         if (isUserMessageAuthor) {
-            if (fetchedMessage.deletable) await fetchedMessage.delete();
+            if (fetchedMessage.deletable) await fetchedMessage.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage));
             return interaction.editReply("Mensagem deletada.");
         } else return interaction.editReply(ErrorMessage.NotMessageAuthor);
     }

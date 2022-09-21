@@ -1,6 +1,6 @@
 import type {Message} from "discord.js";
 import {EmbedBuilder} from "discord.js";
-import {getChar} from "../../prisma";
+import {getCurrentChar} from "../../prisma";
 import {sumAssets} from "../resources";
 import {Util} from "../util/Util";
 
@@ -43,7 +43,6 @@ export class CharEmbed extends EmbedBuilder {
             any: "Não Especificado",
         };
 
-        const bundleId = "f-" + Date.now();
         let embeds: EmbedBuilder[] = [];
         console.log(sumAssets[charSubmission.sum].thumbnail);
         embeds.push(
@@ -64,9 +63,7 @@ export class CharEmbed extends EmbedBuilder {
                 ])
                 .setThumbnail(sumAssets[charSubmission.sum].thumbnail)
                 .setImage(charSubmission.avatar)
-                .setFooter({
-                    text: bundleId,
-                })
+
         );
 
         for (let each of [
@@ -78,7 +75,6 @@ export class CharEmbed extends EmbedBuilder {
                 new EmbedBuilder()
                     .setDescription(each)
                     .setColor(sumAssets[charSubmission.sum].color)
-                    .setFooter({text: bundleId})
             );
         }
         return embeds;
@@ -122,7 +118,7 @@ export class CharEmbed extends EmbedBuilder {
     }
 
     private async _fetch(message = this.message) {
-        const char = await getChar(message);
+        const char = await getCurrentChar(message);
         if (char) {
             const {name, avatar, sum} = char;
             this.setTitle(name)

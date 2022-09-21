@@ -26,7 +26,7 @@ export const phantomAssets: PhantomAssets = {
     },
     vermelho: {
         color: 0xff0000,
-        emoji: "<:Vermelho:982082685835051078>",
+        emoji: "<:fantasmaVermelho:982092065989074994>",
         get emojiId() {
             return this.emoji.replace(/[<>]/, "").split(":")[2];
         },
@@ -34,7 +34,7 @@ export const phantomAssets: PhantomAssets = {
     },
     ceifador: {
         color: 0x000000,
-        emoji: "<:Ceifador:982082685889564772>",
+        emoji: "<:ceifador:1007356733812903986>",
         get emojiId() {
             return this.emoji.replace(/[<>]/, "").split(":")[2];
         },
@@ -42,7 +42,7 @@ export const phantomAssets: PhantomAssets = {
     },
     tempo: {
         color: 0x00ffff,
-        emoji: "<:Tempo:982078436166221874>",
+        emoji: "<:tempo:1009528558982549524>",
         get emojiId() {
             return this.emoji.replace(/[<>]/, "").split(":")[2];
         },

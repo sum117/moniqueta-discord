@@ -1,11 +1,8 @@
-import {CommandInteraction, Message} from "discord.js";
+import {ButtonInteraction, CommandInteraction, Message} from "discord.js";
 import {ArgsOf, GuardFunction} from "discordx";
+import {ErrorMessage} from "../util/ErrorMessage";
 
-enum ErrorMessage {
-    NotAdmin = "Você não tem permissão para usar esse comando!",
-}
-
-export const isAdmin: GuardFunction<ArgsOf<"messageCreate"> | CommandInteraction> = async (arg, _client, next) => {
+export const isAdmin: GuardFunction<ArgsOf<"messageCreate"> | CommandInteraction | ButtonInteraction> = async (arg, _client, next) => {
     const argObj = arg instanceof Array ? arg[0] : arg;
     const hasAdminPrivileges =
         argObj instanceof Message

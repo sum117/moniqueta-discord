@@ -6,10 +6,7 @@ import {
     InteractionResponse,
     SelectMenuInteraction,
 } from "discord.js";
-
-enum ErrorMessage {
-    NotEnoughOptionsSelected = "Você não selecionou todos os campos necessários. Reinicie seu Discord para resselecionar os valores ou simplesmente escolha outros caso já hajam opções selecionadas.",
-}
+import {ErrorMessage} from "../../../util/ErrorMessage";
 
 export const cache = new Collection<string,
     { chosenSum?: string; chosenPhantom?: string; chosenGender?: string }>();

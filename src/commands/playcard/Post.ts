@@ -1,7 +1,7 @@
 import type {ArgsOf} from "discordx";
 import {Discord, Guard, On} from "discordx";
 import {ReplyMessageOptions} from "discord.js";
-import {CharEmbed} from "../../components";
+import {CharEmbed, ErrorMessage} from "../../components";
 import {hasCharacter, isAllowedParent} from "../../guards";
 import {handleUserPost} from "../../../prisma";
 import {Util} from "../../util/Util.js";
@@ -18,6 +18,6 @@ export class Playcard {
         reply.embeds = [embed];
         const sentPostMessage = await message.channel.send(reply);
         await handleUserPost(message, sentPostMessage);
-        if (message.deletable) await message.delete();
+        if (message.deletable) await message.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage));
     }
 }

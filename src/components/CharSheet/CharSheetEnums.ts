@@ -56,13 +56,6 @@ export enum GenderOptionEmoji {
     NotSpecified = "👤",
 }
 
-export enum ErrorMessage {
-    BrokenOption = "Opção inválida encontrada na hora de gerar os seletores somáticos.",
-    SheetAlreadyExists = "Já existe um criador de fichas nesse canal. Para criar outro, primeiro exclua o anterior, administrador.",
-    InvalidChannel = "Um canal inválido foi fornecido para o criador de seletores somáticos.",
-    DatabaseError = "Um erro ocorreu ao tentar salvar o criador de seletores somáticos no banco de dados. Contate um administrador",
-}
-
 export enum Modal {
     CustomId = "characterModal",
     Title = "Ficha de Personagem",
