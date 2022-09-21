@@ -10,14 +10,27 @@ datasource db {
 model User {
   id String @id @unique
 
-  chosenChar     Char?            @relation("chosenChar")
-  chars          Char[]
-  ServerMessages ServerMessages[] @relation("user")
-
-  chosenCharId  Int     @default(1)
-  lastMessageId String?
+  chosenChar         Char?            @relation("chosenChar")
+  chars              Char[]
+  serverMessages     ServerMessages[] @relation("user")
+  pendingSubmissions CharSubmission[] @relation("userSubmission")
+  chosenCharId       Int              @default(1)
+  lastMessageId      String?
 
   @@index([lastMessageId, chosenCharId])
+}
+
+model CharSubmission {
+  id Int @id @default(autoincrement())
+
+  charId          Int
+  messageIdBundle String
+  authorId        String
+
+  author User @relation("userSubmission", fields: [authorId], references: [id])
+  Char   Char @relation(fields: [charId], references: [id])
+
+  @@index([authorId, charId])
 }
 
 model ServerComponents {
@@ -64,13 +77,14 @@ model Char {
   skills    Skills?    @relation(fields: [skillsId], references: [id])
   title     Title?     @relation(fields: [titleId], references: [id])
 
-  authorId     String
-  chosenById   String? @unique
-  weaponsId    Int?    @unique
-  equipmentsId Int?    @unique
-  backpackId   Int?    @unique
-  skillsId     Int?    @unique
-  titleId      Int?
+  authorId       String
+  chosenById     String?          @unique
+  weaponsId      Int?             @unique
+  equipmentsId   Int?             @unique
+  backpackId     Int?             @unique
+  skillsId       Int?             @unique
+  titleId        Int?
+  charSubmission CharSubmission[]
 
   @@index([authorId, chosenById, titleId, skillsId, backpackId, equipmentsId, weaponsId])
 }
