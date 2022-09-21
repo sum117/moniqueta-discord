@@ -4,7 +4,7 @@ import {PrismaClient} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getChar(arg: Message | CommandInteraction) {
+export async function getCurrentChar(arg: Message | CommandInteraction) {
   return prisma.char.findUnique({
     where: {
       chosenById:
