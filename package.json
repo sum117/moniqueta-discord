@@ -17,11 +17,11 @@
   },
   "dependencies": {
     "@discordx/importer": "^1.1.10",
-    "@discordx/pagination": "^3.0.0",
+    "@discordx/pagination": "^3.2.0",
     "@prisma/client": "^4.3.1",
     "bufferutil": "^4.0.6",
-    "discord.js": "^14.3.0",
-    "discordx": "^11.2.0",
+    "discord.js": "^14.4.0",
+    "discordx": "^11.3.0",
     "reflect-metadata": "^0.1.13",
     "utf-8-validate": "^5.0.9"
   },
@@ -32,7 +32,7 @@
     "eslint-plugin-only-warn": "^1.0.3",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint-plugin-unused-imports": "^2.0.0",
-    "nodemon": "^2.0.19",
+    "nodemon": "^2.0.20",
     "prettier": "^2.7.1",
     "prisma": "^4.3.1",
     "ts-node": "^10.9.1",

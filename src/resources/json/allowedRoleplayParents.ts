@@ -1,1 +1,1 @@
-export const allowedRoleplayParents = ["1016689271207383102"];
+export const allowedRoleplayParents = ['1016689271207383102'];
