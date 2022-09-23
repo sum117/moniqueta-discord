@@ -1,4 +1,4 @@
-import {CommandInteraction, EmbedBuilder, ReplyMessageOptions} from 'discord.js';
+import {CommandInteraction, EmbedBuilder, BaseMessageOptions, ApplicationCommandOptionType} from 'discord.js';
 import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
 import {getLastMessageId} from '../../../prisma';
 import {Util} from '../../util/Util.js';
@@ -19,6 +19,7 @@ export class Playcard {
     @SlashOption({
       description: 'Novo conteúdo do post.',
       name: 'conteudo',
+      type: ApplicationCommandOptionType.String,
       required: true
     })
     newContent: string,
@@ -29,7 +30,7 @@ export class Playcard {
       const lastMessage = await this._getLastContent(interaction);
       if (!lastMessage) return;
       const newEmbed = EmbedBuilder.from(lastMessage.embed);
-      const reply = {} as ReplyMessageOptions;
+      const reply = {} as BaseMessageOptions;
       Util.handleAttachment(lastMessage.message, reply, newEmbed);
       newEmbed.setDescription(newContent);
       await lastMessage.message.edit({embeds: [newEmbed]});

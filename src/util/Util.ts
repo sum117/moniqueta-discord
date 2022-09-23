@@ -1,9 +1,9 @@
-import {EmbedBuilder, Message, ReplyMessageOptions, userMention} from 'discord.js';
+import {EmbedBuilder, Message, BaseMessageOptions, userMention} from 'discord.js';
 
 export class Util {
   public static handleAttachment(
     message: Message,
-    reply: ReplyMessageOptions,
+    reply: BaseMessageOptions,
     embed: EmbedBuilder
   ) {
     const attachment = message.attachments.first();

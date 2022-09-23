@@ -1,5 +1,5 @@
 import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
-import type {CommandInteraction} from 'discord.js';
+import {ApplicationCommandOptionType, CommandInteraction} from 'discord.js';
 import {handleUserPost} from '../../../prisma';
 import {ErrorMessage} from '../../util/ErrorMessage';
 
@@ -10,6 +10,7 @@ export class Playcard {
   async remove(
     @SlashOption({
       description: 'Mensagem a ser deletada.',
+      type: ApplicationCommandOptionType.String,
       name: 'link_ou_id',
       required: true
     })
