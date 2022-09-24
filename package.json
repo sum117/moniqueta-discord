@@ -20,6 +20,7 @@
     "@discordx/pagination": "^3.2.0",
     "@prisma/client": "^4.3.1",
     "bufferutil": "^4.0.6",
+    "canvas": "^2.10.1",
     "discord.js": "^14.4.0",
     "discordx": "^11.3.0",
     "reflect-metadata": "^0.1.13",

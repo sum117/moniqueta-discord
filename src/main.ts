@@ -1,15 +1,15 @@
-import 'reflect-metadata';
+import "reflect-metadata";
 
-import {dirname, importx} from '@discordx/importer';
-import type {Interaction, Message} from 'discord.js';
-import {IntentsBitField} from 'discord.js';
-import {Client} from 'discordx';
-import {isNotBot} from './guards';
-import 'dotenv/config';
+import { dirname, importx } from "@discordx/importer";
+import type { Interaction, Message } from "discord.js";
+import { IntentsBitField } from "discord.js";
+import { Client } from "discordx";
+import { isNotBot } from "./guards";
+import "dotenv/config";
 
 export const bot = new Client({
   // To only use global commands (use @Guild for specific guild command), comment this line
-  botGuilds: [client => client.guilds.cache.map(guild => guild.id)],
+  botGuilds: [(client) => client.guilds.cache.map((guild) => guild.id)],
   guards: [isNotBot],
   // Discord intents
   intents: [
@@ -18,7 +18,7 @@ export const bot = new Client({
     IntentsBitField.Flags.GuildMessages,
     IntentsBitField.Flags.MessageContent,
     IntentsBitField.Flags.GuildMessageReactions,
-    IntentsBitField.Flags.GuildVoiceStates
+    IntentsBitField.Flags.GuildVoiceStates,
   ],
 
   // Debug logs are disabled in silent mode
@@ -26,11 +26,11 @@ export const bot = new Client({
 
   // Configuration for @SimpleCommand
   simpleCommand: {
-    prefix: '!'
-  }
+    prefix: "!",
+  },
 });
 
-bot.once('ready', async () => {
+bot.once("ready", async () => {
   // Make sure all guilds are cached
   await bot.guilds.fetch();
 
@@ -45,10 +45,10 @@ bot.once('ready', async () => {
   //    ...bot.guilds.cache.map((g) => g.id)
   //  );
 
-  console.log('Bot started');
+  console.log("Bot started");
 });
 
-bot.on('interactionCreate', (interaction: Interaction) => {
+bot.on("interactionCreate", (interaction: Interaction) => {
   if (interaction.isModalSubmit()) {
     bot.executeInteraction(interaction);
     return;
@@ -56,7 +56,7 @@ bot.on('interactionCreate', (interaction: Interaction) => {
   bot.executeInteraction(interaction);
 });
 
-bot.on('messageCreate', (message: Message) => {
+bot.on("messageCreate", (message: Message) => {
   bot.executeCommand(message);
 });
 
@@ -70,7 +70,7 @@ async function run() {
 
   // Let's start the bot
   if (!process.env.BOT_TOKEN) {
-    throw Error('Could not find BOT_TOKEN in your environment');
+    throw Error("Could not find BOT_TOKEN in your environment");
   }
 
   // Log in with your bot token

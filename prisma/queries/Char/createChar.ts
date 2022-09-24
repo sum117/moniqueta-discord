@@ -1,4 +1,4 @@
-import {PrismaClient} from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -17,14 +17,15 @@ interface NewCharacterProps {
 export async function createChar(newCharacter: NewCharacterProps) {
   try {
     const user = await prisma.user.findUnique({
-      where: {id: newCharacter.authorId}
+      where: { id: newCharacter.authorId },
     });
-    if (!user) await prisma.user.create({data: {id: newCharacter.authorId}});
+    if (!user)
+      await prisma.user.create({ data: { id: newCharacter.authorId } });
     return await prisma.char.create({
-      data: newCharacter
+      data: newCharacter,
     });
   } catch (error) {
-    console.log('Houve um erro ao salvar o personagem pendente: ' + error);
+    console.log("Houve um erro ao salvar o personagem pendente: " + error);
     return false;
   }
 }

@@ -11,6 +11,6 @@ tabWidth: 2
 trailingComma: none
 useTabs: false
 overrides:
-  - files: '*.json'
+  - files: "*.json"
     options:
       printWidth: 200
