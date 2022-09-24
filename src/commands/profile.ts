@@ -53,11 +53,11 @@ export class Profile {
   private _getRoundedCorner(
     ctx: CanvasRenderingContext2D,
     x: number,
-    width: number,
-    shoulder: number,
     y: number,
-    radius: number,
-    height: number
+    width: number,
+    height: number,
+    shoulder: number,
+    radius: number
   ) {
     ctx.beginPath();
 
