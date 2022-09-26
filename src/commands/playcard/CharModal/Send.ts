@@ -1,12 +1,12 @@
 import { ButtonComponent, Discord, SelectMenuComponent } from "discordx";
-import { CharSheet, ModalButton, SelectorCustomId } from "../../../components";
+import { CharSheet, ModalButton, SelectorCustomId } from "#components";
 import {
   ButtonInteraction,
   Collection,
   InteractionResponse,
   SelectMenuInteraction,
 } from "discord.js";
-import { ErrorMessage } from "../../../util/ErrorMessage";
+import { ErrorMessage } from "#util/ErrorMessage";
 
 export const cache = new Collection<
   string,
