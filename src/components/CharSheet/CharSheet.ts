@@ -12,9 +12,9 @@ import {
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
-import { phantomAssets, sumAssets } from "#resources";
-import { HandleServerComponent } from "#prisma";
-import { Util } from "#util/Util";
+import { phantomAssets, sumAssets } from "../../resources";
+import { HandleServerComponent } from "../../../prisma";
+import { Util } from "../../util/Util";
 import {
   ComponentMessage,
   GenderOptionEmoji,
@@ -28,7 +28,7 @@ import {
   SelectorCustomId,
   SelectorPlaceholder,
 } from "./CharSheetEnums";
-import { ErrorMessage } from "#util/ErrorMessage";
+import { ErrorMessage } from "../../util/ErrorMessage";
 
 export class CharSheet {
   channelId: string;

@@ -12,10 +12,10 @@ import {
   ErrorMessage,
   Modal,
   ModalCustomId,
-} from "#components";
+} from "../../../components";
 import { cache } from "./Send";
-import { createChar, handleCharSubmission } from "#prisma";
-import { requiredConfigChannels } from "#resources";
+import { createChar, handleCharSubmission } from "../../../../prisma";
+import { requiredConfigChannels } from "../../../resources";
 
 enum Feedback {
   CharacterFrom = "Personagem de ",

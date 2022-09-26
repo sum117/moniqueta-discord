@@ -4,15 +4,6 @@
     "module": "ESNext",
     "outDir": "build",
     "rootDir": ".",
-    "baseUrl": "./",
-    "paths": {
-      "#prisma": ["prisma/index"],
-      "#prisma/*": ["prisma/*"],
-      "#components": ["src/components/index"],
-      "#guards": ["src/guards/index"],
-      "#resources": ["src/resources/index"],
-      "#util/*": ["src/util/*"]
-    },
     "moduleResolution": "Node",
     "sourceMap": true,
     "strict": true,
@@ -25,8 +16,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "ts-node": {
-    "experimentalSpecifierResolution": "node",
-    "require": []
+    "experimentalSpecifierResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "./build"],

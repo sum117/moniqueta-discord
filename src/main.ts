@@ -7,20 +7,18 @@ import { Client } from "discordx";
 import { isNotBot } from "./guards";
 import "dotenv/config";
 
-// import { } from 'url'
-
 export const bot = new Client({
   // To only use global commands (use @Guild for specific guild command), comment this line
   botGuilds: [(client) => client.guilds.cache.map((guild) => guild.id)],
   guards: [isNotBot],
   // Discord intents
   intents: [
-    // IntentsBitField.Flags.Guilds,
-    // IntentsBitField.Flags.GuildMembers,
-    // IntentsBitField.Flags.GuildMessages,
-    // IntentsBitField.Flags.MessageContent,
-    // IntentsBitField.Flags.GuildMessageReactions,
-    // IntentsBitField.Flags.GuildVoiceStates,
+    IntentsBitField.Flags.Guilds,
+    IntentsBitField.Flags.GuildMembers,
+    IntentsBitField.Flags.GuildMessages,
+    IntentsBitField.Flags.MessageContent,
+    IntentsBitField.Flags.GuildMessageReactions,
+    IntentsBitField.Flags.GuildVoiceStates,
   ],
 
   // Debug logs are disabled in silent mode

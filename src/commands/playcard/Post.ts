@@ -1,11 +1,11 @@
 import type { ArgsOf } from "discordx";
 import { Discord, Guard, On } from "discordx";
 import { BaseMessageOptions } from "discord.js";
-import { CharEmbed, ErrorMessage } from "#components";
-import { hasCharacter, isAllowedParent } from "#guards";
-import { handleUserPost } from "#prisma";
-import { Util } from "#util/Util.js";
-import { allowedRoleplayParents } from "#resources";
+import { CharEmbed, ErrorMessage } from "../../components";
+import { hasCharacter, isAllowedParent } from "../../guards";
+import { handleUserPost } from "../../../prisma";
+import { Util } from "../../util/Util.js";
+import { allowedRoleplayParents } from "../../resources";
 
 @Discord()
 export class Playcard {

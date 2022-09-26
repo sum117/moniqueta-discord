@@ -10,7 +10,7 @@
     "build:changelog": "npx @discordx/changelog --root=src",
     "dev": "ts-node-esm src/main.ts",
     "start": "node build/main.js",
-    "watch": "nodemon --exec node --loader ./loader.js src/main.ts",
+    "watch": "nodemon --exec ts-node-esm src/main.ts",
     "prisma": "npx prisma migrate dev --name init",
     "studio": "npx prisma studio --port 23532",
     "update": "npx npm-check-updates -u"
@@ -37,7 +37,6 @@
     "prettier": "^2.7.1",
     "prisma": "^4.3.1",
     "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.1.0",
     "typescript": "^4.8.3"
   },
   "engines": {

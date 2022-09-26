@@ -1,6 +1,6 @@
 import { CommandInteraction } from "discord.js";
 import { ArgsOf, GuardFunction } from "discordx";
-import { getCurrentChar } from "#prisma";
+import { getCurrentChar } from "../../prisma";
 
 export const hasCharacter: GuardFunction<
   ArgsOf<"messageCreate"> | CommandInteraction

@@ -1,6 +1,6 @@
 import { CommandInteraction, Snowflake, TextChannel } from "discord.js";
 import { ArgsOf, GuardFunction } from "discordx";
-import { ErrorMessage } from "#util/ErrorMessage";
+import { ErrorMessage } from "../util/ErrorMessage";
 
 export function isAllowedParent(channels: Snowflake[]) {
   const guard: GuardFunction<

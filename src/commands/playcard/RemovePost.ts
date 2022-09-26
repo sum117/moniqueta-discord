@@ -1,7 +1,7 @@
 import { Discord, Slash, SlashGroup, SlashOption } from "discordx";
 import { ApplicationCommandOptionType, CommandInteraction } from "discord.js";
-import { handleUserPost } from "#prisma";
-import { ErrorMessage } from "#util/ErrorMessage";
+import { handleUserPost } from "../../../prisma";
+import { ErrorMessage } from "../../util/ErrorMessage";
 
 @Discord()
 @SlashGroup("playcard")

@@ -1,5 +1,5 @@
-import { isAdmin } from "#guards";
-import { CharSheet } from "#components";
+import { isAdmin } from "../../guards";
+import { CharSheet } from "../../components";
 import { Discord, Guard, Slash, SlashGroup } from "discordx";
 import { CommandInteraction, Message } from "discord.js";
 

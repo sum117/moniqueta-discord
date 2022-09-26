@@ -5,9 +5,9 @@ import {
   ApplicationCommandOptionType,
 } from "discord.js";
 import { Discord, Slash, SlashGroup, SlashOption } from "discordx";
-import { getLastMessageId } from "#prisma";
-import { Util } from "#util/Util.js";
-import { ErrorMessage } from "#util/ErrorMessage";
+import { getLastMessageId } from "../../../prisma";
+import { Util } from "../../util/Util.js";
+import { ErrorMessage } from "../../util/ErrorMessage";
 
 @Discord()
 @SlashGroup({
