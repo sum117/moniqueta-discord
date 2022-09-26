@@ -9,11 +9,11 @@ import {
   deleteChar,
   handleCharSubmission,
   updateChar,
-} from "../../../../prisma";
-import { isAdmin } from "../../../guards";
-import { requiredConfigChannels, sumAssets } from "../../../resources";
-import { getCharById } from "../../../../prisma/queries/Char/getCharById";
-import { ErrorMessage } from "../../../util/ErrorMessage";
+} from "#prisma";
+import { isAdmin } from "#guards";
+import { requiredConfigChannels, sumAssets } from "#resources";
+import { getCharById } from "#prisma/queries/Char/getCharById";
+import { ErrorMessage } from "#util/ErrorMessage";
 
 enum Feedback {
   DiscussMessage = "Você foi adicionado a um canal de discussão. Por favor, tenha paciência e convença o administrador a aprovar seu personagem.",

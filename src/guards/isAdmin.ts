@@ -1,6 +1,6 @@
 import { ButtonInteraction, CommandInteraction, Message } from "discord.js";
 import { ArgsOf, GuardFunction } from "discordx";
-import { ErrorMessage } from "../util/ErrorMessage";
+import { ErrorMessage } from "#util/ErrorMessage";
 
 export const isAdmin: GuardFunction<
   ArgsOf<"messageCreate"> | CommandInteraction | ButtonInteraction

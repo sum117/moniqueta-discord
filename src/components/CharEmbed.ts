@@ -1,8 +1,8 @@
 import type { Message } from "discord.js";
 import { EmbedBuilder } from "discord.js";
-import { getCurrentChar } from "../../prisma";
-import { sumAssets } from "../resources";
-import { Util } from "../util/Util";
+import { getCurrentChar } from "#prisma";
+import { sumAssets } from "#resources";
+import { Util } from "#util/Util";
 
 interface CharSubmissionProps {
   name: string;
