@@ -1,6 +1,7 @@
-export { handleUserPost } from "./queries/handleUserPost.js";
-export { getLastMessageId } from "./queries/getLastMessageId.js";
-export { HandleServerComponent } from "./queries/handleServerComponent.js";
+export { getUser } from "./queries/getUser";
+export { handleUserPost } from "./queries/handleUserPost";
+export { getLastMessageId } from "./queries/getLastMessageId";
+export { HandleServerComponent } from "./queries/handleServerComponent";
 
 export { createChar } from "./queries/Char/createChar";
 export { getCurrentChar } from "./queries/Char/getCurrentChar";
