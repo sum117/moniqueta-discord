@@ -44,7 +44,6 @@ export class CharEmbed extends EmbedBuilder {
     };
 
     let embeds: EmbedBuilder[] = [];
-    console.log(sumAssets[charSubmission.sum].thumbnail);
     embeds.push(
       new EmbedBuilder()
         .setTitle(charSubmission.name)
