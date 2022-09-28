@@ -16,8 +16,6 @@ model User {
   serverCoins        Int     @default(0)
   profileBackground  String?
   profileDescription String?
-  wordsPerMinute     Int     @default(0)
-  lettersPerPost     Int     @default(0)
   characterKills     Int     @default(0)
 
   chosenChar         Char?            @relation("chosenChar")
