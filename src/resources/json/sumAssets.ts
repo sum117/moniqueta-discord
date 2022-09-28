@@ -23,7 +23,7 @@ export const sumAssets: SumAssetsProps = {
     color: 10517508,
     emoji: "<:Austeros:982077481702027344>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -36,7 +36,7 @@ export const sumAssets: SumAssetsProps = {
     color: 550020,
     emoji: "<:Perserata:982078451513184306>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -49,7 +49,7 @@ export const sumAssets: SumAssetsProps = {
     color: 11535364,
     emoji: "<:Insanata:982078436166221874>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -62,7 +62,7 @@ export const sumAssets: SumAssetsProps = {
     color: 562180,
     emoji: "<:Equinocio:982082685889564772>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -75,7 +75,7 @@ export const sumAssets: SumAssetsProps = {
     color: 3146828,
     emoji: "<:Oscuras:982082685835051078>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -88,7 +88,7 @@ export const sumAssets: SumAssetsProps = {
     color: 15236108,
     emoji: "<:Ehrantos:982082685793087578>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -101,7 +101,7 @@ export const sumAssets: SumAssetsProps = {
     color: 328708,
     emoji: "<:Melancus:982082685801472060>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -114,7 +114,7 @@ export const sumAssets: SumAssetsProps = {
     color: 16777215,
     emoji: "<:Observata:982082685864378418>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -127,7 +127,7 @@ export const sumAssets: SumAssetsProps = {
     color: 547996,
     emoji: "<:Invidia:982082685503696967>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -140,7 +140,7 @@ export const sumAssets: SumAssetsProps = {
     color: 8355711,
     emoji: "<:subtratos:1007714304319033394>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
@@ -153,7 +153,7 @@ export const sumAssets: SumAssetsProps = {
     color: 16493758,
     emoji: "<:humanos:1009521051115466843>",
     get emojiId() {
-      return this.emoji.replace(/[<>]/g, "").split(":")[2];
+      return this.emoji.replace(/[<>]/g, "").split(":")[2].replace(/ +/g, "");
     },
     get thumbnail() {
       return (
