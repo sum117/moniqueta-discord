@@ -35,6 +35,7 @@ export async function handleUserPost(
       data: {
         messageId: sentPostMessage.id,
         authorId: arg.author.id,
+        channelId: arg.channel.id,
       },
     });
   } else if (method === "delete" && arg instanceof CommandInteraction) {
