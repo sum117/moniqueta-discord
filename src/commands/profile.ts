@@ -16,7 +16,7 @@ export class Profile {
   }
 
   private async _composeProfile(interaction: CommandInteraction) {
-    const {user} = interaction
+    const { user } = interaction;
 
     // Assets
     const userData = await getUser(user.id);
@@ -46,14 +46,23 @@ export class Profile {
       })
       .splice(0, 4);
 
-    const charAvatars = mostUsedChars.map((char) => char.avatar);
-    const charNames = mostUsedChars.map((char) => char.name);
-    const charSums = mostUsedChars.map((char) => { if (char.sum) return sumAssets[char.sum].thumbnail }) ;
-    const charPhantoms = mostUsedChars.map(
-      (char) => {
-        if (char.phantom) return phantomAssets[char.phantom].thumbnail;
-      }
+    const charAvatars = await Promise.all(
+      mostUsedChars.map((char) => {
+        if (char.avatar) return loadImage(char.avatar);
+      })
     );
+    const charSums = await Promise.all(
+      mostUsedChars.map((char) => {
+        if (char.sum) return loadImage(sumAssets[char.sum].thumbnail);
+      })
+    );
+    const charPhantoms = await Promise.all(
+      mostUsedChars.map((char) => {
+        if (char.phantom)
+          return loadImage(phantomAssets[char.phantom].thumbnail);
+      })
+    );
+    const charNames = mostUsedChars.map((char) => char.name);
 
     registerFont("src/resources/assets/Iceland-Regular.ttf", {
       family: "Iceland",
@@ -101,7 +110,7 @@ export class Profile {
       },
       userStats: {
         x: 706,
-        y: [61, 85]
+        y: [61, 85],
       },
       userDescription: {
         x: 269,
@@ -133,7 +142,12 @@ export class Profile {
       userData.serverLevel,
       userData.serverXp
     );
-    ctx.fillRect(coordinates.userExpBar.x, coordinates.userExpBar.y, expPercentage, 10);
+    ctx.fillRect(
+      coordinates.userExpBar.x,
+      coordinates.userExpBar.y,
+      expPercentage,
+      10
+    );
 
     // Levels
     ctx.fillStyle = "#fff";
@@ -171,17 +185,15 @@ export class Profile {
 
     // Last seen channel tracker
     const HandleLastSeenChannel = () => {
-      const channelId = userData.serverMessages.pop()?.channelId
+      const channelId = userData.serverMessages.pop()?.channelId;
       if (channelId) {
-        const channel = interaction.guild?.channels.cache.get(
-          channelId
-        );
+        const channel = interaction.guild?.channels.cache.get(channelId);
         if (channel) {
-          return '#' + channel.name;
+          return "#" + channel.name;
         }
       }
       return "N/A";
-    }
+    };
     const lastSeenChannel = HandleLastSeenChannel();
 
     // Rest of the trackers
@@ -197,30 +209,25 @@ export class Profile {
       ctx.fillText(
         trackers[i],
         coordinates.userCounter.x,
-        coordinates.userCounter.y[i],
+        coordinates.userCounter.y[i]
       );
     }
 
     // User Stats
-    const wordsPerMinute = Math.floor((userData.serverXp / 6) / 60);
+    const wordsPerMinute = Math.floor(userData.serverXp / 6 / 60);
     const lettersPerPost = Math.floor(userData.serverXp / 1700);
-    const stats = [
-      wordsPerMinute.toString(),
-      lettersPerPost.toString()
-    ]
+    const stats = [wordsPerMinute.toString(), lettersPerPost.toString()];
     for (let i = 0; i < stats.length; i++) {
       ctx.fillText(
         stats[i],
         coordinates.userStats.x,
-        coordinates.userStats.y[i],
+        coordinates.userStats.y[i]
       );
     }
 
     // Char related assets
-    ctx.textAlign = 'start';
+    ctx.textAlign = "start";
     for (let index = 0; index < charAvatars.length; index++) {
-      const charImage = await loadImage(charAvatars[index]);
-
       // Add character avatars corners and their images
       this._getRoundedCorner(
         ctx,
@@ -232,7 +239,7 @@ export class Profile {
         radius
       );
       ctx.drawImage(
-        charImage,
+        charAvatars[index],
         coordinates.charAvatar.x,
         coordinates.charAvatar.y[index],
         dimensions.charAvatar,
@@ -240,19 +247,17 @@ export class Profile {
       );
 
       // Add character assets
-      const charSum = await loadImage(charSums[index]);
-      const charPhantom = await loadImage(charPhantoms[index]);
 
       ctx.restore(); // This is mandatory. We need to restore the canvas to the original state after clipping. I do this one more time after the user avatar is drawn.
       ctx.drawImage(
-        charSum,
+        charSums[index],
         coordinates.charAsset.x[0],
         coordinates.charAsset.y[index],
         dimensions.charAssets,
         dimensions.charAssets
       );
       ctx.drawImage(
-        charPhantom,
+        charPhantoms[index],
         coordinates.charAsset.x[1],
         coordinates.charAsset.y[index],
         dimensions.charAssets,
@@ -342,8 +347,8 @@ export class Profile {
     ctx.arcTo(x, y, x + shoulder, y, radius);
 
     // End
-    ctx.clip();
     ctx.closePath();
+    ctx.clip();
   }
   private async _getExpPercentage(
     level: number,
