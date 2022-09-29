@@ -19,4 +19,5 @@ export enum ErrorMessage {
   NoUser = "Usuário não encontrado no banco de dados. Você talvez nem tenha um personagem.",
   NoLastMessage = "Você não possui nenhum post no canal atual, ou ele foi deletado.",
   NoLastEmbed = "O último post não possui um embed, ou ele foi deletado.",
+  NoProfileDescription = 'Nenhuma descrição definida.'
 }

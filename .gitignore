@@ -10,3 +10,4 @@ dev.db*
 build
 node_modules
 migrations
+cache
