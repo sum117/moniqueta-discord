@@ -128,4 +128,12 @@ export class Util {
     if (options.after) return fetchWithMode('top/bottom');
     return fetchWithMode('bottom/top');
   }
+  public static async hastebin(text: string) {
+    const res = await fetch('https://hastebin.com/documents', {
+      method: 'POST',
+      body: text,
+    });
+    const body = await res.json();
+    return `https://hastebin.com/${body.key}`;
+  }
 }
