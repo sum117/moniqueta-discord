@@ -14,7 +14,7 @@ import {
 import {ButtonComponent, Discord, Slash, SlashGroup, SlashOption} from 'discordx';
 
 import {getUser} from '../../../prisma';
-import { CharEmbed } from '../../components';
+import {CharEmbed} from '../../components';
 import {sumAssets} from '../../resources';
 import {ErrorMessage} from '../../util/ErrorMessage';
 import {Util} from '../../util/Util';
@@ -22,7 +22,8 @@ enum ButtonLabel {
   Start = 'Início',
   End = 'Fim',
   Next = 'Próximo',
-  Previous = 'Anterior'
+  Previous = 'Anterior',
+  Profile = 'Perfil'
 }
 @Discord()
 @SlashGroup('playcard')
@@ -43,18 +44,26 @@ export class Playcard {
     const chars = (await getUser(user.id))?.chars;
     if (!chars) return interaction.reply(ErrorMessage.CharDatabaseError);
     const pages = await Promise.all(
-      chars.map(async char =>
-        loadImage(char.avatar).then(image => {
+      chars.map(async (char, index, chars) =>
+        loadImage(char.avatar).then(async (image: Image) => {
           const sumColor = sumAssets[char.sum].color;
 
           const canvas = this._getListItemImage(image, sumColor);
-
+          // Separate ten names per page
+          const names = chars.map(arrayChar => {
+            if (char.name === arrayChar.name) return `**${arrayChar.name}**`;
+            return arrayChar.name;
+          });
+          const namesPerPage = 10;
+          const page = Math.floor(index / namesPerPage);
+          const namesOnPage = names.slice(page * namesPerPage, page * namesPerPage + namesPerPage);
           const pageEmbed = new EmbedBuilder()
             .setTitle(char.name)
             .setAuthor({
               name: user.username,
               iconURL: user.displayAvatarURL({size: 128})
             })
+            .setDescription(namesOnPage.join('\n'))
             .setColor(sumColor)
             .setImage('attachment://char.png')
             .setTimestamp(char.createdAt);
@@ -67,16 +76,16 @@ export class Playcard {
                 }
               ],
               embeds: [pageEmbed],
-              components: [new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-                [
+              components: [
+                new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
                   new ButtonBuilder({
                     customId: `char_profile_${char.id}`,
-                    label: "Perfil",
+                    label: ButtonLabel.Profile,
                     style: ButtonStyle.Primary,
-                    emoji: "👤"
-                  }),
-                ]
-              ),]
+                    emoji: '👤'
+                  })
+                ])
+              ]
             };
           });
         })
@@ -99,17 +108,19 @@ export class Playcard {
       previous: {
         label: ButtonLabel.Previous,
         style: ButtonStyle.Primary
+      },
+      onTimeout: () => {
+        interaction.deleteReply();
       }
     });
     await pagination.send();
   }
 
-  @ButtonComponent({ id: /char_profile_.+/ })
+  @ButtonComponent({id: /char_profile_.+/})
   async charProfile(interaction: ButtonInteraction) {
     const charId = interaction.customId.split('_')[2];
-    console.log(charId)
-    const embed = await new CharEmbed(interaction).profile(false, Number(charId))
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    const embed = await new CharEmbed(interaction).profile(false, Number(charId));
+    await interaction.reply({embeds: [embed], ephemeral: true});
   }
   private _getListItemImage(image: Image, color: number) {
     const canvas = createCanvas(225, 350);
