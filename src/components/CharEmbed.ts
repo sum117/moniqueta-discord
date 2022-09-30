@@ -1,5 +1,4 @@
-import type {Message} from 'discord.js';
-import {EmbedBuilder} from 'discord.js';
+import {CommandInteraction, EmbedBuilder,Message} from 'discord.js';
 
 import {getCurrentChar} from '../../prisma';
 import {sumAssets} from '../resources';
@@ -23,17 +22,18 @@ enum FieldNames {
 }
 
 export class CharEmbed extends EmbedBuilder {
-  message: Message;
+  interaction: Message | CommandInteraction;
 
-  constructor(message: Message) {
+  constructor(interaction: Message | CommandInteraction) {
+    const user = interaction instanceof Message ? interaction.author : interaction.user;
     super({
       footer: {
-        text: `ID: ${message.author.username}`,
-        iconURL: message.author.displayAvatarURL({size: 128})
+        text: `ID: ${user.username}`,
+        iconURL: user.displayAvatarURL({size: 128})
       }
     });
 
-    this.message = message;
+    this.interaction = interaction;
   }
 
   public static submission(charSubmission: CharSubmissionProps) {
@@ -79,14 +79,20 @@ export class CharEmbed extends EmbedBuilder {
 
   public async profile() {
     const char = await this._fetch();
+    const getHyperlinkOnExceed = (text: string, maxLength = 1024) => {
+      if (text.length > maxLength) {
+        return  `${text.slice(0,924)} [Clique aqui para ver o restante!](${Util.hastebin(text)})`;
+      }
+      return text;
+    };
     this.setTitle(`Exibindo perfil de ${char?.name}`).addFields(
       {
         name: 'Personalidade',
-        value: char?.personality.slice(0, 1024) ?? 'Valor Ausente'
+        value: getHyperlinkOnExceed(char?.personality ?? 'Valor Ausente')
       },
       {
         name: 'Aparência',
-        value: char?.appearance.slice(0, 1024) ?? 'Valor Ausente'
+        value: getHyperlinkOnExceed(char?.appearance ?? 'Valor Ausente')
       },
       {
         name: 'Level',
@@ -108,13 +114,14 @@ export class CharEmbed extends EmbedBuilder {
   }
 
   public async post() {
+    if (!(this.interaction instanceof Message)) return;
     await this._fetch();
-    if (this.message.content.length < 1) return this;
-    this.setDescription(this.message.content);
+    if (this.interaction.content.length < 1) return this;
+    this.setDescription(this.interaction.content);
     return this;
   }
 
-  private async _fetch(message = this.message) {
+  private async _fetch(message = this.interaction) {
     const char = await getCurrentChar(message);
     if (char) {
       const {name, avatar, sum} = char;
