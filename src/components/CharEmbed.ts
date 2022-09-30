@@ -1,6 +1,6 @@
-import {CommandInteraction, EmbedBuilder,Message} from 'discord.js';
+import {ButtonInteraction, CommandInteraction, EmbedBuilder, Message, User} from 'discord.js';
 
-import {getCurrentChar} from '../../prisma';
+import {getCurrentChar, getUser} from '../../prisma';
 import {sumAssets} from '../resources';
 import {Util} from '../util/Util';
 
@@ -22,9 +22,9 @@ enum FieldNames {
 }
 
 export class CharEmbed extends EmbedBuilder {
-  interaction: Message | CommandInteraction;
-
-  constructor(interaction: Message | CommandInteraction) {
+  interaction: Message | CommandInteraction | ButtonInteraction;
+  user: User;
+  constructor(interaction: Message | CommandInteraction | ButtonInteraction) {
     const user = interaction instanceof Message ? interaction.author : interaction.user;
     super({
       footer: {
@@ -32,7 +32,7 @@ export class CharEmbed extends EmbedBuilder {
         iconURL: user.displayAvatarURL({size: 128})
       }
     });
-
+    this.user = user;
     this.interaction = interaction;
   }
 
@@ -77,11 +77,11 @@ export class CharEmbed extends EmbedBuilder {
     return embeds;
   }
 
-  public async profile() {
-    const char = await this._fetch();
+  public async profile(current = true, id?: number) {
+    const char = await this._fetch(current, id);
     const getHyperlinkOnExceed = (text: string, maxLength = 1024) => {
       if (text.length > maxLength) {
-        return  `${text.slice(0,924)} [Clique aqui para ver o restante!](${Util.hastebin(text)})`;
+        return `${text.slice(0, 924)} [Clique aqui para ver o restante!](${Util.hastebin(text)})`;
       }
       return text;
     };
@@ -121,8 +121,13 @@ export class CharEmbed extends EmbedBuilder {
     return this;
   }
 
-  private async _fetch(message = this.interaction) {
-    const char = await getCurrentChar(message);
+  private async _fetch(current = true, id?: number, interaction = this.interaction) {
+    let char = await getCurrentChar(interaction);
+    if (!current) {
+      const data = (await getUser(this.user.id))?.chars.find(char => char.id === id);
+      if (!data) return;
+      char = data;
+    }
     if (char) {
       const {name, avatar, sum} = char;
       this.setTitle(name)

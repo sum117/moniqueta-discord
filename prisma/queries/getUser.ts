@@ -8,7 +8,15 @@ export function getUser(id: string) {
       id: id
     },
     include: {
-      chars: true,
+      chars: {
+        include: {
+          equipment: true,
+          skills: true,
+          backpack: true,
+          title: true,
+          weapons: true
+        }
+      },
       serverMessages: true
     }
   });

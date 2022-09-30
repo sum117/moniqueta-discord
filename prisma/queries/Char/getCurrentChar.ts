@@ -1,13 +1,13 @@
 import {PrismaClient} from '@prisma/client';
-import type {Message} from 'discord.js';
-import {CommandInteraction} from 'discord.js';
+import {ButtonInteraction,CommandInteraction, Message} from 'discord.js';
 
 const prisma = new PrismaClient();
 
-export async function getCurrentChar(arg: Message | CommandInteraction) {
+export async function getCurrentChar(arg: Message | CommandInteraction | ButtonInteraction) {
   return prisma.char.findUnique({
     where: {
-      chosenById: arg instanceof CommandInteraction ? arg.user.id : arg.author.id
+      chosenById: arg instanceof CommandInteraction || arg instanceof ButtonInteraction ?
+        arg.user.id : arg.author.id
     },
     include: {
       equipment: true,
