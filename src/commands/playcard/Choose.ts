@@ -1,5 +1,5 @@
 import { ApplicationCommandOptionType, AutocompleteInteraction, CommandInteraction } from "discord.js";
-import { Discord, Slash, SlashOption } from "discordx";
+import { Discord, Slash, SlashGroup, SlashOption } from "discordx";
 
 import { getUser, setCurrentChar } from "../../../prisma";
 import { CharEmbed } from "../../components";
@@ -9,6 +9,7 @@ enum Feedback {
     Success = "Você escolheu o(a) personagem com sucesso: ",
 }
 @Discord()
+@SlashGroup("playcard")
 export class Playcard {
     @Slash({ name: 'escolher', description: 'Escolha um personagem para jogar' })
     public async choose(@SlashOption({
