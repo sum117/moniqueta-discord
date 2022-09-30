@@ -12,8 +12,10 @@ import {
   TextInputBuilder,
   TextInputStyle
 } from 'discord.js';
-import {phantomAssets, sumAssets} from '../../resources';
+
 import {HandleServerComponent} from '../../../prisma';
+import {phantomAssets, sumAssets} from '../../resources';
+import {ErrorMessage} from '../../util/ErrorMessage';
 import {Util} from '../../util/Util';
 import {
   ComponentMessage,
@@ -28,7 +30,6 @@ import {
   SelectorCustomId,
   SelectorPlaceholder
 } from './CharSheetEnums';
-import {ErrorMessage} from '../../util/ErrorMessage';
 
 export class CharSheet {
   channelId: string;
@@ -181,7 +182,7 @@ export class CharSheet {
         .setLabel(ModalButton.Open)
         .setStyle(ButtonStyle.Primary)
     );
-    let row = selectors.map(selector => new ActionRowBuilder().addComponents(selector));
+    const row = selectors.map(selector => new ActionRowBuilder().addComponents(selector));
     row.push(modalBtn);
     return row as ActionRowBuilder<MessageActionRowComponentBuilder>[];
   }

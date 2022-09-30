@@ -1,5 +1,6 @@
 import {ApplicationCommandOptionType, Collection, CommandInteraction, Snowflake} from 'discord.js';
 import {Discord, Slash, SlashOption} from 'discordx';
+
 import {Util} from '../util/Util';
 
 @Discord()
@@ -15,7 +16,7 @@ export class Tools {
       description: 'Limite de mensagens a serem salvas',
       required: false
     })
-    limit: number = 1000,
+    limit = 1000,
     @SlashOption({
       name: 'depois_da_mensagem',
       type: ApplicationCommandOptionType.String,

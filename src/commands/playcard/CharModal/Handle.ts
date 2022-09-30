@@ -1,9 +1,10 @@
-import {ButtonComponent, Discord, Guard} from 'discordx';
 import {ButtonInteraction, EmbedBuilder, PermissionsBitField, userMention} from 'discord.js';
+import {ButtonComponent, Discord, Guard} from 'discordx';
+
 import {deleteChar, handleCharSubmission, updateChar} from '../../../../prisma';
+import {getCharById} from '../../../../prisma/queries/Char/getCharById';
 import {isAdmin} from '../../../guards';
 import {requiredConfigChannels, sumAssets} from '../../../resources';
-import {getCharById} from '../../../../prisma/queries/Char/getCharById';
 import {ErrorMessage} from '../../../util/ErrorMessage';
 
 enum Feedback {
@@ -17,7 +18,6 @@ enum Feedback {
 export class CharModal {
   @ButtonComponent({id: /char_accept_.+/})
   async accept(interaction: ButtonInteraction) {
-    const charAuthorId = interaction.customId.split('_')[2];
     const charId = parseInt(interaction.customId.split('_')[3]);
     await updateChar(charId);
     await this._acceptDenyChar(charId, interaction);
@@ -25,14 +25,12 @@ export class CharModal {
 
   @ButtonComponent({id: /char_discuss_.+/})
   async discuss(interaction: ButtonInteraction) {
-    const charAuthorId = interaction.customId.split('_')[2];
     const charId = parseInt(interaction.customId.split('_')[3]);
     await this._handleDiscussion(charId, interaction);
   }
 
   @ButtonComponent({id: /char_deny_.+/})
   async deny(interaction: ButtonInteraction) {
-    const charAuthorId = interaction.customId.split('_')[2];
     const charId = parseInt(interaction.customId.split('_')[3]);
     await this._acceptDenyChar(charId, interaction);
     await deleteChar(charId);
@@ -100,7 +98,7 @@ export class CharModal {
       const messageIdBundle = charSubmission.messageIdBundle.split(',');
       const deletedMessages = new Promise<void>(async resolve => {
         for (let i = 0; i < messageIdBundle.length; i++) {
-          let messageId = messageIdBundle[i];
+          const messageId = messageIdBundle[i];
           const message = await interaction.channel?.messages.fetch(messageId).catch(err => {
             console.log(err);
             interaction.reply(ErrorMessage.CannotFetchSheet);

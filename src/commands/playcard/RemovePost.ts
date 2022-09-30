@@ -1,5 +1,6 @@
-import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
 import {ApplicationCommandOptionType, CommandInteraction} from 'discord.js';
+import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
+
 import {handleUserPost} from '../../../prisma';
 import {ErrorMessage} from '../../util/ErrorMessage';
 

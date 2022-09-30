@@ -1,4 +1,3 @@
-import {Discord, ModalComponent} from 'discordx';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -7,10 +6,12 @@ import {
   ModalSubmitInteraction,
   userMention
 } from 'discord.js';
-import {CharEmbed, ErrorMessage, Modal, ModalCustomId} from '../../../components';
-import {cache} from './Send';
+import {Discord, ModalComponent} from 'discordx';
+
 import {createChar, handleCharSubmission} from '../../../../prisma';
+import {CharEmbed, ErrorMessage, Modal, ModalCustomId} from '../../../components';
 import {requiredConfigChannels} from '../../../resources';
+import {cache} from './Send';
 
 enum Feedback {
   CharacterFrom = 'Personagem de ',
@@ -83,11 +84,11 @@ export class CharModal {
       requiredConfigChannels.characterSubmissionChannel
     );
     if (waitingChannel && waitingChannel.isTextBased()) {
-      let messageIdBundle: string[] = [];
+      const messageIdBundle: string[] = [];
       for (let i = 0; i < embeds.length; i++) {
         const isFirst = i === 0;
         const isLast = i === embeds.length - 1;
-        let messageSent = await waitingChannel.send({
+        const messageSent = await waitingChannel.send({
           content: isFirst ? Feedback.CharacterFrom + userMention(interaction.user.id) : undefined,
           embeds: [embeds[i]],
           components: isLast ? [ActionButtons] : []

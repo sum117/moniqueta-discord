@@ -1,4 +1,3 @@
-import {Discord, Slash, SlashOption} from 'discordx';
 import {createCanvas, loadImage, registerFont} from 'canvas';
 import {
   ApplicationCommandOptionType,
@@ -6,10 +5,12 @@ import {
   CommandInteraction,
   User
 } from 'discord.js';
-import {levels, phantomAssets, sumAssets} from '../resources';
-import {getUser} from '../../prisma';
-import {ErrorMessage} from '../util/ErrorMessage';
+import {Discord, Slash, SlashOption} from 'discordx';
 import fs from 'fs/promises';
+
+import {getUser} from '../../prisma';
+import {levels, phantomAssets, sumAssets} from '../resources';
+import {ErrorMessage} from '../util/ErrorMessage';
 
 interface CustomAttachmentBuilder extends AttachmentBuilder {
   time: number;
@@ -195,7 +196,7 @@ export class Profile {
 
     // Exp Bar
     ctx.fillStyle = '#09BC8A';
-    const expPercentage = await this._getExpPercentage(userData.serverLevel, userData.serverXp);
+    const expPercentage = this._getExpPercentage(userData.serverLevel, userData.serverXp);
     ctx.fillRect(coordinates.userExpBar.x, coordinates.userExpBar.y, expPercentage, 10);
 
     // Levels
@@ -377,7 +378,7 @@ export class Profile {
     ctx.closePath();
     ctx.clip();
   }
-  private async _getExpPercentage(level: number, totalXp: number): Promise<any> {
+  private _getExpPercentage(level: number, totalXp: number): number {
     //  the current level progress to the next level
     const currentXp =
       totalXp -

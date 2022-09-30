@@ -1,11 +1,12 @@
 import 'reflect-metadata';
+import 'dotenv/config';
 
 import {dirname, importx} from '@discordx/importer';
 import type {Interaction, Message} from 'discord.js';
 import {IntentsBitField} from 'discord.js';
 import {Client} from 'discordx';
+
 import {isNotBot} from './guards';
-import 'dotenv/config';
 
 export const bot = new Client({
   // To only use global commands (use @Guild for specific guild command), comment this line

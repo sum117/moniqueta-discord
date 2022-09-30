@@ -1,6 +1,8 @@
 env:
   browser: true
   es2021: true
+ignorePatterns:
+  - scratches/
 extends:
   - eslint:recommended
   - plugin:@typescript-eslint/recommended
@@ -28,4 +30,6 @@ rules:
       args: after-used
       argsIgnorePattern: ^_
   no-unused-vars:
+    - off
+  no-async-promise-executor:
     - off

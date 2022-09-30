@@ -1,10 +1,10 @@
 import {
+  BaseMessageOptions,
+  Collection,
+  CommandInteraction,
   EmbedBuilder,
   Message,
-  BaseMessageOptions,
   userMention,
-  CommandInteraction,
-  Collection,
 } from 'discord.js';
 
 interface FetchOptions {
@@ -110,13 +110,13 @@ export class Util {
               resolve(messages);
               loadingMessage.edit(loadedText);
               break;
-            };
+            }
 
             await loadingMessage.edit(`${loadingText} ${i + 1}/${quocient}`);
             if (i === quocient - 1) {
               resolve(messages)
               loadingMessage.edit(loadedText);
-            };
+            }
           } catch (err) {
             reject(console.log(errorMessages.fetchingError + err));
             break;

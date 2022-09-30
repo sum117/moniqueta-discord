@@ -1,7 +1,8 @@
-import {isAdmin} from '../../guards';
-import {CharSheet} from '../../components';
-import {Discord, Guard, Slash, SlashGroup} from 'discordx';
 import {CommandInteraction, Message} from 'discord.js';
+import {Discord, Guard, Slash, SlashGroup} from 'discordx';
+
+import {CharSheet} from '../../components';
+import {isAdmin} from '../../guards';
 
 enum Feedback {
   Success = 'Ficha criada com Sucesso!'

@@ -1,13 +1,13 @@
 import {
-  CommandInteraction,
-  EmbedBuilder,
+  ApplicationCommandOptionType,
   BaseMessageOptions,
-  ApplicationCommandOptionType
-} from 'discord.js';
+  CommandInteraction,
+  EmbedBuilder} from 'discord.js';
 import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
+
 import {getLastMessageId} from '../../../prisma';
-import {Util} from '../../util/Util.js';
 import {ErrorMessage} from '../../util/ErrorMessage';
+import {Util} from '../../util/Util.js';
 
 @Discord()
 @SlashGroup({

@@ -1,5 +1,6 @@
 import type {Message} from 'discord.js';
 import {EmbedBuilder} from 'discord.js';
+
 import {getCurrentChar} from '../../prisma';
 import {sumAssets} from '../resources';
 import {Util} from '../util/Util';
@@ -43,7 +44,7 @@ export class CharEmbed extends EmbedBuilder {
       any: 'Não Especificado'
     };
 
-    let embeds: EmbedBuilder[] = [];
+    const embeds: EmbedBuilder[] = [];
     embeds.push(
       new EmbedBuilder()
         .setTitle(charSubmission.name)
@@ -64,7 +65,7 @@ export class CharEmbed extends EmbedBuilder {
         .setImage(charSubmission.avatar)
     );
 
-    for (let each of [
+    for (const each of [
       charSubmission.appearance,
       charSubmission.personality,
       charSubmission.ability
