@@ -2,35 +2,35 @@ import {
   CommandInteraction,
   EmbedBuilder,
   BaseMessageOptions,
-  ApplicationCommandOptionType,
-} from "discord.js";
-import { Discord, Slash, SlashGroup, SlashOption } from "discordx";
-import { getLastMessageId } from "../../../prisma";
-import { Util } from "../../util/Util.js";
-import { ErrorMessage } from "../../util/ErrorMessage";
+  ApplicationCommandOptionType
+} from 'discord.js';
+import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
+import {getLastMessageId} from '../../../prisma';
+import {Util} from '../../util/Util.js';
+import {ErrorMessage} from '../../util/ErrorMessage';
 
 @Discord()
 @SlashGroup({
-  name: "playcard",
-  description: "Grupo de comandos para o sistema de playcard.",
+  name: 'playcard',
+  description: 'Grupo de comandos para o sistema de playcard.'
 })
-@SlashGroup("playcard")
+@SlashGroup('playcard')
 export class Playcard {
   @Slash({
-    name: "editar",
-    description: "Edita o último post do Playcard.",
+    name: 'editar',
+    description: 'Edita o último post do Playcard.'
   })
   async edit(
     @SlashOption({
-      description: "Novo conteúdo do post.",
-      name: "conteudo",
+      description: 'Novo conteúdo do post.',
+      name: 'conteudo',
       type: ApplicationCommandOptionType.String,
-      required: true,
+      required: true
     })
     newContent: string,
     interaction: CommandInteraction
   ) {
-    await interaction.deferReply({ ephemeral: true });
+    await interaction.deferReply({ephemeral: true});
     try {
       const lastMessage = await this._getLastContent(interaction);
       if (!lastMessage) return;
@@ -38,9 +38,9 @@ export class Playcard {
       const reply = {} as BaseMessageOptions;
       Util.handleAttachment(lastMessage.message, reply, newEmbed);
       newEmbed.setDescription(newContent);
-      await lastMessage.message.edit({ embeds: [newEmbed] });
+      await lastMessage.message.edit({embeds: [newEmbed]});
 
-      return interaction.editReply("Post editado com sucesso!");
+      return interaction.editReply('Post editado com sucesso!');
     } catch (err) {
       return console.log(err);
     }
@@ -52,9 +52,7 @@ export class Playcard {
     const user = await getLastMessageId(interaction);
     if (!user) throw new Error(ErrorMessage.NoUser);
 
-    const lastMessage = await interaction.channel?.messages.fetch(
-      user?.lastMessageId ?? ""
-    );
+    const lastMessage = await interaction.channel?.messages.fetch(user?.lastMessageId ?? '');
     if (!lastMessage) throw new Error(ErrorMessage.NoLastMessage);
 
     const lastEmbed = lastMessage.embeds?.[0];
@@ -63,7 +61,7 @@ export class Playcard {
     return {
       embed: lastEmbed,
       message: lastMessage,
-      content: lastMessage.embeds?.[0].description ?? null,
+      content: lastMessage.embeds?.[0].description ?? null
     };
   }
 }

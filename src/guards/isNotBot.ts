@@ -6,15 +6,15 @@ import {
   MessageReaction,
   ModalSubmitInteraction,
   SelectMenuInteraction,
-  VoiceState,
-} from "discord.js";
-import { ArgsOf, GuardFunction, SimpleCommandMessage } from "discordx";
+  VoiceState
+} from 'discord.js';
+import {ArgsOf, GuardFunction, SimpleCommandMessage} from 'discordx';
 
 // Example by @AndyClausen
 // Modified by @oceanroleplay
 
 export const isNotBot: GuardFunction<
-  | ArgsOf<"messageCreate" | "messageReactionAdd" | "voiceStateUpdate">
+  | ArgsOf<'messageCreate' | 'messageReactionAdd' | 'voiceStateUpdate'>
   | CommandInteraction
   | ContextMenuCommandInteraction
   | SelectMenuInteraction
@@ -41,7 +41,7 @@ export const isNotBot: GuardFunction<
       ? argObj.member?.user
       : argObj.message.author;
   if (!user?.bot) {
-    guardData.message = "the NotBot guard passed";
+    guardData.message = 'the NotBot guard passed';
     await next();
   }
 };

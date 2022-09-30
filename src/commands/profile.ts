@@ -1,14 +1,14 @@
-import { Discord, Slash, SlashOption } from 'discordx';
-import { createCanvas, loadImage, registerFont } from 'canvas';
+import {Discord, Slash, SlashOption} from 'discordx';
+import {createCanvas, loadImage, registerFont} from 'canvas';
 import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
   CommandInteraction,
-  User,
+  User
 } from 'discord.js';
-import { levels, phantomAssets, sumAssets } from '../resources';
-import { getUser } from '../../prisma';
-import { ErrorMessage } from '../util/ErrorMessage';
+import {levels, phantomAssets, sumAssets} from '../resources';
+import {getUser} from '../../prisma';
+import {ErrorMessage} from '../util/ErrorMessage';
 import fs from 'fs/promises';
 
 interface CustomAttachmentBuilder extends AttachmentBuilder {
@@ -23,32 +23,31 @@ interface CustomAttachmentJson {
 }
 @Discord()
 export class Profile {
-  @Slash({ name: 'profile', description: 'Mostra o perfil de algum usuário.' })
+  @Slash({name: 'profile', description: 'Mostra o perfil de algum usuário.'})
   public async show(
     @SlashOption({
       name: 'usuario',
       description: 'pessoa que voce quer ver o perfil.',
       type: ApplicationCommandOptionType.User,
-      required: false,
+      required: false
     })
     user: User | null = null,
-    interaction: CommandInteraction,
+    interaction: CommandInteraction
   ) {
     user = user || interaction.user;
     await interaction.deferReply();
 
     const cachedProfile = await this._getCachedProfile(user.id);
     if (cachedProfile) {
-      const isNotOldComposition =
-        Date.now() - cachedProfile?.time < 5 * 60 * 1000;
+      const isNotOldComposition = Date.now() - cachedProfile?.time < 5 * 60 * 1000;
       if (isNotOldComposition) {
         return interaction.editReply({
           files: [
             {
               name: interaction.user.username + '_profile.png',
-              attachment: Buffer.from(cachedProfile.attachment.data),
-            },
-          ],
+              attachment: Buffer.from(cachedProfile.attachment.data)
+            }
+          ]
         });
       }
     }
@@ -56,19 +55,15 @@ export class Profile {
     const profile = await this._composeProfile(user, interaction);
     if (!profile) return interaction.editReply(ErrorMessage.NoUser);
     this._cacheProfile(profile as CustomAttachmentBuilder);
-    return interaction.editReply({ files: [profile] });
+    return interaction.editReply({files: [profile]});
   }
 
   private async _getCachedProfile(id: string) {
     const cacheDir = 'src/resources/cache';
     const fileName = `profile_${id}.json`;
-    const cachedProfile = await fs
-      .readFile(`${cacheDir}/${fileName}`)
-      .catch(() => undefined);
+    const cachedProfile = await fs.readFile(`${cacheDir}/${fileName}`).catch(() => undefined);
     if (cachedProfile) {
-      const attachment: CustomAttachmentJson = JSON.parse(
-        cachedProfile.toString(),
-      );
+      const attachment: CustomAttachmentJson = JSON.parse(cachedProfile.toString());
       return attachment;
     }
     return null;
@@ -78,10 +73,7 @@ export class Profile {
     const cacheDir = 'src/resources/cache';
     const fileName = `${attachment.name}`.replace(/\.png/, '.json');
     attachment.time = Date.now();
-    fs.writeFile(
-      `${cacheDir}/${fileName}`,
-      JSON.stringify(attachment.toJSON()),
-    );
+    fs.writeFile(`${cacheDir}/${fileName}`, JSON.stringify(attachment.toJSON()));
   }
 
   private async _composeProfile(user: User, interaction: CommandInteraction) {
@@ -89,54 +81,48 @@ export class Profile {
     const userData = await getUser(user.id);
     if (!userData) return;
     const overlay = await loadImage('src/resources/assets/DiscordRankCard.png');
-    const userAvatar = await loadImage(
-      user.displayAvatarURL({ size: 1024, extension: 'jpg' }),
-    );
+    const userAvatar = await loadImage(user.displayAvatarURL({size: 1024, extension: 'jpg'}));
     const userBackground = await loadImage(
-      userData.profileBackground ??
-        'src/resources/assets/DiscordRankCardDefaultBg.png',
+      userData.profileBackground ?? 'src/resources/assets/DiscordRankCardDefaultBg.png'
     );
-    const userDescription =
-      userData.profileDescription ?? ErrorMessage.NoProfileDescription;
+    const userDescription = userData.profileDescription ?? ErrorMessage.NoProfileDescription;
     const userLevels = [userData.serverLevel, userData.serverLevel + 1];
 
     const mostUsedChars = userData.chars
       .sort((a, b) => b.level - a.level)
-      .map((char) => {
+      .map(char => {
         return {
           name: char.name,
           avatar: char.avatar,
           level: char.level,
           sum: char.sum,
-          phantom: char.phantom,
+          phantom: char.phantom
         };
       })
       .splice(0, 4);
 
     const data = await Promise.all([
       Promise.all(
-        mostUsedChars
-          .filter((char) => char?.avatar ?? false)
-          .map((char) => loadImage(char.avatar)),
+        mostUsedChars.filter(char => char?.avatar ?? false).map(char => loadImage(char.avatar))
       ),
       Promise.all(
         mostUsedChars
-          .filter((char) => char?.sum ?? false)
-          .map((char) => loadImage(sumAssets[char.sum].thumbnail)),
+          .filter(char => char?.sum ?? false)
+          .map(char => loadImage(sumAssets[char.sum].thumbnail))
       ),
       Promise.all(
         mostUsedChars
-          .filter((char) => char?.phantom ?? false)
-          .map((char) => loadImage(phantomAssets[char.phantom].thumbnail)),
-      ),
+          .filter(char => char?.phantom ?? false)
+          .map(char => loadImage(phantomAssets[char.phantom].thumbnail))
+      )
     ]);
 
     const [charAvatars, charSums, charPhantoms] = data;
 
-    const charNames = mostUsedChars.map((char) => char.name);
+    const charNames = mostUsedChars.map(char => char.name);
 
     registerFont('src/resources/assets/Iceland-Regular.ttf', {
-      family: 'Iceland',
+      family: 'Iceland'
     });
     const canvas = createCanvas(768, 384);
     const ctx = canvas.getContext('2d');
@@ -157,83 +143,67 @@ export class Profile {
       userAvatar: 192,
       userDescription: {
         maxWidth: 325,
-        lineHeight: 16,
+        lineHeight: 16
       },
       userExpBar: {
-        height: 16,
+        height: 16
       },
       charAvatar: 32,
-      charAssets: 10,
+      charAssets: 10
     };
 
     const coordinates = {
       userAvatar: {
         x: 45,
-        y: 16,
+        y: 16
       },
       userLevel: {
         x: [517, 709],
-        y: 215,
+        y: 215
       },
       userCounter: {
         x: 172,
-        y: [238, 262, 286, 310, 334, 358],
+        y: [238, 262, 286, 310, 334, 358]
       },
       userStats: {
         x: 706,
-        y: [61, 85],
+        y: [61, 85]
       },
       userDescription: {
         x: 269,
-        y: 55,
+        y: 55
       },
       userExpBar: {
         x: 541,
-        y: 208,
+        y: 208
       },
       charAvatar: {
         x: 269,
-        y: [207, 246, 286, 326],
+        y: [207, 246, 286, 326]
       },
       charName: {
         x: 305,
-        y: [237, 276, 316, 356],
+        y: [237, 276, 316, 356]
       },
       charAsset: {
         x: [305, 315],
-        y: [217, 256, 296, 336],
-      },
+        y: [217, 256, 296, 336]
+      }
     };
 
     // Compositions
 
     // Exp Bar
     ctx.fillStyle = '#09BC8A';
-    const expPercentage = await this._getExpPercentage(
-      userData.serverLevel,
-      userData.serverXp,
-    );
-    ctx.fillRect(
-      coordinates.userExpBar.x,
-      coordinates.userExpBar.y,
-      expPercentage,
-      10,
-    );
+    const expPercentage = await this._getExpPercentage(userData.serverLevel, userData.serverXp);
+    ctx.fillRect(coordinates.userExpBar.x, coordinates.userExpBar.y, expPercentage, 10);
 
     // Levels
     ctx.fillStyle = '#fff';
     ctx.font = '16px Iceland';
     ctx.textAlign = 'center';
-    ctx.fillText(
-      userLevels[0].toString(),
-      coordinates.userLevel.x[0],
-      coordinates.userLevel.y,
-    );
-    ctx.fillText(
-      userLevels[1].toString(),
-      coordinates.userLevel.x[1],
-      coordinates.userLevel.y,
-    );
+    ctx.fillText(userLevels[0].toString(), coordinates.userLevel.x[0], coordinates.userLevel.y);
+    ctx.fillText(userLevels[1].toString(), coordinates.userLevel.x[1], coordinates.userLevel.y);
 
     // Profile Description
     ctx.textAlign = 'start';
@@ -241,13 +211,11 @@ export class Profile {
     const isBiggerThanMaxWidth = userDescription.length > textMaxWidth;
     this._fillWrappedText(
       ctx,
-      isBiggerThanMaxWidth
-        ? userDescription.slice(0, textMaxWidth) + '...'
-        : userDescription,
+      isBiggerThanMaxWidth ? userDescription.slice(0, textMaxWidth) + '...' : userDescription,
       coordinates.userDescription.x,
       coordinates.userDescription.y,
       dimensions.userDescription.maxWidth,
-      dimensions.userDescription.lineHeight,
+      dimensions.userDescription.lineHeight
     );
 
     // Info Tab
@@ -274,14 +242,10 @@ export class Profile {
       userData.characterKills.toString(), // char kills
       lastSeenChannel, // last seen channel
       userData.serverReputation.toString(), // rep
-      userData.serverCoins.toString(), // coins
+      userData.serverCoins.toString() // coins
     ];
     for (let i = 0; i < trackers.length; i++) {
-      ctx.fillText(
-        trackers[i],
-        coordinates.userCounter.x,
-        coordinates.userCounter.y[i],
-      );
+      ctx.fillText(trackers[i], coordinates.userCounter.x, coordinates.userCounter.y[i]);
     }
 
     // User Stats
@@ -289,11 +253,7 @@ export class Profile {
     const lettersPerPost = Math.floor(userData.serverXp / 1700);
     const stats = [wordsPerMinute.toString(), lettersPerPost.toString()];
     for (let i = 0; i < stats.length; i++) {
-      ctx.fillText(
-        stats[i],
-        coordinates.userStats.x,
-        coordinates.userStats.y[i],
-      );
+      ctx.fillText(stats[i], coordinates.userStats.x, coordinates.userStats.y[i]);
     }
 
     // Char related assets
@@ -307,14 +267,14 @@ export class Profile {
         dimensions.charAvatar,
         dimensions.charAvatar,
         shoulder,
-        radius,
+        radius
       );
       ctx.drawImage(
         charAvatars[index],
         coordinates.charAvatar.x,
         coordinates.charAvatar.y[index],
         dimensions.charAvatar,
-        dimensions.charAvatar,
+        dimensions.charAvatar
       );
 
       // Add character assets
@@ -325,20 +285,16 @@ export class Profile {
         coordinates.charAsset.x[0],
         coordinates.charAsset.y[index],
         dimensions.charAssets,
-        dimensions.charAssets,
+        dimensions.charAssets
       );
       ctx.drawImage(
         charPhantoms[index],
         coordinates.charAsset.x[1],
         coordinates.charAsset.y[index],
         dimensions.charAssets,
-        dimensions.charAssets,
+        dimensions.charAssets
       );
-      ctx.fillText(
-        charNames[index],
-        coordinates.charName.x,
-        coordinates.charName.y[index],
-      );
+      ctx.fillText(charNames[index], coordinates.charName.x, coordinates.charName.y[index]);
     }
 
     // Add radius to user avatar and its image.
@@ -349,20 +305,20 @@ export class Profile {
       dimensions.userAvatar,
       dimensions.userAvatar,
       shoulder,
-      radius,
+      radius
     );
     ctx.drawImage(
       userAvatar,
       coordinates.userAvatar.x,
       coordinates.userAvatar.y,
       dimensions.userAvatar,
-      dimensions.userAvatar,
+      dimensions.userAvatar
     );
     ctx.restore();
 
     // Build the attachment
     const attachment = new AttachmentBuilder(canvas.toBuffer(), {
-      name: `profile_${user.id}.png`,
+      name: `profile_${user.id}.png`
     });
     return attachment;
   }
@@ -373,7 +329,7 @@ export class Profile {
     x: number,
     y: number,
     maxWidth: number,
-    lineHeight: number,
+    lineHeight: number
   ) {
     const words = text.split(' ');
     let line = '';
@@ -399,7 +355,7 @@ export class Profile {
     width: number,
     height: number,
     shoulder: number,
-    radius: number,
+    radius: number
   ) {
     ctx.save();
     ctx.beginPath();
@@ -421,10 +377,7 @@ export class Profile {
     ctx.closePath();
     ctx.clip();
   }
-  private async _getExpPercentage(
-    level: number,
-    totalXp: number,
-  ): Promise<any> {
+  private async _getExpPercentage(level: number, totalXp: number): Promise<any> {
     //  the current level progress to the next level
     const currentXp =
       totalXp -

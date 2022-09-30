@@ -10,11 +10,11 @@ import {
   Snowflake,
   TextChannel,
   TextInputBuilder,
-  TextInputStyle,
-} from "discord.js";
-import { phantomAssets, sumAssets } from "../../resources";
-import { HandleServerComponent } from "../../../prisma";
-import { Util } from "../../util/Util";
+  TextInputStyle
+} from 'discord.js';
+import {phantomAssets, sumAssets} from '../../resources';
+import {HandleServerComponent} from '../../../prisma';
+import {Util} from '../../util/Util';
 import {
   ComponentMessage,
   GenderOptionEmoji,
@@ -26,9 +26,9 @@ import {
   ModalLabel,
   ModalPlaceholder,
   SelectorCustomId,
-  SelectorPlaceholder,
-} from "./CharSheetEnums";
-import { ErrorMessage } from "../../util/ErrorMessage";
+  SelectorPlaceholder
+} from './CharSheetEnums';
+import {ErrorMessage} from '../../util/ErrorMessage';
 
 export class CharSheet {
   channelId: string;
@@ -104,14 +104,14 @@ export class CharSheet {
         const sheet = this._composeSelectorButton();
         if (sheet) {
           const databaseQuery = HandleServerComponent.create(
-            "CharSheet",
+            'CharSheet',
             this.channelId,
             feedback.id
           );
           if (!databaseQuery) return ErrorMessage.DatabaseError;
           return feedback.edit({
             content: ComponentMessage.Info,
-            components: sheet,
+            components: sheet
           });
         }
       }
@@ -122,10 +122,10 @@ export class CharSheet {
   private _composeSelectorButton() {
     const generateOptionsFromJson = (
       assets: typeof sumAssets | typeof phantomAssets,
-      without: Array<string> | string = [""]
+      without: Array<string> | string = ['']
     ) =>
       Object.entries(assets)
-        .map((sum) => {
+        .map(sum => {
           const key = sum[0];
           const values = sum[1];
           if (without && !(without instanceof Array)) without = [without];
@@ -137,14 +137,11 @@ export class CharSheet {
               .setValue(key);
           }
         })
-        .filter((option) => {
+        .filter(option => {
           return option instanceof SelectMenuOptionBuilder;
         }) as SelectMenuOptionBuilder[];
-    const sumOptions = generateOptionsFromJson(sumAssets, [
-      "subtrato",
-      "humano",
-    ]);
-    const phantomOptions = generateOptionsFromJson(phantomAssets, "tempo");
+    const sumOptions = generateOptionsFromJson(sumAssets, ['subtrato', 'humano']);
+    const phantomOptions = generateOptionsFromJson(phantomAssets, 'tempo');
     if (sumOptions.length < 1 || phantomOptions.length < 1)
       return console.log(ErrorMessage.BrokenOption);
     const selectors = [
@@ -175,8 +172,8 @@ export class CharSheet {
           new SelectMenuOptionBuilder()
             .setLabel(GenderOptionLabel.NotSpecified)
             .setValue(GenderOptionValue.NotSpecified)
-            .setEmoji(GenderOptionEmoji.NotSpecified),
-        ]),
+            .setEmoji(GenderOptionEmoji.NotSpecified)
+        ])
     ];
     const modalBtn = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -184,26 +181,22 @@ export class CharSheet {
         .setLabel(ModalButton.Open)
         .setStyle(ButtonStyle.Primary)
     );
-    let row = selectors.map((selector) =>
-      new ActionRowBuilder().addComponents(selector)
-    );
+    let row = selectors.map(selector => new ActionRowBuilder().addComponents(selector));
     row.push(modalBtn);
     return row as ActionRowBuilder<MessageActionRowComponentBuilder>[];
   }
 
   private async _checkIfSheetExists() {
-    const sheetId = await HandleServerComponent.get("CharSheet");
+    const sheetId = await HandleServerComponent.get('CharSheet');
     if (sheetId) {
       const channel = await this.client.channels.fetch(this.channelId);
       if (channel instanceof TextChannel) {
         const isExistantMessage = async () => {
           try {
-            const fetchedMessage = await channel.messages.fetch(
-              sheetId.messageId
-            );
+            const fetchedMessage = await channel.messages.fetch(sheetId.messageId);
             if (fetchedMessage) return true;
           } catch {
-            await HandleServerComponent.delete("CharSheet");
+            await HandleServerComponent.delete('CharSheet');
             return false;
           }
         };
