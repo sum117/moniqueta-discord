@@ -17,7 +17,6 @@ export class Playcard {
     if (!embed) return message.reply(ErrorMessage.DatabaseError);
     const reply = {} as BaseMessageOptions;
     Util.handleAttachment(message, reply, embed);
-    reply.embeds = [embed];
     const sentPostMessage = await message.channel.send(reply);
     await handleUserPost(message, sentPostMessage);
     if (message.deletable)
