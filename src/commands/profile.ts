@@ -113,22 +113,26 @@ export class Profile {
       })
       .splice(0, 4);
 
-    const charAvatars = await Promise.all(
-      mostUsedChars.map((char) => {
-        if (char.avatar) return loadImage(char.avatar);
-      }),
-    );
-    const charSums = await Promise.all(
-      mostUsedChars.map((char) => {
-        if (char.sum) return loadImage(sumAssets[char.sum].thumbnail);
-      }),
-    );
-    const charPhantoms = await Promise.all(
-      mostUsedChars.map((char) => {
-        if (char.phantom)
-          return loadImage(phantomAssets[char.phantom].thumbnail);
-      }),
-    );
+    const data = await Promise.all([
+      Promise.all(
+        mostUsedChars
+          .filter((char) => char?.avatar ?? false)
+          .map((char) => loadImage(char.avatar)),
+      ),
+      Promise.all(
+        mostUsedChars
+          .filter((char) => char?.sum ?? false)
+          .map((char) => loadImage(sumAssets[char.sum].thumbnail)),
+      ),
+      Promise.all(
+        mostUsedChars
+          .filter((char) => char?.phantom ?? false)
+          .map((char) => loadImage(phantomAssets[char.phantom].thumbnail)),
+      ),
+    ]);
+
+    const [charAvatars, charSums, charPhantoms] = data;
+
     const charNames = mostUsedChars.map((char) => char.name);
 
     registerFont('src/resources/assets/Iceland-Regular.ttf', {
