@@ -14,6 +14,7 @@ export class Playcard {
   @Guard(hasCharacter, isAllowedParent(allowedRoleplayParents))
   public async post([message]: ArgsOf<'messageCreate'>) {
     const embed = await new CharEmbed(message).post();
+    if (!embed) return message.reply(ErrorMessage.DatabaseError);
     const reply = {} as BaseMessageOptions;
     Util.handleAttachment(message, reply, embed);
     reply.embeds = [embed];
