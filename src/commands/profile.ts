@@ -1,4 +1,4 @@
-import {createCanvas, loadImage, registerFont} from 'canvas';
+import {createCanvas, GlobalFonts,loadImage, SKRSContext2D} from '@napi-rs/canvas';
 import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
@@ -122,9 +122,7 @@ export class Profile {
 
     const charNames = mostUsedChars.map(char => char.name);
 
-    registerFont('src/resources/assets/Iceland-Regular.ttf', {
-      family: 'Iceland'
-    });
+    GlobalFonts.registerFromPath('src/resources/assets/Iceland-Regular.ttf');
     const canvas = createCanvas(768, 384);
     const ctx = canvas.getContext('2d');
 
@@ -318,14 +316,14 @@ export class Profile {
     ctx.restore();
 
     // Build the attachment
-    const attachment = new AttachmentBuilder(canvas.toBuffer(), {
+    const attachment = new AttachmentBuilder(await canvas.encode('png'), {
       name: `profile_${user.id}.png`
     });
     return attachment;
   }
 
   private _fillWrappedText(
-    ctx: CanvasRenderingContext2D,
+    ctx: SKRSContext2D,
     text: string,
     x: number,
     y: number,
@@ -350,7 +348,7 @@ export class Profile {
     ctx.fillText(line, x, y);
   }
   private _getRoundedCorner(
-    ctx: CanvasRenderingContext2D,
+    ctx: SKRSContext2D,
     x: number,
     y: number,
     width: number,
