@@ -41,32 +41,47 @@ export class Playcard {
   ) {
     await interaction.deferReply();
     if (!user) user = interaction.user;
-    const chars = (await getUser(user.id))?.chars;
-    if (!chars) return interaction.reply(ErrorMessage.CharDatabaseError);
-    const pages = await Promise.all(
-      chars.map(async (char, index, chars) =>
-        loadImage(char.avatar).then(async (image: Image) => {
-          const sumColor = sumAssets[char.sum].color;
 
-          const canvas = this._getListItemImage(image, sumColor);
-          // Separate ten names per page
-          const names = chars.map(arrayChar => {
-            if (char.name === arrayChar.name) return `**${arrayChar.name}**`;
-            return arrayChar.name;
-          });
-          const namesPerPage = 10;
-          const page = Math.floor(index / namesPerPage);
-          const namesOnPage = names.slice(page * namesPerPage, page * namesPerPage + namesPerPage);
-          const pageEmbed = new EmbedBuilder()
-            .setTitle(char.name)
-            .setAuthor({
-              name: user.username,
-              iconURL: user.displayAvatarURL({size: 128})
+    const chars = (await getUser(user.id))?.chars;
+    if (!chars) return interaction.editReply(ErrorMessage.CharDatabaseError);
+
+    const pages = await Promise.all(
+      chars.map(async (char, index, chars) => {
+        const sumColor = sumAssets[char.sum].color;
+        const names = chars.map(arrayChar => {
+          if (char.name === arrayChar.name) return `**${arrayChar.name}**`;
+          return arrayChar.name;
+        });
+
+        // Separate ten names per page
+
+        const namesPerPage = 10;
+        const page = Math.floor(index / namesPerPage);
+        const namesOnPage = names.slice(page * namesPerPage, page * namesPerPage + namesPerPage);
+
+        // Components
+
+        const listItem = new EmbedBuilder()
+          .setTitle(char.name)
+          .setAuthor({
+            name: user.username,
+            iconURL: user.displayAvatarURL({size: 128})
+          })
+          .setDescription(namesOnPage.join('\n'))
+          .setColor(sumColor)
+          .setImage('attachment://char.png');
+        const profileButton =
+          new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
+            new ButtonBuilder({
+              customId: `char_profile_${char.id}`,
+              label: ButtonLabel.Profile,
+              style: ButtonStyle.Primary,
+              emoji: '👤'
             })
-            .setDescription(namesOnPage.join('\n'))
-            .setColor(sumColor)
-            .setImage('attachment://char.png')
-            .setTimestamp(char.createdAt);
+          ]);
+
+        return loadImage(char.avatar).then(async (image: Image) => {
+          const canvas = this._getListItemImage(image, sumColor);
           return canvas.encode('png').then(buffer => {
             return {
               files: [
@@ -75,22 +90,14 @@ export class Playcard {
                   name: 'char.png'
                 }
               ],
-              embeds: [pageEmbed],
-              components: [
-                new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
-                  new ButtonBuilder({
-                    customId: `char_profile_${char.id}`,
-                    label: ButtonLabel.Profile,
-                    style: ButtonStyle.Primary,
-                    emoji: '👤'
-                  })
-                ])
-              ]
+              embeds: [listItem],
+              components: [profileButton]
             };
           });
-        })
-      )
+        });
+      })
     );
+
     const pagination = new Pagination(interaction, pages, {
       type: PaginationType.Button,
       start: {
@@ -118,9 +125,10 @@ export class Playcard {
 
   @ButtonComponent({id: /char_profile_.+/})
   async charProfile(interaction: ButtonInteraction) {
+    await interaction.deferReply({ephemeral: true});
     const charId = interaction.customId.split('_')[2];
     const embed = await new CharEmbed(interaction).profile(false, Number(charId));
-    await interaction.reply({embeds: [embed], ephemeral: true});
+    await interaction.editReply({embeds: [embed]});
   }
   private _getListItemImage(image: Image, color: number) {
     const canvas = createCanvas(225, 350);
