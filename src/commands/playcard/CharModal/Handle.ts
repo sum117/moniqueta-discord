@@ -29,7 +29,7 @@ export class CharModal {
     await updateChar(charId);
     await this._acceptDenyChar(charId, interaction);
     const approvedCharChannel = interaction.guild?.channels.cache.get(requiredConfigChannels.approvedCharacterChannel)
-    const profile = await new CharEmbed(interaction, charOwner).profile(false, charId);
+    const profile = await new CharEmbed(interaction, charOwner).profile(false, charId, {displayExtra: false});
 
     if (approvedCharChannel && approvedCharChannel.isTextBased()) {
       approvedCharChannel.send({

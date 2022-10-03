@@ -91,7 +91,7 @@ export class CharEmbed extends EmbedBuilder {
     return embeds;
   }
 
-  public async profile(current = true, id?: number) {
+  public async profile(current = true, id?: number, options = {displayExtra: true}) {
     const char = await this._fetch(current, id);
     const getHyperlinkOnExceed = async (text: string, maxLength = 1024) => {
       if (text.length > maxLength) {
@@ -100,7 +100,8 @@ export class CharEmbed extends EmbedBuilder {
       }
       return text;
     };
-    this.setTitle(`Exibindo perfil de ${char?.name}`).addFields(
+    this.setTitle(`Exibindo perfil de ${char?.name}`)
+      .addFields(
       {
         name: 'Personalidade',
         value: await getHyperlinkOnExceed(char?.personality ?? 'Valor Ausente')
@@ -112,23 +113,27 @@ export class CharEmbed extends EmbedBuilder {
       {
         name: 'Habilidade',
         value: await getHyperlinkOnExceed(char?.ability ?? 'Valor Ausente')
-      },
-      {
-        name: 'Level',
-        value: char?.level.toString() ?? 'Valor Ausente',
-        inline: true
-      },
-      {
-        name: 'Exp. Total',
-        value: char?.expTotal.toString() ?? 'Valor Ausente',
-        inline: true
-      },
-      {
-        name: 'Kills',
-        value: char?.kills.toString() ?? 'Valor Ausente',
-        inline: true
       }
     );
+    if (options?.displayExtra) {
+      this.addFields(
+        {
+          name: 'Level',
+          value: char?.level.toString() ?? 'Valor Ausente',
+          inline: true
+        },
+        {
+          name: 'Exp. Total',
+          value: char?.expTotal.toString() ?? 'Valor Ausente',
+          inline: true
+        },
+        {
+          name: 'Kills',
+          value: char?.kills.toString() ?? 'Valor Ausente',
+          inline: true
+        }
+      );
+    }
     return this;
   }
 
