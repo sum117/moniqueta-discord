@@ -20,11 +20,16 @@ export class CharModal {
   @ButtonComponent({id: /char_accept_.+/})
   async accept(interaction: ButtonInteraction) {
     const charOwnerId = interaction.customId.split('_')[2];
+    const charOwner = await interaction.client.users
+      .fetch(charOwnerId)
+      .catch(err => console.log(ErrorMessage.CannotFetchUser + ": " + err));
+    if (!charOwner) return interaction.reply(ErrorMessage.CannotFetchUser);
+
     const charId = parseInt(interaction.customId.split('_')[3]);
     await updateChar(charId);
     await this._acceptDenyChar(charId, interaction);
     const approvedCharChannel = interaction.guild?.channels.cache.get(requiredConfigChannels.approvedCharacterChannel)
-    const profile = await new CharEmbed(interaction).profile(false, charId);
+    const profile = await new CharEmbed(interaction, charOwner).profile(false, charId);
 
     if (approvedCharChannel && approvedCharChannel.isTextBased()) {
       approvedCharChannel.send({

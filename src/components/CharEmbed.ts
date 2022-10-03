@@ -1,4 +1,11 @@
-import {ButtonInteraction, CommandInteraction, EmbedBuilder, Message, ModalSubmitInteraction, User} from 'discord.js';
+import {
+  ButtonInteraction,
+  CommandInteraction,
+  EmbedBuilder,
+  Message,
+  ModalSubmitInteraction,
+  User
+} from 'discord.js';
 
 import {getCurrentChar, getUser} from '../../prisma';
 import {sumAssets} from '../resources';
@@ -24,8 +31,15 @@ enum FieldNames {
 export class CharEmbed extends EmbedBuilder {
   interaction: Message | CommandInteraction | ButtonInteraction | ModalSubmitInteraction;
   user: User;
-  constructor(interaction: Message | CommandInteraction | ButtonInteraction | ModalSubmitInteraction) {
-    const user = interaction instanceof Message ? interaction.author : interaction.user;
+  constructor(
+    interaction: Message | CommandInteraction | ButtonInteraction | ModalSubmitInteraction,
+    target?: User
+  ) {
+    const user = target
+      ? target
+      : interaction instanceof Message
+      ? interaction.author
+      : interaction.user;
     super({
       footer: {
         text: `ID: ${user.username}`,
@@ -81,7 +95,7 @@ export class CharEmbed extends EmbedBuilder {
     const char = await this._fetch(current, id);
     const getHyperlinkOnExceed = async (text: string, maxLength = 1024) => {
       if (text.length > maxLength) {
-        const hastebin = await Util.hastebin(text)
+        const hastebin = await Util.hastebin(text);
         return `${text.slice(0, 919)} (...) [Clique aqui para ver o restante!](${hastebin})`;
       }
       return text;
