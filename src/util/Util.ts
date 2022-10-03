@@ -127,7 +127,7 @@ export class Util {
       body: text
     });
     const body = await res.json();
-    return `https://hastebin.com/${body.key}`;
+    return `https://hastebin.com/raw/${body.key}`;
   }
   public static decimalToHexColor(decimal: number) {
     const hex = decimal.toString(16);
