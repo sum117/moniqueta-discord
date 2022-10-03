@@ -33,7 +33,8 @@ export function handleShowCharNames() {
         getUser(interaction.user.id).then(user => {
             if (!user)
                 return interaction.respond([{ name: ErrorMessage.DatabaseError, value: 'Nenhum personagem encontrado' }]);
-            const characters = user.chars.map(character => ({ name: character.name, value: character.id }));
+            const sizeDelimiter = (text:string) => text.split(' ')[0].slice(0, 100)
+            const characters = user.chars.map(character => ({ name: sizeDelimiter(character.name) , value: character.id }));
             return interaction.respond(characters);
         });
     };
