@@ -3,6 +3,7 @@ import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
   CommandInteraction,
+  GuildMember,
   User
 } from 'discord.js';
 import {Discord, Slash, SlashOption} from 'discordx';
@@ -32,7 +33,7 @@ export class Profile {
       type: ApplicationCommandOptionType.User,
       required: false
     })
-    user: User | null = null,
+    user: User | GuildMember |  null = null,
     interaction: CommandInteraction
   ) {
     user = user || interaction.user;
@@ -53,7 +54,7 @@ export class Profile {
       }
     }
 
-    const profile = await this._composeProfile(user, interaction);
+    const profile = await this._composeProfile(user instanceof User ? user: user.user, interaction);
     if (!profile) return interaction.editReply(ErrorMessage.NoUser);
     this._cacheProfile(profile as CustomAttachmentBuilder);
     return interaction.editReply({files: [profile]});

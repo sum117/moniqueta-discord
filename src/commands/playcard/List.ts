@@ -8,6 +8,7 @@ import {
   ButtonStyle,
   CommandInteraction,
   EmbedBuilder,
+  GuildMember,
   MessageActionRowComponentBuilder,
   User
 } from 'discord.js';
@@ -36,7 +37,7 @@ export class Playcard {
       description: 'O usuário que você deseja ver os personagens',
       required: false
     })
-    user: User,
+    user: User | GuildMember,
     interaction: CommandInteraction
   ) {
     await interaction.deferReply();
@@ -64,7 +65,7 @@ export class Playcard {
         const listItem = new EmbedBuilder()
           .setTitle(char.name)
           .setAuthor({
-            name: user.username,
+            name: user instanceof GuildMember ? user.displayName : user.username,
             iconURL: user.displayAvatarURL({size: 128})
           })
           .setDescription(namesOnPage.join('\n'))
