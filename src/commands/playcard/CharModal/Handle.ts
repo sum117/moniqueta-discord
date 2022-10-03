@@ -1,8 +1,9 @@
-import {ButtonInteraction, EmbedBuilder, PermissionsBitField, userMention} from 'discord.js';
+import {ButtonInteraction, EmbedBuilder, PermissionsBitField, Snowflake, userMention} from 'discord.js';
 import {ButtonComponent, Discord, Guard} from 'discordx';
 
 import {deleteChar, handleCharSubmission, updateChar} from '../../../../prisma';
 import {getCharById} from '../../../../prisma/queries/Char/getCharById';
+import { CharEmbed } from '../../../components';
 import {isAdmin} from '../../../guards';
 import {requiredConfigChannels, sumAssets} from '../../../resources';
 import {ErrorMessage} from '../../../util/ErrorMessage';
@@ -12,15 +13,25 @@ enum Feedback {
   DiscussTopic = 'Discussão do personagem de ',
   DiscussChannelCreated = 'Canal de discussão criado com sucesso!'
 }
-
+const approvalMessage = (adminId: Snowflake, charOwnerId: Snowflake) => `🛡️ Ficha aprovada por: ${userMention(adminId)}\n👤 Dono da ficha: ${userMention(charOwnerId)}`;
 @Discord()
 @Guard(isAdmin)
 export class CharModal {
   @ButtonComponent({id: /char_accept_.+/})
   async accept(interaction: ButtonInteraction) {
+    const charOwnerId = interaction.customId.split('_')[2];
     const charId = parseInt(interaction.customId.split('_')[3]);
     await updateChar(charId);
     await this._acceptDenyChar(charId, interaction);
+    const approvedCharChannel = interaction.guild?.channels.cache.get(requiredConfigChannels.approvedCharacterChannel)
+    const profile = await new CharEmbed(interaction).profile(false, charId);
+
+    if (approvedCharChannel && approvedCharChannel.isTextBased()) {
+      approvedCharChannel.send({
+        content: approvalMessage(interaction.user.id, charOwnerId),
+        embeds: [profile]
+      })
+    }
   }
 
   @ButtonComponent({id: /char_discuss_.+/})
