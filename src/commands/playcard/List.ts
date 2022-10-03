@@ -1,4 +1,4 @@
-import {Pagination, PaginationType} from '@discordx/pagination';
+import {Pagination, PaginationItem, PaginationType} from '@discordx/pagination';
 import {createCanvas, Image, loadImage} from '@napi-rs/canvas';
 import {
   ActionRowBuilder,
@@ -45,7 +45,7 @@ export class Playcard {
     const chars = (await getUser(user.id))?.chars;
     if (!chars) return interaction.editReply(ErrorMessage.CharDatabaseError);
 
-    const pages = await Promise.all(
+    const pages: PaginationItem[] = await Promise.all(
       chars.map(async (char, index, chars) => {
         const sumColor = sumAssets[char.sum].color;
         const names = chars.map(arrayChar => {

@@ -50,6 +50,7 @@ bot.once('ready', async () => {
 });
 
 bot.on('interactionCreate', (interaction: Interaction) => {
+  if (interaction.isButton() && interaction.customId.startsWith('discordx@pagination')) return;
   if (interaction.isModalSubmit()) {
     bot.executeInteraction(interaction);
     return;
