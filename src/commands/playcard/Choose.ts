@@ -13,13 +13,7 @@ enum Feedback {
 export class Playcard {
     @Slash({ name: 'escolher', description: 'Escolha um personagem para jogar' })
     public async choose(@SlashOption({
-        autocomplete: function (interaction: AutocompleteInteraction) {
-            getUser(interaction.user.id).then(user => {
-                if (!user) return interaction.respond([{ name: ErrorMessage.DatabaseError, value: 'Nenhum personagem encontrado' }]);
-                const characters = user.chars.map(character => ({name: character.name, value: character.id}));
-                return interaction.respond(characters);
-            })
-        },
+        autocomplete: handleShowCharNames(),
         name: 'personagem',
         type: ApplicationCommandOptionType.Number,
         description: 'O primeiro nome do personagem',
@@ -32,4 +26,15 @@ export class Playcard {
 
     }
 
+}
+
+export function handleShowCharNames() {
+    return function (interaction: AutocompleteInteraction) {
+        getUser(interaction.user.id).then(user => {
+            if (!user)
+                return interaction.respond([{ name: ErrorMessage.DatabaseError, value: 'Nenhum personagem encontrado' }]);
+            const characters = user.chars.map(character => ({ name: character.name, value: character.id }));
+            return interaction.respond(characters);
+        });
+    };
 }

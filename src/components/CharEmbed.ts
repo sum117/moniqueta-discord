@@ -1,4 +1,4 @@
-import {ButtonInteraction, CommandInteraction, EmbedBuilder, Message, User} from 'discord.js';
+import {ButtonInteraction, CommandInteraction, EmbedBuilder, Message, ModalSubmitInteraction, User} from 'discord.js';
 
 import {getCurrentChar, getUser} from '../../prisma';
 import {sumAssets} from '../resources';
@@ -22,9 +22,9 @@ enum FieldNames {
 }
 
 export class CharEmbed extends EmbedBuilder {
-  interaction: Message | CommandInteraction | ButtonInteraction;
+  interaction: Message | CommandInteraction | ButtonInteraction | ModalSubmitInteraction;
   user: User;
-  constructor(interaction: Message | CommandInteraction | ButtonInteraction) {
+  constructor(interaction: Message | CommandInteraction | ButtonInteraction | ModalSubmitInteraction) {
     const user = interaction instanceof Message ? interaction.author : interaction.user;
     super({
       footer: {
@@ -79,20 +79,25 @@ export class CharEmbed extends EmbedBuilder {
 
   public async profile(current = true, id?: number) {
     const char = await this._fetch(current, id);
-    const getHyperlinkOnExceed = (text: string, maxLength = 1024) => {
+    const getHyperlinkOnExceed = async (text: string, maxLength = 1024) => {
       if (text.length > maxLength) {
-        return `${text.slice(0, 924)} [Clique aqui para ver o restante!](${Util.hastebin(text)})`;
+        const hastebin = await Util.hastebin(text)
+        return `${text.slice(0, 919)} (...) [Clique aqui para ver o restante!](${hastebin})`;
       }
       return text;
     };
     this.setTitle(`Exibindo perfil de ${char?.name}`).addFields(
       {
         name: 'Personalidade',
-        value: getHyperlinkOnExceed(char?.personality ?? 'Valor Ausente')
+        value: await getHyperlinkOnExceed(char?.personality ?? 'Valor Ausente')
       },
       {
         name: 'Aparência',
-        value: getHyperlinkOnExceed(char?.appearance ?? 'Valor Ausente')
+        value: await getHyperlinkOnExceed(char?.appearance ?? 'Valor Ausente')
+      },
+      {
+        name: 'Habilidade',
+        value: await getHyperlinkOnExceed(char?.ability ?? 'Valor Ausente')
       },
       {
         name: 'Level',

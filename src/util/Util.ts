@@ -133,4 +133,7 @@ export class Util {
     const hex = decimal.toString(16);
     return `#${hex.padStart(6, '0')}`;
   }
+  public static isValidImageURL(url: string) {
+    return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+  }
 }
