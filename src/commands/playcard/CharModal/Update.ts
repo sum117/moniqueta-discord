@@ -13,7 +13,8 @@ import {
 import {ButtonComponent, Discord, ModalComponent, Slash, SlashGroup, SlashOption} from 'discordx';
 
 import {updateCharField} from '../../../../prisma';
-import {CharEmbed} from '../../../components';
+import { CharEmbed } from '../../../components';
+import {ErrorMessage} from '../../../util/ErrorMessage';
 import {Util} from '../../../util/Util';
 import {handleShowCharNames} from '../Choose';
 
@@ -115,14 +116,14 @@ export class Playcard {
 
   @ModalComponent({id: /char_update_\w+_\d+/})
   public async submit(interaction: ModalSubmitInteraction) {
-    await interaction.deferReply();
+    await interaction.deferReply({ephemeral: true});
     const [_namespace, _actionPlaceholder, updateOption, characterId] =
       interaction.customId.split('_');
     const updateData = interaction.fields.getTextInputValue(interaction.customId);
     const isInvalidLink = updateOption === CharUpdatePossibility.Avatar && !Util.isValidImageURL(updateData);
     if (isInvalidLink)
      return interaction.editReply({
-        content: 'Você precisa enviar um link válido para o avatar.',
+        content: ErrorMessage.InvalidImageURL,
       });
 
     await updateCharField(Number(characterId), updateOption, updateData);

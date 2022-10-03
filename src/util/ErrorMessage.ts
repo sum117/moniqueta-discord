@@ -1,4 +1,5 @@
 export enum ErrorMessage {
+  InvalidImageURL = 'O link da imagem é inválido. Você precisa usar um link de imagem com extensões no final.',
   InvalidContent = "Conteúdo inválido!",
   UnknownMessage = "Mensagem desconhecida!",
   NotMessageAuthor = "Você não pode deletar essa mensagem pois ela não pertence a você.",
