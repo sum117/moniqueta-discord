@@ -1,5 +1,5 @@
 export const requiredConfigChannels = {
-  characterSubmissionChannel: "1021378091953700905",
-  discussionTicketChannel: "1016689271207383102",
+  characterSubmissionChannel: "1026556367978364958",
+  discussionTicketChannel: "1026558469433724928",
   errorLogChannel: '1026547697546707086',
 };
