@@ -3,7 +3,7 @@ export {deleteChar} from './queries/Char/deleteChar';
 export {getCurrentChar} from './queries/Char/getCurrentChar';
 export {handleCharSubmission} from './queries/Char/handleCharSubmission';
 export {setCurrentChar} from './queries/Char/setCurrentChar';
-export { updateChar } from './queries/Char/updateChar';
+export {updateChar} from './queries/Char/updateChar';
 export {updateCharField} from './queries/Char/updateCharField';
 export {getLastMessageId} from './queries/getLastMessageId';
 export {getUser} from './queries/getUser';

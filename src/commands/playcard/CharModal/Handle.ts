@@ -1,9 +1,15 @@
-import {ButtonInteraction, EmbedBuilder, PermissionsBitField, Snowflake, userMention} from 'discord.js';
+import {
+  ButtonInteraction,
+  EmbedBuilder,
+  PermissionsBitField,
+  Snowflake,
+  userMention
+} from 'discord.js';
 import {ButtonComponent, Discord, Guard} from 'discordx';
 
 import {deleteChar, handleCharSubmission, updateChar} from '../../../../prisma';
 import {getCharById} from '../../../../prisma/queries/Char/getCharById';
-import { CharEmbed } from '../../../components';
+import {CharEmbed} from '../../../components';
 import {isAdmin} from '../../../guards';
 import {requiredConfigChannels, sumAssets} from '../../../resources';
 import {ErrorMessage} from '../../../util/ErrorMessage';
@@ -13,7 +19,8 @@ enum Feedback {
   DiscussTopic = 'Discussão do personagem de ',
   DiscussChannelCreated = 'Canal de discussão criado com sucesso!'
 }
-const approvalMessage = (adminId: Snowflake, charOwnerId: Snowflake) => `🛡️ Ficha aprovada por: ${userMention(adminId)}\n👤 Dono da ficha: ${userMention(charOwnerId)}`;
+const approvalMessage = (adminId: Snowflake, charOwnerId: Snowflake) =>
+  `🛡️ Ficha aprovada por: ${userMention(adminId)}\n👤 Dono da ficha: ${userMention(charOwnerId)}`;
 @Discord()
 @Guard(isAdmin)
 export class CharModal {
@@ -22,20 +29,24 @@ export class CharModal {
     const charOwnerId = interaction.customId.split('_')[2];
     const charOwner = await interaction.client.users
       .fetch(charOwnerId)
-      .catch(err => console.log(ErrorMessage.CannotFetchUser + ": " + err));
+      .catch(err => console.log(ErrorMessage.CannotFetchUser + ': ' + err));
     if (!charOwner) return interaction.reply(ErrorMessage.CannotFetchUser);
 
     const charId = parseInt(interaction.customId.split('_')[3]);
     await updateChar(charId);
     await this._acceptDenyChar(charId, interaction);
-    const approvedCharChannel = interaction.guild?.channels.cache.get(requiredConfigChannels.approvedCharacterChannel)
-    const profile = await new CharEmbed(interaction, charOwner).profile(false, charId, {displayExtra: false});
+    const approvedCharChannel = interaction.guild?.channels.cache.get(
+      requiredConfigChannels.approvedCharacterChannel
+    );
+    const profile = await new CharEmbed(interaction, charOwner).profile(false, charId, {
+      displayExtra: false
+    });
 
     if (approvedCharChannel && approvedCharChannel.isTextBased()) {
       approvedCharChannel.send({
         content: approvalMessage(interaction.user.id, charOwnerId),
         embeds: [profile]
-      })
+      });
     }
   }
 
@@ -58,13 +69,13 @@ export class CharModal {
       interaction.reply(ErrorMessage.CannotFetchUser);
       console.log(err);
     });
-    const char = await getCharById(charId);
+    const char = (await getCharById(charId, authorId))?.[0];
     if (!author || !char) return;
 
     const discussionChannel = await interaction.guild?.channels
       .create({
         name: `discussão-${author.username}`,
-        parent: requiredConfigChannels.discussionTicketChannel,
+        parent: requiredConfigChannels.discussionTicketsCategory,
         topic: Feedback.DiscussTopic + author.username,
         permissionOverwrites: [
           {

@@ -71,10 +71,11 @@ export class Playcard {
           .setDescription(namesOnPage.join('\n'))
           .setColor(sumColor)
           .setImage('attachment://char.png');
+        const profileButtonCustomId = `char_profile_${char.authorId}_${char.id}`;
         const profileButton =
           new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents([
             new ButtonBuilder({
-              customId: `char_profile_${char.id}`,
+              customId: profileButtonCustomId,
               label: ButtonLabel.Profile,
               style: ButtonStyle.Primary,
               emoji: '👤'
@@ -127,8 +128,14 @@ export class Playcard {
   @ButtonComponent({id: /char_profile_.+/})
   async charProfile(interaction: ButtonInteraction) {
     await interaction.deferReply({ephemeral: true});
-    const charId = interaction.customId.split('_')[2];
-    const embed = await new CharEmbed(interaction).profile(false, Number(charId));
+    const authorId = interaction.customId.split('_')[2];
+    const charId = interaction.customId.split('_')[3];
+    const author = await interaction.client.users
+      .fetch(authorId)
+      .catch(() => console.log(ErrorMessage.CannotFetchUser));
+    if (!author) return interaction.editReply(ErrorMessage.CannotFetchUser);
+
+    const embed = await new CharEmbed(interaction, author).profile(false, Number(charId));
     await interaction.editReply({embeds: [embed]});
   }
   private _getListItemImage(image: Image, color: number) {

@@ -47,7 +47,18 @@ export class CharModal {
   async modalButton(interaction: ButtonInteraction): Promise<InteractionResponse | void> {
     const isInvalidClick = Object.values(cache.get(interaction.user.id) ?? {}).length < 3;
 
-    if (isInvalidClick) return interaction.reply(ErrorMessage.NotEnoughOptionsSelected);
+    if (isInvalidClick) {
+      interaction
+        .reply({content: ErrorMessage.NotEnoughOptionsSelected, fetchReply: true})
+        .then(reply =>
+          setTimeout(
+            () =>
+              reply.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage)),
+            10 * 1000
+          )
+        );
+      return;
+    }
     return interaction.showModal(CharSheet.generateModal());
   }
 }

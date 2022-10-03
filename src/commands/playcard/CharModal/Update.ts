@@ -13,7 +13,8 @@ import {
 import {ButtonComponent, Discord, ModalComponent, Slash, SlashGroup, SlashOption} from 'discordx';
 
 import {updateCharField} from '../../../../prisma';
-import { CharEmbed } from '../../../components';
+import {getCharById} from '../../../../prisma/queries/Char/getCharById';
+import {CharEmbed} from '../../../components';
 import {ErrorMessage} from '../../../util/ErrorMessage';
 import {Util} from '../../../util/Util';
 import {handleShowCharNames} from '../Choose';
@@ -53,12 +54,14 @@ export class Playcard {
       description: 'O personagem a ser atualizado',
       autocomplete: handleShowCharNames(),
       type: ApplicationCommandOptionType.Number,
-      required: true,
+      required: true
     })
     character: number,
     interaction: CommandInteraction
   ) {
     await interaction.deferReply({ephemeral: true});
+    const isCharOwner = (await getCharById(character, interaction.user.id))?.[0];
+    if (!isCharOwner) return interaction.editReply({content: ErrorMessage.NotCharOwner});
     const charEmbed = await new CharEmbed(interaction).profile(false, character);
     const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
@@ -92,18 +95,15 @@ export class Playcard {
   public async update(interaction: ButtonInteraction) {
     const [_namespace, _actionPlaceholder, updateOption, characterId] =
       interaction.customId.split('_');
-    const isSmallInput = updateOption === CharUpdatePossibility.Name || updateOption === CharUpdatePossibility.Avatar
+    const isSmallInput =
+      updateOption === CharUpdatePossibility.Name || updateOption === CharUpdatePossibility.Avatar;
     const input = new TextInputBuilder()
-      .setStyle(isSmallInput ?  TextInputStyle.Short: TextInputStyle.Paragraph )
+      .setStyle(isSmallInput ? TextInputStyle.Short : TextInputStyle.Paragraph)
       .setCustomId(`char_update_${updateOption}_${characterId}`)
       .setLabel(CharLocaleLabels[Util.titleCase(updateOption)])
       .setPlaceholder(CharUpdateModalPlaceholders[Util.titleCase(updateOption)])
       .setMinLength(1)
-      .setMaxLength(
-        isSmallInput
-          ? 256
-          : 4000
-      )
+      .setMaxLength(isSmallInput ? 256 : 4000)
       .setRequired(true);
 
     const modal = new ModalBuilder()
@@ -120,10 +120,11 @@ export class Playcard {
     const [_namespace, _actionPlaceholder, updateOption, characterId] =
       interaction.customId.split('_');
     const updateData = interaction.fields.getTextInputValue(interaction.customId);
-    const isInvalidLink = updateOption === CharUpdatePossibility.Avatar && !Util.isValidImageURL(updateData);
+    const isInvalidLink =
+      updateOption === CharUpdatePossibility.Avatar && !Util.isValidImageURL(updateData);
     if (isInvalidLink)
-     return interaction.editReply({
-        content: ErrorMessage.InvalidImageURL,
+      return interaction.editReply({
+        content: ErrorMessage.InvalidImageURL
       });
 
     await updateCharField(Number(characterId), updateOption, updateData);

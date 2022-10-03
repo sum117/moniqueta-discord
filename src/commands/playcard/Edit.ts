@@ -2,7 +2,8 @@ import {
   ApplicationCommandOptionType,
   BaseMessageOptions,
   CommandInteraction,
-  EmbedBuilder} from 'discord.js';
+  EmbedBuilder
+} from 'discord.js';
 import {Discord, Slash, SlashGroup, SlashOption} from 'discordx';
 
 import {getLastMessageId} from '../../../prisma';

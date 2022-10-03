@@ -1,6 +1,7 @@
-import {ApplicationCommandOptionType, Collection, CommandInteraction, Snowflake} from 'discord.js';
+import {ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, Snowflake} from 'discord.js';
 import {Discord, Slash, SlashOption} from 'discordx';
 
+import { ErrorMessage } from '../util/ErrorMessage';
 import {Util} from '../util/Util';
 
 @Discord()
@@ -11,47 +12,34 @@ export class Tools {
   })
   async saveToTxt(
     @SlashOption({
-      name: 'limite',
-      type: ApplicationCommandOptionType.Number,
-      description: 'Limite de mensagens a serem salvas',
-      required: false
-    })
-    limit = 1000,
-    @SlashOption({
       name: 'depois_da_mensagem',
       type: ApplicationCommandOptionType.String,
       description: 'ID da mensagem a partir da qual as mensagens serão salvas',
       required: false
     })
     after: Snowflake,
+    @SlashOption({
+      name: 'antes_da_mensagem',
+      type: ApplicationCommandOptionType.String,
+      description: 'ID da mensagem a partir da qual as mensagens serão salvas',
+      required: false
+    })
+    before: Snowflake,
     interaction: CommandInteraction
   ) {
-    const messages = await Util.monsterFetch(interaction, {
-      before: '',
-      after,
-      limit
-    });
-    if (messages instanceof Collection) {
-      const embeds = messages
-        .reverse()
-        .map(message => message.embeds?.[0])
-        .filter(embed => embed ?? false);
+    await interaction.deferReply();
+    const options = { limit: 1000, after, before };
+    const messages = await Util.monsterFetch(interaction, options);
+    if (!messages) return interaction.reply(ErrorMessage.CannotFetch);
 
-      const indentText = (text: string) =>
-        text
-          .split('\n')
-          .map(line => `    ${line}`)
-          .join('\n');
-      const content = embeds.map(embed => indentText(embed.description ?? '')).join('\n');
-      const buffer = Buffer.from(content);
-      await interaction.editReply({
-        files: [
-          {
-            attachment: buffer,
-            name: 'mensagens.txt'
-          }
-        ]
-      });
-    }
+    const content = messages.reverse().map(message => {
+      if (message.embeds?.[0]) return message.embeds[0].description;
+      return message.content;
+    }).join('\n');
+    const buffer = Buffer.from(content);
+    const attachment = new AttachmentBuilder(buffer)
+      .setName('mensagens.txt')
+
+    return interaction.editReply({files: [attachment]});
   }
 }

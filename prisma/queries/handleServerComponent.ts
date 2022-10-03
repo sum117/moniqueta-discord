@@ -1,7 +1,7 @@
 import {PrismaClient} from '@prisma/client';
 import {Snowflake} from 'discord.js';
 
-import {ErrorMessage} from '../../src/util/ErrorMessage'
+import {ErrorMessage} from '../../src/util/ErrorMessage';
 const prisma = new PrismaClient();
 
 export class HandleServerComponent {
@@ -21,7 +21,7 @@ export class HandleServerComponent {
         });
         return true;
       } catch (error) {
-        console.log(ErrorMessage.DatabaseError)
+        console.log(ErrorMessage.DatabaseError);
       }
     }
   }

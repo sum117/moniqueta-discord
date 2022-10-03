@@ -13,6 +13,14 @@ export class Playcard {
   @On({event: 'messageCreate'})
   @Guard(hasCharacter, isAllowedParent(allowedRoleplayParents))
   public async post([message]: ArgsOf<'messageCreate'>) {
+    const oocBrackets = /^[\\/()[\]]/g;
+    const deletionTime = 60 * 5 * 1000;
+    if (message.content.match(oocBrackets))
+      return setTimeout(
+        () => message.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage)),
+        deletionTime
+      );
+
     const embed = await new CharEmbed(message).post();
     if (!embed) return message.reply(ErrorMessage.DatabaseError);
     const reply = {} as BaseMessageOptions;

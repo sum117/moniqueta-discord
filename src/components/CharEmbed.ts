@@ -100,8 +100,7 @@ export class CharEmbed extends EmbedBuilder {
       }
       return text;
     };
-    this.setTitle(`Exibindo perfil de ${char?.name}`)
-      .addFields(
+    this.setTitle(`Exibindo perfil de ${char?.name}`).addFields(
       {
         name: 'Personalidade',
         value: await getHyperlinkOnExceed(char?.personality ?? 'Valor Ausente')

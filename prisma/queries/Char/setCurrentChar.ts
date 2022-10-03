@@ -1,23 +1,25 @@
-import {PrismaClient} from '@prisma/client';
+import {Char, PrismaClient} from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export async function setCurrentChar(charId: number, userId: string) {
+export async function setCurrentChar(charId: number, userId: string): Promise<Char | undefined> {
   // remove current char first
   await prisma.char.updateMany({
     where: {
-      chosenById: userId,
+      chosenById: userId
     },
     data: {
-      chosenById: null,
+      chosenById: null
     }
   });
-  return prisma.char.update({
+
+  const updated = await prisma.char.update({
     where: {
       id: charId
     },
     data: {
-        chosenById: userId
+      chosenById: userId
     }
   });
+  return updated;
 }

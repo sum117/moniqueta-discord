@@ -1,4 +1,4 @@
-import {createCanvas, GlobalFonts,loadImage, SKRSContext2D} from '@napi-rs/canvas';
+import {createCanvas, GlobalFonts, loadImage, SKRSContext2D} from '@napi-rs/canvas';
 import {
   ApplicationCommandOptionType,
   AttachmentBuilder,
@@ -33,7 +33,7 @@ export class Profile {
       type: ApplicationCommandOptionType.User,
       required: false
     })
-    user: User | GuildMember |  null = null,
+    user: User | GuildMember | null = null,
     interaction: CommandInteraction
   ) {
     user = user || interaction.user;
@@ -54,7 +54,10 @@ export class Profile {
       }
     }
 
-    const profile = await this._composeProfile(user instanceof User ? user: user.user, interaction);
+    const profile = await this._composeProfile(
+      user instanceof User ? user : user.user,
+      interaction
+    );
     if (!profile) return interaction.editReply(ErrorMessage.NoUser);
     this._cacheProfile(profile as CustomAttachmentBuilder);
     return interaction.editReply({files: [profile]});
