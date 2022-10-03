@@ -2,11 +2,12 @@ import 'reflect-metadata';
 import 'dotenv/config';
 
 import {dirname, importx} from '@discordx/importer';
-import type {Interaction, Message} from 'discord.js';
+import {codeBlock, Interaction, Message} from 'discord.js';
 import {IntentsBitField} from 'discord.js';
 import {Client} from 'discordx';
 
 import {isNotBot} from './guards';
+import { requiredConfigChannels } from './resources';
 
 export const bot = new Client({
   // To only use global commands (use @Guild for specific guild command), comment this line
@@ -61,6 +62,30 @@ bot.on('interactionCreate', (interaction: Interaction) => {
 bot.on('messageCreate', (message: Message) => {
   bot.executeCommand(message);
 });
+
+
+bot.on('error', (err) => {
+  handleBotErrors(err);
+})
+process.on('unhandledRejection', (err: Error) => {
+  handleBotErrors(err);
+});
+
+function handleBotErrors(err: Error) {
+  const errorChannel = bot.channels.cache.get(requiredConfigChannels.errorLogChannel);
+  console.log(err);
+  if (errorChannel && errorChannel.isTextBased()) {
+    const errorString = `${err?.name}: ${err?.message}\n${err?.stack}`;
+    if (errorString.length > 2000) {
+      errorChannel.send({
+        files: [{ attachment: Buffer.from(errorString), name: 'stack.txt' }]
+      });
+    }
+    errorChannel.send({
+      content: codeBlock('ts', errorString),
+    });
+  }
+}
 
 async function run() {
   // The following syntax should be used in the commonjs environment
