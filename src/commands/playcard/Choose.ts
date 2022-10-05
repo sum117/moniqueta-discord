@@ -10,7 +10,7 @@ import {CharEmbed} from '../../components';
 import {ErrorMessage} from '../../util/ErrorMessage';
 
 enum Feedback {
-  Success = 'Você escolheu o(a) personagem com sucesso: ',
+  Success = 'Você escolheu o(a) personagem com sucesso: '
 }
 @Discord()
 @SlashGroup('playcard')
@@ -37,10 +37,7 @@ export class Playcard {
 export function handleShowCharNames() {
   return function (interaction: AutocompleteInteraction) {
     getUser(interaction.user.id).then(user => {
-      if (!user)
-        return interaction.respond([
-          {name: 'N/A', value: 'N/A'}
-        ]);
+      if (!user) return interaction.respond([{name: 'N/A', value: 'N/A'}]);
       const sizeDelimiter = (text: string) => text.split(' ')[0].slice(0, 98);
       const characters = user.chars.map(character => ({
         name: sizeDelimiter(character.name),

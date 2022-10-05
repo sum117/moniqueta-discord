@@ -9,3 +9,5 @@ export {getLastMessageId} from './queries/getLastMessageId';
 export {getUser} from './queries/getUser';
 export {HandleServerComponent} from './queries/handleServerComponent';
 export {handleUserPost} from './queries/handleUserPost';
+export {isUserFreeStyling} from './queries/isUserFreeStyling';
+export {setUserFreeStyle} from './queries/setUserFreeStyle';

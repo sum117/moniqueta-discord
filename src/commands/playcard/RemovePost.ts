@@ -29,10 +29,9 @@ export class Playcard {
 
     const isUserMessageAuthor = await handleUserPost(interaction, fetchedMessage, 'delete');
     if (isUserMessageAuthor) {
-      if (fetchedMessage.deletable)
-        await fetchedMessage
-          .delete()
-          .catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage));
+      await fetchedMessage
+        .delete()
+        .catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage));
       return interaction.editReply('Mensagem deletada.');
     } else return interaction.editReply(ErrorMessage.NotMessageAuthor);
   }

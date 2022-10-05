@@ -110,10 +110,7 @@ export class CharModal {
       .reply({content: Feedback.DiscussChannelCreated, fetchReply: true})
       .then(msg =>
         setTimeout(
-          () =>
-            msg.deletable
-              ? msg.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage))
-              : null,
+          () => msg.delete().catch(() => console.log(ErrorMessage.CouldNotDeleteUnknownMessage)),
           5000
         )
       );

@@ -1,4 +1,6 @@
 export enum ErrorMessage {
+  NoPremium = 'Você não possui um cargo premim (Nitro/Patrocinador/Mestre), portanto não pode usar este comando.',
+  ForgotPrefix = 'Você esqueceu de colocar o prefixo dos seus personagens ou usou algum inexistente! Se quiser sair do modo de multiplos personagens use o comando `/style`',
   InvalidImageURL = 'O link da imagem é inválido. Você precisa usar um link de imagem com extensões no final.',
   InvalidContent = "Conteúdo inválido!",
   UnknownMessage = "Mensagem desconhecida!",

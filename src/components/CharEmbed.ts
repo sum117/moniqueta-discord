@@ -1,4 +1,5 @@
 import {
+  BaseMessageOptions,
   ButtonInteraction,
   CommandInteraction,
   EmbedBuilder,
@@ -9,6 +10,7 @@ import {
 
 import {getCurrentChar, getUser} from '../../prisma';
 import {sumAssets} from '../resources';
+import {ErrorMessage} from '../util/ErrorMessage';
 import {Util} from '../util/Util';
 
 interface CharSubmissionProps {
@@ -92,7 +94,7 @@ export class CharEmbed extends EmbedBuilder {
   }
 
   public async profile(current = true, id?: number, options = {displayExtra: true}) {
-    const char = await this._fetch(current, id);
+    const char = await this._composeOne(current, id);
     const getHyperlinkOnExceed = async (text: string, maxLength = 1024) => {
       if (text.length > maxLength) {
         const hastebin = await Util.hastebin(text);
@@ -136,15 +138,57 @@ export class CharEmbed extends EmbedBuilder {
     return this;
   }
 
-  public async post() {
+  public async post(current = true, id?: number) {
     if (!(this.interaction instanceof Message)) return;
-    await this._fetch();
+    await this._composeOne(current, id);
     if (this.interaction.content.length < 1) return this;
     this.setDescription(this.interaction.content);
     return this;
   }
 
-  private async _fetch(current = true, id?: number, interaction = this.interaction) {
+  public async multiPost(message: Message) {
+    const userDatabase = await getUser(this.user.id);
+    const chars = userDatabase?.chars.map(char => ({
+      ...char,
+      prefix: char.name.split(' ')[0] + ':',
+      charId: char.id
+    }));
+    if (!chars) return;
+
+    const charPrefixesRegex = new RegExp(
+      chars.map(charPrefix => charPrefix.prefix)?.join('|'),
+      'gi'
+    );
+
+    const matches = message.content.match(charPrefixesRegex);
+    if (!matches) return;
+
+    const charActions = message.content.split(charPrefixesRegex);
+    const replies = matches.map(async (match, index) => {
+      const char = chars.find(char => char.prefix === match);
+      if (!char) return;
+
+      const embed = await new CharEmbed(message).post(false, char?.charId);
+      if (!embed) return;
+
+      const charAction = charActions[index + 1];
+      if (charAction.length > 0) embed.setDescription(charAction);
+      else return;
+
+      const reply = {} as BaseMessageOptions;
+      const attachment = message.attachments.at(index);
+      if (attachment) {
+        const attachmentName = attachment.url.split('/').pop();
+        embed.setImage('attachment://' + attachmentName);
+        reply.files = [{attachment: attachment.attachment, name: attachmentName}];
+      }
+      reply.embeds = [embed];
+      return reply;
+    });
+    await message.delete().catch(() => console.log(ErrorMessage.UnknownMessage));
+    return replies;
+  }
+  private async _composeOne(current = true, id?: number, interaction = this.interaction) {
     let char = await getCurrentChar(interaction);
     if (!current) {
       const data = (await getUser(this.user.id))?.chars.find(char => char.id === id);
@@ -153,17 +197,9 @@ export class CharEmbed extends EmbedBuilder {
     }
     if (char) {
       const {name, avatar, sum} = char;
-      this.setTitle(name)
-        .setThumbnail(avatar)
-        .setColor(sumAssets[sum].color)
-        .setTimestamp(Date.now());
-      if (char?.title)
-        this.setAuthor({
-          name: char.title.name,
-          iconURL: char.title.iconURL
-        });
+      this.setTitle(name).setThumbnail(avatar).setColor(sumAssets[sum].color);
+      if (char.title) this.setAuthor({name: char.title.name, iconURL: char.title.iconURL});
     }
-
     return char;
   }
 }

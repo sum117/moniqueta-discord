@@ -69,7 +69,9 @@ bot.on('error', err => {
 process.on('unhandledRejection', (err: Error) => {
   handleBotErrors(err);
 });
-
+process.on('rejectionHandled', (err: Error) => {
+  handleBotErrors(err);
+});
 function handleBotErrors(err: Error) {
   const errorChannel = bot.channels.cache.get(requiredConfigChannels.errorLogChannel);
   console.log(err);

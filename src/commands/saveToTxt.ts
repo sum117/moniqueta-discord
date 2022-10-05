@@ -1,7 +1,12 @@
-import {ApplicationCommandOptionType, AttachmentBuilder, CommandInteraction, Snowflake} from 'discord.js';
+import {
+  ApplicationCommandOptionType,
+  AttachmentBuilder,
+  CommandInteraction,
+  Snowflake
+} from 'discord.js';
 import {Discord, Slash, SlashOption} from 'discordx';
 
-import { ErrorMessage } from '../util/ErrorMessage';
+import {ErrorMessage} from '../util/ErrorMessage';
 import {Util} from '../util/Util';
 
 @Discord()
@@ -28,17 +33,19 @@ export class Tools {
     interaction: CommandInteraction
   ) {
     await interaction.deferReply();
-    const options = { limit: 1000, after, before };
+    const options = {limit: 1000, after, before};
     const messages = await Util.monsterFetch(interaction, options);
     if (!messages) return interaction.reply(ErrorMessage.CannotFetch);
 
-    const content = messages.reverse().map(message => {
-      if (message.embeds?.[0]) return message.embeds[0].description;
-      return message.content;
-    }).join('\n');
+    const content = messages
+      .reverse()
+      .map(message => {
+        if (message.embeds?.[0]) return message.embeds[0].description;
+        return message.content;
+      })
+      .join('\n');
     const buffer = Buffer.from(content);
-    const attachment = new AttachmentBuilder(buffer)
-      .setName('mensagens.txt')
+    const attachment = new AttachmentBuilder(buffer).setName('mensagens.txt');
 
     return interaction.editReply({files: [attachment]});
   }
